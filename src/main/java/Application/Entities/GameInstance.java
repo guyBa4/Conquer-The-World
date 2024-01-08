@@ -1,11 +1,11 @@
 package Application.Entities;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
-@Table
+@Table(name = "game_instances")
 public class GameInstance {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO) // or GenerationType.IDENTITY
+    @GeneratedValue(strategy = GenerationType.SEQUENCE) // or GenerationType.IDENTITY
     @Column(name = "Id", nullable = false, unique = true)
     private Long Id;
 

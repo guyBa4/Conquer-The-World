@@ -5,8 +5,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @org.springframework.context.annotation.Configuration
-@ComponentScan({"Application/APILayer", "Application/ServiceLayer", "Application/DataAccessLayer"})
-@EntityScan("Application/Entities")
-@EnableJpaRepositories("Application/DataAccessLayer")
+@EnableJpaRepositories("Application.Repositories")
+@ComponentScan(basePackages = {"Application.APILayer", "Application.ServiceLayer", "Application.DataAccessLayer"})
+@EntityScan("Application.Entities")
 public class Configuration {
 }
