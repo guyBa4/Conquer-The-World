@@ -27,6 +27,7 @@ public class User {
         this.permissions = permissions;
     }
 
+
     public Long getId() {
         return Id;
     }

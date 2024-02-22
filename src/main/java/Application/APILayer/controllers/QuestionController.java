@@ -12,14 +12,20 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
 @RestController
 @RequestMapping("question")
 public class QuestionController {
     QuestionService questionService;
 
     @Autowired
-    public QuestionController(RepositoryFactory repositoryFactory)
-        {
+    public QuestionController(RepositoryFactory repositoryFactory) throws ScriptException, ExecutionException, InterruptedException {
         this.questionService = QuestionService.getInstance();
         questionService.init(repositoryFactory);
     }
