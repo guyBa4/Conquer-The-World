@@ -29,8 +29,6 @@ public class QuestionController {
     public QuestionController(RepositoryFactory repositoryFactory) throws ScriptException, ExecutionException, InterruptedException {
         this.questionService = QuestionService.getInstance();
         questionService.init(repositoryFactory);
-        System.out.println("aaaaaaaaaaaaa");
-
     }
 
     @PostMapping(path = "/add_question")
