@@ -26,7 +26,6 @@ public class UserController {
     @ResponseBody
     public Response<User> register(@RequestBody String inputJson) {
         try {
-            System.out.println("aaaaaaaaaaaaa");
             JSONObject jsonObj = new JSONObject(inputJson);
             Response<User> response = userService.register(jsonObj);
             return response;
