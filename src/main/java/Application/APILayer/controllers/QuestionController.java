@@ -1,5 +1,6 @@
 package Application.APILayer.controllers;
 
+import Application.Entities.Map;
 import Application.Entities.Question;
 import Application.Entities.User;
 import Application.Repositories.RepositoryFactory;
@@ -28,6 +29,8 @@ public class QuestionController {
     public QuestionController(RepositoryFactory repositoryFactory) throws ScriptException, ExecutionException, InterruptedException {
         this.questionService = QuestionService.getInstance();
         questionService.init(repositoryFactory);
+        System.out.println("aaaaaaaaaaaaa");
+
     }
 
     @PostMapping(path = "/add_question")
