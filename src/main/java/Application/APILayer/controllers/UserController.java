@@ -17,11 +17,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("user")
 public class UserController {
     UserService userService;
+    TokenHandler tokenHandler;
 
     @Autowired
-    public UserController(UserService userService){
+    public UserController(UserService userService, RepositoryFactory repositoryFactory){
         this.userService = userService;
+        userService.init(repositoryFactory);
+        tokenHandler = TokenHandler.getInstance();
+        tokenHandler.init(repositoryFactory);
     }
+
     @PostMapping(path = "/register")
     @ResponseBody
     public Response<User> register(@RequestBody String inputJson) {

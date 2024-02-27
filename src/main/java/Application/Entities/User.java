@@ -1,13 +1,15 @@
 package Application.Entities;
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE) // or GenerationType.IDENTITY
+    @GeneratedValue(strategy = GenerationType.UUID) // or GenerationType.IDENTITY
     @Column(name = "Id", nullable = false, unique = true)
-    private Long Id;
+    private UUID Id;
 
     @Column
     private String name;
@@ -28,11 +30,11 @@ public class User {
     }
 
 
-    public Long getId() {
+    public UUID getId() {
         return Id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         Id = id;
     }
 

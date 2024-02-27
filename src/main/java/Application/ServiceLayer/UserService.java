@@ -1,6 +1,7 @@
 package Application.ServiceLayer;
 import Application.APILayer.JsonToInstance;
 import Application.Entities.*;
+import Application.Repositories.QuestionRepository;
 import Application.Repositories.RepositoryFactory;
 import Application.Repositories.UserRepository;
 import Application.Response;
@@ -10,15 +11,29 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
+    private static UserService instance = null;
+    private static JsonToInstance jsonToInstance;
+    private static final Object instanceLock = new Object();
     private RepositoryFactory repositoryFactory;
     private UserRepository userRepository;
-    private JsonToInstance jsonToInstance;
 
-    @Autowired
-    public UserService(RepositoryFactory repositoryFactory){
-        setRepositories(repositoryFactory);
-        this.jsonToInstance = JsonToInstance.getInstance();
+    private UserService() {
     }
+
+    public static UserService getInstance() {
+        synchronized (instanceLock) {
+            if (instance == null)
+                instance = new UserService();
+        }
+        return instance;
+    }
+
+    public void init(RepositoryFactory repositoryFactory) {
+        this.repositoryFactory = repositoryFactory;
+        jsonToInstance = JsonToInstance.getInstance();
+        setRepositories(repositoryFactory);
+    }
+
 
     private void setRepositories(RepositoryFactory repositoryFactory) {
         this.userRepository = repositoryFactory.userRepository;
