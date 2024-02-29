@@ -1,19 +1,18 @@
 package Application.APILayer.controllers;
 
-import Application.APILayer.JsonToInstance;
-import Application.Repositories.QuestionRepository;
 import Application.Repositories.RepositoryFactory;
 import Application.Repositories.UserRepository;
-import Application.ServiceLayer.GameService;
-import Application.ServiceLayer.QuestionService;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Service
 public class TokenHandler {
     private static TokenHandler instance = null;
     private static final Object instanceLock = new Object();
     private RepositoryFactory repositoryFactory;
     private UserRepository userRepository;
+
     private TokenHandler() {
     }
 
