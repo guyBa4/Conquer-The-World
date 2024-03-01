@@ -24,6 +24,8 @@ public class JsonToInstance {
 
 //    set the field named "key" of newInstance a value equals to json['key']
     public void injectFieldFromJson(Object newInstance, JSONObject json, String key) throws NoSuchFieldException, IllegalAccessException {
+        if (json.opt(key) == JSONObject.NULL)
+            return;
         Field field = newInstance.getClass().getDeclaredField(key);
         field.setAccessible(true); // Set the field to accessible
         field.set(newInstance, json.opt(key));

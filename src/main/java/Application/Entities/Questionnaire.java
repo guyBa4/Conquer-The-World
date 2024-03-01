@@ -1,13 +1,15 @@
 package Application.Entities;
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "questionnaire")
 public class Questionnaire {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE) // or GenerationType.IDENTITY
+    @GeneratedValue(strategy = GenerationType.UUID) // or GenerationType.IDENTITY
     @Column(name = "Id", nullable = false, unique = true)
-    private Long Id;
+    private UUID Id;
 
 
     public Questionnaire(){

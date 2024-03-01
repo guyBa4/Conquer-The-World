@@ -2,14 +2,16 @@ package Application.Entities;
 
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "questions")
 public class Question {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE) // or GenerationType.IDENTITY
+    @GeneratedValue(strategy = GenerationType.UUID) // or GenerationType.IDENTITY
     @Column(name = "Id", nullable = false, unique = true)
-    private Long Id;
+    private UUID Id;
 //    @Column
 //    private String Type;
     @Column
@@ -24,7 +26,7 @@ public class Question {
 
     }
 
-    public Question(Long id, String type, String question, String answer, int difficulty) {
+    public Question(UUID id, String type, String question, String answer, int difficulty) {
         Id = id;
 //        Type = type;
         this.question = question;
@@ -32,21 +34,13 @@ public class Question {
         this.difficulty = difficulty;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return Id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         Id = id;
     }
-
-//    public String getType() {
-//        return Type;
-//    }
-//
-//    public void setType(String type) {
-//        Type = type;
-//    }
 
     public String getQuestion() {
         return question;

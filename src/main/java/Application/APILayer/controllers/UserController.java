@@ -1,6 +1,6 @@
 package Application.APILayer.controllers;
 
-import Application.Entities.Question;
+import Application.APILayer.TokenHandler;
 import Application.Entities.User;
 import Application.Repositories.RepositoryFactory;
 import Application.Response;
@@ -8,9 +8,6 @@ import Application.ServiceLayer.UserService;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

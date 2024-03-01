@@ -1,11 +1,11 @@
 package Application.APILayer.controllers;
 
+import Application.APILayer.TokenHandler;
 import Application.Entities.GameInstance;
 import Application.Entities.Question;
 import Application.Repositories.RepositoryFactory;
 import Application.Response;
 import Application.ServiceLayer.GameService;
-import Application.ServiceLayer.QuestionService;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class GameController {
     @ResponseBody
     public Response<GameInstance> addGameInstance(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
-            tokenHandler.verifyToken(authorizationHeader);
+            tokenHandler.verifyWebUserToken(authorizationHeader);
             JSONObject jsonObj = new JSONObject(inputJson);
             Response<GameInstance> response = gameService.addGameInstance(jsonObj);
             return response;

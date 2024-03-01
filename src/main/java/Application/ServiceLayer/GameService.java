@@ -9,6 +9,9 @@ import Application.Response;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+import java.util.UUID;
+
 @Service
 public class GameService {
     private static GameService instance = null;
@@ -39,7 +42,8 @@ public class GameService {
 
     public Response<GameInstance> addGameInstance(JSONObject jsonObject) {
         try {
-            Response<GameInstance> response = jsonToInstance.buildGameInstance(jsonObject);
+//            Response<GameInstance> response = jsonToInstance.buildGameInstance(jsonObject);
+            Response<GameInstance> response = GameInstance.fromJson(jsonObject);
             if (response.isSuccessful()) {
                 GameInstance gameInstance = response.getValue();
                 gameInstanceRepository.save(gameInstance);
@@ -50,6 +54,4 @@ public class GameService {
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }
     }
-
-
 }
