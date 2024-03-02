@@ -41,6 +41,9 @@ public class GameRunningService {
         mobileIdToGameInstance = new HashMap<>();
         mobileIdToMobilePlayer = new HashMap<>();
         gameCodeToGameInstance = new HashMap<>();
+        for (GameInstance gameInstance : gameInstanceRepository.findAll()){
+            gameCodeToGameInstance.put(gameInstance.getGameCode(), gameInstance);
+        }
     }
 
     private void setRepositories(RepositoryFactory repositoryFactory) {
