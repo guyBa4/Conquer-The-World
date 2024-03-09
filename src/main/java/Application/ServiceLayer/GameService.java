@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Service
 public class GameService {
@@ -62,6 +63,7 @@ public class GameService {
         GameInstance gameInstance = new GameInstance(UUID.randomUUID(), host, questionnaire, map, GameStatus.CREATED.toString(), 2, "first game", "this is a very good game!",
                 GroupAssignmentProtocol.RANDOM.toString(), 1000, true, 50);
         this.gameInstanceMap.put(gameInstance.getId(), gameInstance);
+//        gameInstanceRepository.save(gameInstance);
     }
 
     private void setRepositories(RepositoryFactory repositoryFactory) {
@@ -83,11 +85,15 @@ public class GameService {
         }
     }
 
-    public Response<GameInstance> getGameInstance(UUID id){
-        return Response.ok(gameInstanceMap.get(id));
+    public Response<FlatGameInstance> getGameInstance(UUID id){
+
+        return Response.ok(new FlatGameInstance(gameInstanceMap.get(id)));
     }
 
-    public Response<Collection<GameInstance>> getAllGameInstance(){
-        return Response.ok(gameInstanceMap.values());
+    public Response<Collection<FlatGameInstance>> getAllGameInstance(){
+        Collection<FlatGameInstance> flatGames = new ConcurrentLinkedQueue<>();
+        for (GameInstance gameInstance : gameInstanceMap.values())
+            flatGames.add(new FlatGameInstance(gameInstance));
+        return Response.ok(flatGames);
     }
 }
