@@ -103,7 +103,7 @@ public class RunningGameController {
     }
 
     @GetMapping(path = "/get_running_game/{runningGameid}")
-    public Response<RunningGameInstance> getRunningGame(@PathVariable (name= "runningGameid") String runningGameid,
+    public Response<RunningGameInstance> getRunningGame(@PathVariable (name= "runningGameUuid") String runningGameid,
                                                                     @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             UUID runningGameUuid = UUID.fromString(runningGameid);

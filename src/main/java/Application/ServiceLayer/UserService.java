@@ -9,6 +9,8 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
     private static UserService instance = null;
@@ -54,4 +56,18 @@ public class UserService {
     }
 
 
+    public Response<User> Login(String username, String password) {
+        try {
+            List<User> users = userRepository.findByNameContaining(username);
+            if(users.isEmpty())
+                return Response.fail("user not exist");
+            User user = users.get(0);
+            if (user.getPassword().equals(password))
+                return Response.ok(user);
+            return Response.fail("password incorrect");
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the exception or handle it appropriately
+            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+        }
+    }
 }

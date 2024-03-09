@@ -35,4 +35,16 @@ public class UserController {
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }
     }
+
+    @GetMapping(path = "/login/username={username}&password={password}")
+    @ResponseBody
+    public Response<User> login(@PathVariable (name= "username") String username,@PathVariable (name= "password") String password) {
+        try {
+            Response<User> response = userService.Login(username, password);
+            return response;
+        } catch (JSONException e) {
+            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+        }
+    }
+
 }
