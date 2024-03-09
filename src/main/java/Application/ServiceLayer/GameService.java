@@ -45,21 +45,21 @@ public class GameService {
 
         // init objects:
         List<Question> questionList = new LinkedList<>();
-        Question question1 = new Question(UUID.randomUUID(), "regular", "1 + 5 = ?", "6", 3);
+        Question question1 = new Question(UUID.randomUUID(), false, "1 + 5 = ?", "6",new String[2], 3, new String[2]);
         questionList.add(question1);
-        Question question2 = new Question(UUID.randomUUID(), "regular", "1 + 6 = ?", "7", 1);
+        Question question2 = new Question(UUID.randomUUID(), false, "1 + 6 = ?", "7",new String[2], 1, new String[2]);
         questionList.add(question2);
-        Question question3 = new Question(UUID.randomUUID(), "regular", "0 + 0 = ?", "0", 5);
+        Question question3 = new Question(UUID.randomUUID(), false, "0 + 0 = ?", "0", new String[2], 5, new String[2]);
         questionList.add(question3);
-        Question question4 = new Question(UUID.randomUUID(), "regular", "1 + 10 = ?", "11", 2);
+        Question question4 = new Question(UUID.randomUUID(), false, "1 + 10 = ?", "11", new String[2], 2, new String[2]);
         questionList.add(question4);
-        Question question5 = new Question(UUID.randomUUID(), "regular", "4 + 5 = ?", "9", 2);
+        Question question5 = new Question(UUID.randomUUID(), false, "4 + 5 = ?", "9", new String[2], 2, new String[2]);
         questionList.add(question5);
-        Question question6 = new Question(UUID.randomUUID(), "regular", "9 - 3 = ?", "6", 5);
+        Question question6 = new Question(UUID.randomUUID(), false, "9 - 3 = ?", "6", new String[2], 5, new String[2]);
         questionList.add(question6);
-        Question question7 = new Question(UUID.randomUUID(), "regular", "1 * 4 = ?", "4", 2);
+        Question question7 = new Question(UUID.randomUUID(), false, "1 * 4 = ?", "4", new String[2], 2, new String[2]);
         questionList.add(question7);
-        Question question8 = new Question(UUID.randomUUID(), "regular", "5 * 4 = ?", "20", 5);
+        Question question8 = new Question(UUID.randomUUID(), false, "5 * 4 = ?", "20", new String[2], 5, new String[2]);
         questionList.add(question8);
         Questionnaire questionnaire = new Questionnaire(UUID.randomUUID(), "math", questionList);
         Map map = new Map(UUID.randomUUID());

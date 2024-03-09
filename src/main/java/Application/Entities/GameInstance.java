@@ -15,6 +15,9 @@ public class GameInstance {
     @Column(name = "id", nullable = false, unique = true)
     private UUID id;
 
+    @Column(name = "name")
+    private String name;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "host_id") // Assuming a many-to-one relationship with User
     private User host;
@@ -42,8 +45,6 @@ public class GameInstance {
     @Column(name = "number_of_groups")
     private int numberOfGroups;
 
-    @Column(name = "name")
-    private String name;
 
     @Column(name = "description")
     private String description;

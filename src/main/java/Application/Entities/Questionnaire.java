@@ -2,7 +2,6 @@ package Application.Entities;
 import jakarta.persistence.*;
 
 import java.util.*;
-import java.util.Map;
 
 @Entity
 @Table(name = "questionnaire")
@@ -15,7 +14,7 @@ public class Questionnaire {
     @Column
     private String name;
     @Transient
-    private Map<Integer, List<Question>> questionMap;
+    private List<Question> questions;
 
 
 
@@ -26,12 +25,7 @@ public class Questionnaire {
     public Questionnaire(UUID id, String name, List<Question> questionList) {
         Id = id;
         this.name = name;
-        this.questionMap = new HashMap<>();
-        for (Question question : questionList) {
-            int difficulty  = question.getDifficulty();
-            this.questionMap.putIfAbsent(difficulty, new LinkedList<>());
-            questionMap.get(difficulty).add(question);
-        }
+        this.questions = questionList;
     }
 
     public UUID getId() {
@@ -50,15 +44,12 @@ public class Questionnaire {
         this.name = name;
     }
 
-    public Map<Integer, List<Question>> getQuestionMap() {
-        return questionMap;
+    public List<Question> getQuestions() {
+        return questions;
     }
 
-    public void setQuestionMap(Map<Integer, List<Question>> questionMap) {
-        this.questionMap = questionMap;
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
     }
 
-    public List<Question> getQuestionsByDufficulty(int difficulty){
-        return questionMap.get(difficulty);
-    }
 }

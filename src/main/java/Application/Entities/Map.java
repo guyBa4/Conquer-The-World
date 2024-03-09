@@ -12,6 +12,10 @@ public class Map {
     @Column(name = "Id", nullable = false, unique = true)
     private UUID id;
 
+    @Transient
+    private String name;
+    @Transient
+    String[] startingPositions;
 
     public Map(){
 
@@ -19,6 +23,12 @@ public class Map {
 
     public Map(UUID id){
         this.id = id;
+    }
+
+    public Map(UUID id, String name, String[] startingPositions) {
+        this.id = id;
+        this.name = name;
+        this.startingPositions = startingPositions;
     }
 
     public UUID getId() {
