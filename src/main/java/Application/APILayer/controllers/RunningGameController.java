@@ -27,7 +27,8 @@ public class RunningGameController {
     public RunningGameController(RepositoryFactory repositoryFactory)
     {
         this.gameRunningService = GameRunningService.getInstance();
-        gameRunningService.init(repositoryFactory);
+        if (gameRunningService.getRunningGamesIdToRunningGameInstance() == null)
+            gameRunningService.init(repositoryFactory);
         tokenHandler = TokenHandler.getInstance();
     }
 

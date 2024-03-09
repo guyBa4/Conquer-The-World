@@ -78,7 +78,7 @@ public class GameRunningService {
     public Response<UUID> enterGameWithCode(String gameCode) {
         try {
             RunningGameInstance runningGameInstance = gameCodeToRunningGameInstance.get(gameCode);
-            if (runningGameInstance == null || !runningGameInstance.getStatus().equals("RUNNING"))
+            if (runningGameInstance == null || !runningGameInstance.getStatus().equals("WAITING_ROOM"))
                 return Response.fail("game code not valid");
             UUID mobileId = UUID.randomUUID();
             mobileIdToRunningGameInstance.put(mobileId, runningGameInstance);
@@ -92,7 +92,7 @@ public class GameRunningService {
     public Response<GameInstance> addMobileDetails(UUID mobileId, String name) {
         try {
             RunningGameInstance runningGameInstance = mobileIdToRunningGameInstance.get(mobileId);
-            if (runningGameInstance == null || !runningGameInstance.getStatus().equals("RUNNING"))
+            if (runningGameInstance == null || !runningGameInstance.getStatus().equals("WAITING_ROOM"))
                 return Response.fail("game code not valid");
             MobilePlayer mobilePlayer = new MobilePlayer(mobileId, name);
             runningGameInstance.addMobilePlayer(mobilePlayer);
@@ -151,4 +151,18 @@ public class GameRunningService {
         }
     }
 
+    public void addRunningGame(RunningGameInstance runningGameInstance){
+        this.runningGamesIdToRunningGameInstance.put(runningGameInstance.getRunningId(), runningGameInstance);
+        this.gameCodeToRunningGameInstance.put(runningGameInstance.getCode(), runningGameInstance);
+        runningGameInstance.setStatus(GameStatus.WAITING_ROOM.toString());
+    }
+
+
+    public Map<UUID, RunningGameInstance> getRunningGamesIdToRunningGameInstance() {
+        return runningGamesIdToRunningGameInstance;
+    }
+
+    public void setRunningGamesIdToRunningGameInstance(Map<UUID, RunningGameInstance> runningGamesIdToRunningGameInstance) {
+        this.runningGamesIdToRunningGameInstance = runningGamesIdToRunningGameInstance;
+    }
 }

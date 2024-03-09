@@ -22,6 +22,7 @@ public class GameService {
     private RepositoryFactory repositoryFactory;
     private GameInstanceRepository gameInstanceRepository;
     private java.util.Map<UUID, GameInstance> gameInstanceMap;
+    private GameRunningService gameRunningService;
 
     private GameService(){}
 
@@ -38,6 +39,9 @@ public class GameService {
         jsonToInstance = JsonToInstance.getInstance();
         setRepositories(repositoryFactory);
         this.gameInstanceMap = new HashMap<>();
+        this.gameRunningService = GameRunningService.getInstance();
+        if (gameRunningService.getRunningGamesIdToRunningGameInstance() == null)
+            gameRunningService.init(repositoryFactory);
 
         // init objects:
         List<Question> questionList = new LinkedList<>();
@@ -58,11 +62,17 @@ public class GameService {
         Question question8 = new Question(UUID.randomUUID(), "regular", "5 * 4 = ?", "20", 5);
         questionList.add(question8);
         Questionnaire questionnaire = new Questionnaire(UUID.randomUUID(), "math", questionList);
-        Map map = new Map();
+        Map map = new Map(UUID.randomUUID());
         User host = repositoryFactory.userRepository.findAll().get(0);
         GameInstance gameInstance = new GameInstance(UUID.randomUUID(), host, questionnaire, map, GameStatus.CREATED.toString(), 2, "first game", "this is a very good game!",
                 GroupAssignmentProtocol.RANDOM.toString(), 1000, true, 50);
         this.gameInstanceMap.put(gameInstance.getId(), gameInstance);
+
+        RunningGameInstance runningGameInstance = new RunningGameInstance(gameInstance);
+        System.out.println("game code " + runningGameInstance.getCode());
+        this.gameRunningService.addRunningGame(runningGameInstance);
+
+
 //        gameInstanceRepository.save(gameInstance);
     }
 

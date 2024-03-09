@@ -24,7 +24,7 @@ public class GameInstance {
     private Questionnaire questionnaire;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "map_id") // Assuming a many-to-one relationship with Map
+    @JoinColumn(name = "map_id")
     private Map map;
 
     //    @Enumerated(EnumType.STRING)
