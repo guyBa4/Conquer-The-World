@@ -27,10 +27,7 @@ public class GameInstance {
     @JoinColumn(name = "map_id") // Assuming a many-to-one relationship with Map
     private Map map;
 
-    @Column(name = "game_code")
-    private String gameCode;
-
-//    @Enumerated(EnumType.STRING)
+    //    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private String status;
 
@@ -70,12 +67,11 @@ public class GameInstance {
     public GameInstance(){
     }
 
-    public GameInstance(UUID id, User host, Questionnaire questionnaire, Map map, String gameCode, String status, Date timeCreated, Date timeLastUpdated, int numberOfGroups, String name, String description, String groupAssignmentProtocol, int gameTime, boolean shared, int questionTimeLimit) {
+    public GameInstance(UUID id, User host, Questionnaire questionnaire, Map map, String status, Date timeCreated, Date timeLastUpdated, int numberOfGroups, String name, String description, String groupAssignmentProtocol, int gameTime, boolean shared, int questionTimeLimit) {
         this.id = id;
         this.host = host;
         this.questionnaire = questionnaire;
         this.map = map;
-        this.gameCode = gameCode;
         this.status = status;
         this.timeCreated = timeCreated;
         this.timeLastUpdated = timeLastUpdated;
@@ -87,12 +83,29 @@ public class GameInstance {
         this.shared = shared;
         this.questionTimeLimit = questionTimeLimit;
     }
+
+    public GameInstance(GameInstance original) {
+        this.id = original.id;
+        this.host = original.host;
+        this.questionnaire = original.questionnaire;
+        this.map = original.map;
+        this.status = original.status;
+        this.timeCreated = original.timeCreated;
+        this.timeLastUpdated = original.timeLastUpdated;
+        this.numberOfGroups = original.numberOfGroups;
+        this.name = original.name;
+        this.description = original.description;
+        this.groupAssignmentProtocol = original.groupAssignmentProtocol;
+        this.gameTime = original.gameTime;
+        this.shared = original.shared;
+        this.questionTimeLimit = original.questionTimeLimit;
+    }
+
     public static Response<GameInstance> fromJson(JSONObject jsonObject){
         GameInstance gameInstance = new GameInstance();
         gameInstance.host = new User().setId(UUID.fromString(jsonObject.getString("host")));
 //        this.questionnaire = questionnaire;
 //        this.map = map;
-        gameInstance.gameCode = jsonObject.getString("gameCode");
         gameInstance.status = jsonObject.getString("status");
 //        this.timeCreated = timeCreated;
 //        this.timeLastUpdated = timeLastUpdated;
@@ -136,14 +149,6 @@ public class GameInstance {
 
     public void setMap(Map map) {
         this.map = map;
-    }
-
-    public String getGameCode() {
-        return gameCode;
-    }
-
-    public void setGameCode(String gameCode) {
-        this.gameCode = gameCode;
     }
 
     public String getStatus() {

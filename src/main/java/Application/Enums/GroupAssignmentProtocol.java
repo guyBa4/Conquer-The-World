@@ -1,4 +1,4 @@
-package Application.Entities;
+package Application.Enums;
 
 public enum GroupAssignmentProtocol {
     RANDOM,

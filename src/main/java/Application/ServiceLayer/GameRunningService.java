@@ -3,6 +3,8 @@ package Application.ServiceLayer;
 import Application.APILayer.JsonToInstance;
 import Application.Entities.GameInstance;
 import Application.Entities.MobilePlayer;
+import Application.Entities.RunningGameInstance;
+import Application.Enums.GameStatus;
 import Application.Repositories.GameInstanceRepository;
 import Application.Repositories.RepositoryFactory;
 import Application.Repositories.UserRepository;
@@ -19,9 +21,11 @@ public class GameRunningService {
     private RepositoryFactory repositoryFactory;
     private GameInstanceRepository gameInstanceRepository;
     private UserRepository userRepository;
-    private Map<String, GameInstance> gameCodeToGameInstance;
-    private Map<UUID, GameInstance> mobileIdToGameInstance;
-    private Map<UUID, MobilePlayer> mobileIdToMobilePlayer;
+    private Map<String, RunningGameInstance> gameCodeToRunningGameInstance;
+    private Map<UUID, RunningGameInstance> mobileIdToRunningGameInstance;
+    private Map<UUID, RunningGameInstance> runningGamesIdToRunningGameInstance;
+
+
 
 
     private GameRunningService(){}
@@ -38,12 +42,12 @@ public class GameRunningService {
         this.repositoryFactory = repositoryFactory;
         jsonToInstance = JsonToInstance.getInstance();
         setRepositories(repositoryFactory);
-        mobileIdToGameInstance = new HashMap<>();
-        mobileIdToMobilePlayer = new HashMap<>();
-        gameCodeToGameInstance = new HashMap<>();
-        for (GameInstance gameInstance : gameInstanceRepository.findAll()){
-            gameCodeToGameInstance.put(gameInstance.getGameCode(), gameInstance);
-        }
+        mobileIdToRunningGameInstance = new HashMap<>();
+        gameCodeToRunningGameInstance = new HashMap<>();
+        runningGamesIdToRunningGameInstance = new HashMap<>();
+//        for (GameInstance gameInstance : gameInstanceRepository.findAll()){
+//            gameCodeToRunningGameInstance.put(gameInstance.getGameCode(), gameInstance);
+//        }
     }
 
     private void setRepositories(RepositoryFactory repositoryFactory) {
@@ -51,7 +55,7 @@ public class GameRunningService {
         this.userRepository = repositoryFactory.userRepository;
     }
 
-    public Response<GameInstance> startGame(UUID gameId, UUID hostId){
+    public Response<RunningGameInstance> OpenWaitingRoom(UUID gameId, UUID hostId){
         try{
             Optional<GameInstance> optGameInstance = gameInstanceRepository.findById(gameId);
             if (optGameInstance.isEmpty())
@@ -59,12 +63,12 @@ public class GameRunningService {
             GameInstance gameInstance = optGameInstance.get();
             if (!gameInstance.getHost().getId().equals(hostId))
                 return Response.fail("wrong host UUID");
-            gameInstance.setStatus("RUNNING");
-            String gameCode = String.valueOf(Math.round(Math.random()*1000000));
-            gameInstance.setGameCode(gameCode);
-            gameCodeToGameInstance.put(gameCode, gameInstance);
+            RunningGameInstance runningGameInstance = new RunningGameInstance(gameInstance);
+            gameCodeToRunningGameInstance.put(runningGameInstance.getCode(), runningGameInstance);
+            runningGamesIdToRunningGameInstance.put(runningGameInstance.getRunningId(), runningGameInstance);
+            updateGameStatus(runningGameInstance, GameStatus.WAITING_ROOM.toString());
             gameInstanceRepository.save(gameInstance);
-            return Response.ok(gameInstance);
+            return Response.ok(runningGameInstance);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
@@ -73,13 +77,11 @@ public class GameRunningService {
 
     public Response<UUID> enterGameWithCode(String gameCode) {
         try {
-            GameInstance gameInstance = gameCodeToGameInstance.get(gameCode);
-//            if (gameInstance == null)
-//                gameInstance = gameInstanceRepository.findBy
-            if (gameInstance == null || !gameInstance.getStatus().equals("RUNNING"))
+            RunningGameInstance runningGameInstance = gameCodeToRunningGameInstance.get(gameCode);
+            if (runningGameInstance == null || !runningGameInstance.getStatus().equals("RUNNING"))
                 return Response.fail("game code not valid");
             UUID mobileId = UUID.randomUUID();
-            mobileIdToGameInstance.put(mobileId, gameInstance);
+            mobileIdToRunningGameInstance.put(mobileId, runningGameInstance);
             return Response.ok(mobileId);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
@@ -89,15 +91,64 @@ public class GameRunningService {
 
     public Response<GameInstance> addMobileDetails(UUID mobileId, String name) {
         try {
-            GameInstance gameInstance = mobileIdToGameInstance.get(mobileId);
-            if (gameInstance == null || !gameInstance.getStatus().equals("RUNNING"))
+            RunningGameInstance runningGameInstance = mobileIdToRunningGameInstance.get(mobileId);
+            if (runningGameInstance == null || !runningGameInstance.getStatus().equals("RUNNING"))
                 return Response.fail("game code not valid");
             MobilePlayer mobilePlayer = new MobilePlayer(mobileId, name);
-            mobileIdToMobilePlayer.put(mobileId, mobilePlayer);
-            return Response.ok(gameInstance);
+            runningGameInstance.addMobilePlayer(mobilePlayer);
+            return Response.ok(runningGameInstance);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }
     }
+
+    public Response<Collection<MobilePlayer>> getWaitingRoomDetails(UUID runningGameUuid) {
+        try {
+            RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(runningGameUuid);
+            if (runningGameInstance == null)
+                return Response.fail("runningGameUuid not exist");
+            return Response.ok(runningGameInstance.getIdToMobilePlayer().values());
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the exception or handle it appropriately
+            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+        }
+    }
+    public Response<RunningGameInstance> startGame(UUID runningGameUuid) {
+        try {
+            RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(runningGameUuid);
+            if (runningGameInstance == null)
+                return Response.fail("runningGameUuid not exist");
+            updateGameStatus(runningGameInstance, GameStatus.STARTED.toString());
+            return Response.ok(runningGameInstance);
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the exception or handle it appropriately
+            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+        }
+    }
+
+    private void updateGameStatus(RunningGameInstance runningGameInstance, String status){
+        runningGameInstance.setStatus(status);
+        Optional<GameInstance> optGameInstance = gameInstanceRepository.findById(runningGameInstance.getId());
+        if (optGameInstance.isEmpty())
+            throw new IllegalArgumentException("there is no game with this UUID");
+        GameInstance gameInstance = optGameInstance.get();
+        gameInstance.setStatus(status);
+        gameInstanceRepository.save(gameInstance);
+
+    }
+
+
+    public Response<RunningGameInstance> getRunningGame(UUID runningGameUuid) {
+        try {
+            RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(runningGameUuid);
+            if (runningGameInstance == null)
+                return Response.fail("runningGameUuid not exist");
+            return Response.ok(runningGameInstance);
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the exception or handle it appropriately
+            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+        }
+    }
+
 }
