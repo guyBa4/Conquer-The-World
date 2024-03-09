@@ -3,6 +3,7 @@ package Application.APILayer.controllers;
 import Application.APILayer.TokenHandler;
 import Application.Entities.GameInstance;
 import Application.Entities.Question;
+import Application.Entities.User;
 import Application.Repositories.RepositoryFactory;
 import Application.Response;
 import Application.ServiceLayer.GameService;
@@ -13,6 +14,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "game")
@@ -56,6 +60,30 @@ public class GameController {
             return ResponseEntity.ok(responseJson.toString());
         } catch (JSONException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing JSON");
+        }
+    }
+
+    @GetMapping(path = "/get_all_games")
+    @ResponseBody
+    public Response<Collection<GameInstance>> GetGamesInstances() {
+        try {
+            return gameService.getAllGameInstance();
+        } catch (IllegalArgumentException e) {
+            return Response.fail(403, "AUTHORIZATION FAILED");
+        } catch (JSONException e) {
+            return Response.fail(500, "Internal Server Error");
+        }
+    }
+
+    @GetMapping(path = "/get_game/id={id}")
+    @ResponseBody
+    public Response<GameInstance> GetGamesInstances(@PathVariable (name= "id") UUID id) {
+        try {
+            return gameService.getGameInstance(id);
+        } catch (IllegalArgumentException e) {
+            return Response.fail(403, "AUTHORIZATION FAILED");
+        } catch (JSONException e) {
+            return Response.fail(500, "Internal Server Error");
         }
     }
 

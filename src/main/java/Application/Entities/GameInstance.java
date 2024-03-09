@@ -30,14 +30,14 @@ public class GameInstance {
     //    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private String status;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "time_created")
-    private Date timeCreated;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "time_last_updated")
-    private Date timeLastUpdated;
+//
+//    @Temporal(TemporalType.TIMESTAMP)
+//    @Column(name = "time_created")
+//    private Date timeCreated;
+//
+//    @Temporal(TemporalType.TIMESTAMP)
+//    @Column(name = "time_last_updated")
+//    private Date timeLastUpdated;
 
     @Column(name = "number_of_groups")
     private int numberOfGroups;
@@ -67,14 +67,14 @@ public class GameInstance {
     public GameInstance(){
     }
 
-    public GameInstance(UUID id, User host, Questionnaire questionnaire, Map map, String status, Date timeCreated, Date timeLastUpdated, int numberOfGroups, String name, String description, String groupAssignmentProtocol, int gameTime, boolean shared, int questionTimeLimit) {
+    public GameInstance(UUID id, User host, Questionnaire questionnaire, Map map, String status, int numberOfGroups, String name, String description, String groupAssignmentProtocol, int gameTime, boolean shared, int questionTimeLimit) {
         this.id = id;
         this.host = host;
         this.questionnaire = questionnaire;
         this.map = map;
         this.status = status;
-        this.timeCreated = timeCreated;
-        this.timeLastUpdated = timeLastUpdated;
+//        this.timeCreated = timeCreated;
+//        this.timeLastUpdated = timeLastUpdated;
         this.numberOfGroups = numberOfGroups;
         this.name = name;
         this.description = description;
@@ -90,8 +90,8 @@ public class GameInstance {
         this.questionnaire = original.questionnaire;
         this.map = original.map;
         this.status = original.status;
-        this.timeCreated = original.timeCreated;
-        this.timeLastUpdated = original.timeLastUpdated;
+//        this.timeCreated = original.timeCreated;
+//        this.timeLastUpdated = original.timeLastUpdated;
         this.numberOfGroups = original.numberOfGroups;
         this.name = original.name;
         this.description = original.description;
@@ -159,21 +159,21 @@ public class GameInstance {
         this.status = status;
     }
 
-    public Date getTimeCreated() {
-        return timeCreated;
-    }
-
-    public void setTimeCreated(Date timeCreated) {
-        this.timeCreated = timeCreated;
-    }
-
-    public Date getTimeLastUpdated() {
-        return timeLastUpdated;
-    }
-
-    public void setTimeLastUpdated(Date timeLastUpdated) {
-        this.timeLastUpdated = timeLastUpdated;
-    }
+//    public Date getTimeCreated() {
+//        return timeCreated;
+//    }
+//
+//    public void setTimeCreated(Date timeCreated) {
+//        this.timeCreated = timeCreated;
+//    }
+//
+//    public Date getTimeLastUpdated() {
+//        return timeLastUpdated;
+//    }
+//
+//    public void setTimeLastUpdated(Date timeLastUpdated) {
+//        this.timeLastUpdated = timeLastUpdated;
+//    }
 
     public int getNumberOfGroups() {
         return numberOfGroups;

@@ -2,6 +2,7 @@ package Application.Entities;
 
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -12,14 +13,16 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.UUID) // or GenerationType.IDENTITY
     @Column(name = "Id", nullable = false, unique = true)
     private UUID Id;
-//    @Column
-//    private String Type;
+    @Column
+    private String Type;
     @Column
     private String question;
     @Column
     private String answer;
     @Column
     private Integer difficulty;
+
+//    private List<String> tags;
 
 
     public Question(){
