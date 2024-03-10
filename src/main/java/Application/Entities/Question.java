@@ -35,7 +35,7 @@ public class Question {
     }
 
 
-    public Question(UUID id, boolean multipleChoice, String question, String type, String[] incorrectAnswers, Integer difficulty, String[] tags) {
+    public Question(UUID id, boolean multipleChoice, String question, String answer, String[] incorrectAnswers, Integer difficulty, String[] tags) {
         Id = id;
         this.multipleChoice = multipleChoice;
         this.question = question;
