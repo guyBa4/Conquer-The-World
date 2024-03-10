@@ -136,12 +136,12 @@ public class GameRunningService {
 
     private void updateGameStatus(RunningGameInstance runningGameInstance, String status){
         runningGameInstance.setStatus(status);
-        Optional<GameInstance> optGameInstance = gameInstanceRepository.findById(runningGameInstance.getId());
-        if (optGameInstance.isEmpty())
-            throw new IllegalArgumentException("there is no game with this UUID");
-        GameInstance gameInstance = optGameInstance.get();
-        gameInstance.setStatus(status);
-        gameInstanceRepository.save(gameInstance);
+//        Optional<GameInstance> optGameInstance = gameInstanceRepository.findById(runningGameInstance.getId());
+//        if (optGameInstance.isEmpty())
+//            throw new IllegalArgumentException("there is no game with this UUID");
+//        GameInstance gameInstance = optGameInstance.get();
+//        gameInstance.setStatus(status);
+//        gameInstanceRepository.save(gameInstance);
 
     }
 
