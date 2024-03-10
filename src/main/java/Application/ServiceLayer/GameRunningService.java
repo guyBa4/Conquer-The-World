@@ -10,7 +10,8 @@ import Application.Repositories.RepositoryFactory;
 import Application.Repositories.UserRepository;
 import Application.Response;
 import org.springframework.stereotype.Service;
-
+import java.util.logging.*;
+import static java.util.logging.Logger.getLogger;
 import java.util.*;
 
 @Service
@@ -24,7 +25,7 @@ public class GameRunningService {
     private Map<String, RunningGameInstance> gameCodeToRunningGameInstance;
     private Map<UUID, RunningGameInstance> mobileIdToRunningGameInstance;
     private Map<UUID, RunningGameInstance> runningGamesIdToRunningGameInstance;
-
+    private static Logger LOG;
 
 
 
@@ -45,6 +46,7 @@ public class GameRunningService {
         mobileIdToRunningGameInstance = new HashMap<>();
         gameCodeToRunningGameInstance = new HashMap<>();
         runningGamesIdToRunningGameInstance = new HashMap<>();
+        LOG = getLogger(this.getClass().toString());
 //        for (GameInstance gameInstance : gameInstanceRepository.findAll()){
 //            gameCodeToRunningGameInstance.put(gameInstance.getGameCode(), gameInstance);
 //        }
@@ -81,7 +83,10 @@ public class GameRunningService {
             if (runningGameInstance == null || !runningGameInstance.getStatus().equals("WAITING_ROOM"))
                 return Response.fail("game code not valid");
             UUID mobileId = UUID.randomUUID();
+
             mobileIdToRunningGameInstance.put(mobileId, runningGameInstance);
+            LOG.info("mobile enter code : " + mobileId);
+            LOG.info("for running game instance with id : " + runningGameInstance.getRunningId() + " : " + runningGameInstance.getName());
             return Response.ok(mobileId);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
@@ -96,6 +101,8 @@ public class GameRunningService {
                 return Response.fail("game code not valid");
             MobilePlayer mobilePlayer = new MobilePlayer(mobileId, name);
             runningGameInstance.addMobilePlayer(mobilePlayer);
+            LOG.info("mobile enter name : " + mobilePlayer.getName());
+            LOG.info("for running game instance with id : " + runningGameInstance.getRunningId() + " : " + runningGameInstance.getName());
             return Response.ok(runningGameInstance);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
