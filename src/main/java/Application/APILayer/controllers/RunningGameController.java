@@ -2,7 +2,6 @@ package Application.APILayer.controllers;
 
 import Application.APILayer.TokenHandler;
 import Application.Entities.GameInstance;
-import Application.Entities.MobilePlayer;
 import Application.Entities.Question;
 import Application.Entities.RunningGameInstance;
 import Application.Repositories.RepositoryFactory;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -115,13 +113,14 @@ public class RunningGameController {
         }
     }
 
-    @GetMapping(path = "/get_running_game/{runningGameid}")
-    public Response<RunningGameInstance> getRunningGame(@PathVariable (name= "runningGameUuid") String runningGameId,
+    @GetMapping(path = "/get_running_game/{gameId}")
+    public Response<RunningGameInstance> getRunningGame(@PathVariable (name= "gameId") String gameId,
                                                                     @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
-            UUID runningGameUuid = UUID.fromString(runningGameId);
-            LOG.info("Request received by /get_running_game endpoint:\n " + runningGameId);
-            return gameRunningService.getRunningGame(runningGameUuid);
+            UUID runningGameUuid = UUID.fromString(gameId);
+            UUID mobileId = UUID.fromString(authorizationHeader);
+            LOG.info("Request received by /get_running_game endpoint:\n " + gameId);
+            return gameRunningService.getRunningGame(runningGameUuid, mobileId);
         } catch (IllegalArgumentException e) {
             return Response.fail(403, "AUTHORIZATION FAILED");
         } catch (JSONException e) {
@@ -147,10 +146,25 @@ public class RunningGameController {
         try {
             JSONObject jsonObj = new JSONObject(inputJson);
             LOG.info("Request received by /open_waiting_room endpoint:\n" + jsonObj);
-            UUID runningGameid = UUID.fromString(jsonObj.getString("gameId"));
+            UUID runningGameId = UUID.fromString(jsonObj.getString("gameId"));
             UUID questionUuid = UUID.fromString(jsonObj.getString("questionId"));
+            String tileId = jsonObj.getString("tileId");
+            UUID userId = UUID.fromString(authorizationHeader);
             String answer = jsonObj.getString("answer");
-            return gameRunningService.checkAnswer(runningGameid, questionUuid, answer);
+            return gameRunningService.checkAnswer(runningGameId, tileId, userId, questionUuid, answer);
+        } catch (IllegalArgumentException e) {
+            return Response.fail(403, "AUTHORIZATION FAILED");
+        } catch (JSONException e) {
+            return Response.fail(500, "Internal Server Error");
+        }
+    }
+    
+    @GetMapping(path = "/refresh_map/{gameId}")
+    public Response<RunningGameInstance> refreshMap(@PathVariable(name = "gameId") String gameId, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        try {
+            UUID runningGameId = UUID.fromString(gameId);
+            UUID mobileId = UUID.fromString(authorizationHeader);
+            return gameRunningService.getRunningGame(runningGameId, mobileId);
         } catch (IllegalArgumentException e) {
             return Response.fail(403, "AUTHORIZATION FAILED");
         } catch (JSONException e) {

@@ -5,6 +5,7 @@ import java.util.UUID;
 public class MobilePlayer {
     private UUID uuid;
     private String name;
+    private int group;
 
     public MobilePlayer(UUID uuid, String name) {
         this.uuid = uuid;
@@ -25,5 +26,13 @@ public class MobilePlayer {
 
     public void setName(String name) {
         this.name = name;
+    }
+    
+    public int getGroup() {
+        return group;
+    }
+    
+    public void setGroup(int group) {
+        this.group = group;
     }
 }

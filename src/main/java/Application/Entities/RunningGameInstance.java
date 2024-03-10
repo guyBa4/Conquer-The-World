@@ -77,19 +77,25 @@ public class RunningGameInstance extends GameInstance{
         mobilePlayers.put(id, mobilePlayer);
     }
 
-    public void getMobilePlayers(MobilePlayer mobilePlayer){
-        UUID id = mobilePlayer.getUuid();
-        mobilePlayers.put(id, mobilePlayer);
-    }
-
     public Question getQuestion(int difficulty) {
         List<Question> questionList = this.getQuestionnaire().getQuestions().stream().filter((question) -> (question.getDifficulty() == difficulty)).toList();
         int i = (int) (Math.random()*questionList.size());
         return questionList.get(i);
     }
 
-    public boolean checkAnswer(UUID questionId, String answer) {
+    public boolean checkAnswer(String tileId, int group, UUID questionId, String answer) {
         List<Question> questionList = this.getQuestionnaire().getQuestions().stream().filter((question) -> (question.getId().equals(questionId))).toList();
-        return questionList.get(0).getAnswer().equals(answer);
+        if (questionList.get(0).getAnswer().equals(answer)) {
+            Tile tile = tiles.get(tileId);
+            if (tile == null)
+                throw new IllegalArgumentException("Failed to find tile.");
+            tile.setControllingGroup(group);
+            return true;
+        }
+        return false;
+    }
+    
+    public MobilePlayer getPlayer(UUID userId) {
+        return mobilePlayers.get(userId);
     }
 }

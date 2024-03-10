@@ -146,11 +146,17 @@ public class GameRunningService {
     }
 
 
-    public Response<RunningGameInstance> getRunningGame(UUID runningGameUuid) {
+    public Response<RunningGameInstance> getRunningGame(UUID gameId, UUID userId) {
         try {
-            RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(runningGameUuid);
-            if (runningGameInstance == null)
-                return Response.fail("runningGameUuid not exist");
+            RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(gameId);
+            if (runningGameInstance == null) {
+                LOG.warning("Game ID does not exist");
+                return Response.fail("Game ID does not exist");
+            }
+            if (runningGameInstance.getHost().getId().equals(userId) || runningGameInstance.getMobilePlayers().containsKey(userId)) {
+                LOG.warning("User ID not of host or registered player");
+                return Response.fail("Unauthorized request");
+            }
             return Response.ok(runningGameInstance);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
@@ -186,16 +192,22 @@ public class GameRunningService {
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }
     }
-    public Response<Boolean> checkAnswer( UUID runningGameid, UUID questionId, String answer) {
+    public Response<Boolean> checkAnswer( UUID gameId, String tileId, UUID userId, UUID questionId, String answer) {
         try {
-            RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(runningGameid);
-            if (runningGameInstance == null)
-                return Response.fail("runningGameUuid not exist");
-            return Response.ok( runningGameInstance.checkAnswer(questionId, answer));
-        } catch (IllegalArgumentException e) {
-            return Response.fail(403, "AUTHORIZATION FAILED");
+            RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(gameId);
+            if (runningGameInstance == null) {
+                LOG.severe("Did not find running game with ID: " + gameId.toString());
+                return Response.fail("Game ID does not exist");
+            }
+            MobilePlayer player = runningGameInstance.getPlayer(userId);
+            if (player == null) {
+                LOG.severe("Did not find user with ID: " + userId.toString());
+                return Response.fail("Did not find user by ID");
+            }
+            return Response.ok(runningGameInstance.checkAnswer(tileId, player.getGroup(), questionId, answer));
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
+            LOG.severe("Exception caught: " + e.getMessage());
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }
     }
