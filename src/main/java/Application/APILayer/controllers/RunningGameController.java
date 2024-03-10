@@ -88,7 +88,7 @@ public class RunningGameController {
                                                                     @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             UUID gameUuid = UUID.fromString(gameId);
-            LOG.info("Request received by /get_waiting_room endpoint:\n{'gameId': " + gameId + "}");
+//            LOG.info("Request received by /get_waiting_room endpoint:\n{'gameId': " + gameId + "}");
             return gameRunningService.getWaitingRoomDetails(gameUuid);
         } catch (IllegalArgumentException e) {
             return Response.fail(403, "AUTHORIZATION FAILED");
@@ -102,7 +102,7 @@ public class RunningGameController {
     public Response<RunningGameInstance> startGame(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             JSONObject jsonObj = new JSONObject(inputJson);
-            LOG.info("Request received by /start_game endpoint:\n " + jsonObj);
+//            LOG.info("Request received by /start_game endpoint:\n " + jsonObj);
             UUID gameId = UUID.fromString(jsonObj.getString("gameId"));
             return gameRunningService.startGame(gameId);
         } catch (IllegalArgumentException e) {
@@ -145,7 +145,7 @@ public class RunningGameController {
     public Response<Boolean> validateAnswer(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             JSONObject jsonObj = new JSONObject(inputJson);
-            LOG.info("Request received by /open_waiting_room endpoint:\n" + jsonObj);
+            LOG.info("Request received by /validate_answer endpoint:\n" + jsonObj);
             UUID runningGameId = UUID.fromString(jsonObj.getString("gameId"));
             UUID questionUuid = UUID.fromString(jsonObj.getString("questionId"));
             String tileId = jsonObj.getString("tileId");
