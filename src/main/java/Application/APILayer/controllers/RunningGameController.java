@@ -66,7 +66,7 @@ public class RunningGameController {
         try {
             JSONObject jsonObj = new JSONObject(inputJson);
             String name = jsonObj.getString("name");
-            UUID mobileId = UUID.fromString(jsonObj.getString("mobileId"));
+            UUID mobileId = UUID.fromString(jsonObj.getString("authorizationHeader"));
             return gameRunningService.addMobileDetails(mobileId, name);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
