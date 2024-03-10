@@ -119,7 +119,7 @@ public class RunningGameController {
     }
 // hi
 
-    @GetMapping(path = "/get_running_game/{difficulty}&{runningGameid}")
+    @GetMapping(path = "/generate_question/{difficulty}&{runningGameid}")
     public Response<Question> getQuestion(@PathVariable (name= "difficulty") int difficulty, @PathVariable (name= "runningGameid") String runningGameid,
                                           @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
