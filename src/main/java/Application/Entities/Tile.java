@@ -1,19 +1,60 @@
 package Application.Entities;
 
-import jakarta.persistence.*;
+import Application.Enums.TileType;
 
 import java.util.UUID;
 
-@Entity
-@Table(name = "tiles")
 public class Tile {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID) // or GenerationType.IDENTITY
-    @Column(name = "Id", nullable = false, unique = true)
-    private UUID Id;
-
-
+    
+    private String id;
+    private TileType tileType;
+    private int controllingGroup;   // Set to be the group number of the occupying group, 0 if not controlled and -1 if sea tile or neutral tile
+    private int difficultyLevel;
+    
     public Tile(){
 
+    }
+
+    public Tile(String id, TileType tileType, int controllingGroup, int difficultyLevel) {
+        this.id = id;
+        this.tileType = tileType;
+        this.controllingGroup = controllingGroup;
+        this.difficultyLevel = difficultyLevel;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public Tile setId(String id) {
+        this.id = id;
+        return this;
+    }
+
+    public TileType getTileType() {
+        return tileType;
+    }
+
+    public Tile setTileType(TileType tileType) {
+        this.tileType = tileType;
+        return this;
+    }
+
+    public int getControllingGroup() {
+        return controllingGroup;
+    }
+
+    public Tile setControllingGroup(int controllingGroup) {
+        this.controllingGroup = controllingGroup;
+        return this;
+    }
+
+    public int getDifficultyLevel() {
+        return difficultyLevel;
+    }
+
+    public Tile setDifficultyLevel(int difficultyLevel) {
+        this.difficultyLevel = difficultyLevel;
+        return this;
     }
 }

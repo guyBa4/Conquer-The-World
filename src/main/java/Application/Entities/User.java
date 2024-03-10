@@ -8,16 +8,16 @@ import java.util.UUID;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID) // or GenerationType.IDENTITY
-    @Column(name = "user_id", nullable = false, unique = true)
-    private UUID Id;
+    @Column(name = "id", nullable = false, unique = true)
+    private UUID id;
 
-    @Column
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column
+    @Column(name = "password")
     private String password;
 
-    @Column
+    @Column(name = "permissions")
     private String permissions;
     public User(){
 
@@ -31,11 +31,11 @@ public class User {
 
 
     public UUID getId() {
-        return Id;
+        return id;
     }
 
     public User setId(UUID id) {
-        Id = id;
+        this.id = id;
         return this;
     }
 
@@ -66,7 +66,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "Id=" + Id +
+                "Id=" + id +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 ", permissions='" + permissions + '\'' +
