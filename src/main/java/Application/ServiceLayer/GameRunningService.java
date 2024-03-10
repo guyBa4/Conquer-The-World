@@ -3,6 +3,7 @@ package Application.ServiceLayer;
 import Application.APILayer.JsonToInstance;
 import Application.Entities.GameInstance;
 import Application.Entities.MobilePlayer;
+import Application.Entities.Question;
 import Application.Entities.RunningGameInstance;
 import Application.Enums.GameStatus;
 import Application.Repositories.GameInstanceRepository;
@@ -83,7 +84,6 @@ public class GameRunningService {
             if (runningGameInstance == null || !runningGameInstance.getStatus().equals("WAITING_ROOM"))
                 return Response.fail("game code not valid");
             UUID mobileId = UUID.randomUUID();
-
             mobileIdToRunningGameInstance.put(mobileId, runningGameInstance);
             LOG.info("mobile enter code : " + mobileId);
             LOG.info("for running game instance with id : " + runningGameInstance.getRunningId() + " : " + runningGameInstance.getName());
@@ -171,5 +171,31 @@ public class GameRunningService {
 
     public void setRunningGamesIdToRunningGameInstance(Map<UUID, RunningGameInstance> runningGamesIdToRunningGameInstance) {
         this.runningGamesIdToRunningGameInstance = runningGamesIdToRunningGameInstance;
+    }
+
+    public Response<Question> getQuestion(int difficulty, String runningGameid) {
+        try {
+            UUID runningGameUuid = UUID.fromString(runningGameid);
+            RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(runningGameUuid);
+            if (runningGameInstance == null)
+                return Response.fail("runningGameUuid not exist");
+            Question question = runningGameInstance.getQuestion(difficulty);
+            return Response.ok(question);
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the exception or handle it appropriately
+            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+        }
+    }
+    public Response<Boolean> checkAnswer(UUID questionId, String answer, String runningGameid) {
+        try {
+            UUID runningGameUuid = UUID.fromString(runningGameid);
+            RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(runningGameUuid);
+            if (runningGameInstance == null)
+                return Response.fail("runningGameUuid not exist");
+            return Response.ok( runningGameInstance.checkAnswer(questionId, answer));
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the exception or handle it appropriately
+            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+        }
     }
 }

@@ -17,7 +17,7 @@ public class Question {
     @Column
     private String question;
     @Column
-    private String Type;
+    private String answer;
 //    @Column
 //    private String answer;
     @Transient
@@ -39,7 +39,7 @@ public class Question {
         Id = id;
         this.multipleChoice = multipleChoice;
         this.question = question;
-        Type = type;
+        this.answer = answer;
         this.incorrectAnswers = incorrectAnswers;
         this.difficulty = difficulty;
         this.tags = tags;
@@ -69,12 +69,12 @@ public class Question {
         this.question = question;
     }
 
-    public String getType() {
-        return Type;
+    public String getAnswer() {
+        return answer;
     }
 
-    public void setType(String type) {
-        Type = type;
+    public void setAnswer(String answer) {
+        answer = answer;
     }
 
     public String[] getIncorrectAnswers() {

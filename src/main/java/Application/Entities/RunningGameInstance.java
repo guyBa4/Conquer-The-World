@@ -16,7 +16,8 @@ public class RunningGameInstance extends GameInstance{
     public RunningGameInstance(GameInstance gameInstance) {
         super(gameInstance); //copy contractor
         runningId = UUID.randomUUID();
-        this.code = String.valueOf(Math.round(Math.random()*1000000));
+//        this.code = String.valueOf(Math.round(Math.random()*1000000));
+        this.code = "666666";
         this.idTomobilePlayer = new HashMap<>();
         this.tiles = new HashMap<>();
     }
@@ -35,7 +36,6 @@ public class RunningGameInstance extends GameInstance{
     public void setIdToMobilePlayer(Map<UUID, MobilePlayer> idTomobilePlayer) {
         this.idTomobilePlayer = idTomobilePlayer;
     }
-
 
     public String getCode() {
         return code;
@@ -57,8 +57,20 @@ public class RunningGameInstance extends GameInstance{
         UUID id = mobilePlayer.getUuid();
         idTomobilePlayer.put(id, mobilePlayer);
     }
+
     public void getMobilePlayers(MobilePlayer mobilePlayer){
         UUID id = mobilePlayer.getUuid();
         idTomobilePlayer.put(id, mobilePlayer);
+    }
+
+    public Question getQuestion(int difficulty) {
+        List<Question> questionList = this.getQuestionnaire().getQuestions().stream().filter((question) -> (question.getDifficulty() == difficulty)).toList();
+        int i = (int) (Math.random()*questionList.size());
+        return questionList.get(i);
+    }
+
+    public boolean checkAnswer(UUID questionId, String answer) {
+        List<Question> questionList = this.getQuestionnaire().getQuestions().stream().filter((question) -> (question.getId() == questionId)).toList();
+        return questionList.get(0).getAnswer().equals(answer);
     }
 }

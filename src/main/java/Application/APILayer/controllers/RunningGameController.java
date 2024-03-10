@@ -117,4 +117,18 @@ public class RunningGameController {
         }
     }
 
+
+    @GetMapping(path = "/get_running_game/{difficulty}&{runningGameid}")
+    public Response<RunningGameInstance> getQuestion(@PathVariable (name= "difficulty") int difficulty,@PathVariable (name= "runningGameid") String runningGameid,
+                                                        @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        try {
+            return gameRunningService.getQuestion(difficulty, runningGameid);
+        } catch (IllegalArgumentException e) {
+            return Response.fail(403, "AUTHORIZATION FAILED");
+        } catch (JSONException e) {
+            return Response.fail(500, "Internal Server Error");
+        }
+    }
+
+
 }
