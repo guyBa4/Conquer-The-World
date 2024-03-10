@@ -81,7 +81,7 @@ public class GameRunningService {
     public Response<UUID> enterGameWithCode(String gameCode) {
         try {
             RunningGameInstance runningGameInstance = gameCodeToRunningGameInstance.get(gameCode);
-            if (runningGameInstance == null || !runningGameInstance.getStatus().equals("WAITING_ROOM"))
+            if (runningGameInstance == null || !(runningGameInstance.getStatus().equals(GameStatus.WAITING_ROOM.toString()) || runningGameInstance.getStatus().equals(GameStatus.STARTED.toString())))
                 return Response.fail("game code not valid");
             UUID mobileId = UUID.randomUUID();
             mobileIdToRunningGameInstance.put(mobileId, runningGameInstance);
@@ -97,7 +97,7 @@ public class GameRunningService {
     public Response<GameInstance> addMobileDetails(UUID mobileId, String name) {
         try {
             RunningGameInstance runningGameInstance = mobileIdToRunningGameInstance.get(mobileId);
-            if (runningGameInstance == null || !runningGameInstance.getStatus().equals("WAITING_ROOM"))
+            if (runningGameInstance == null || !(runningGameInstance.getStatus().equals(GameStatus.WAITING_ROOM.toString()) || runningGameInstance.getStatus().equals(GameStatus.STARTED.toString())))
                 return Response.fail("game code not valid");
             MobilePlayer mobilePlayer = new MobilePlayer(mobileId, name);
             runningGameInstance.addMobilePlayer(mobilePlayer);
