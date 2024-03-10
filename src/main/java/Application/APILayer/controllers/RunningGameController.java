@@ -65,8 +65,9 @@ public class RunningGameController {
     public Response<GameInstance> addMobileDetails(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             JSONObject jsonObj = new JSONObject(inputJson);
+            JSONObject jsonAuthorizationHeader = new JSONObject(authorizationHeader);
             String name = jsonObj.getString("name");
-            UUID mobileId = UUID.fromString(jsonObj.getString("authorizationHeader"));
+            UUID mobileId = UUID.fromString(jsonAuthorizationHeader.getString("Authorization"));
             return gameRunningService.addMobileDetails(mobileId, name);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
