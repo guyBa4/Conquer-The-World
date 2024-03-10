@@ -13,13 +13,11 @@ public class RepositoryFactory {
     public final MapRepository mapRepository;
     public final QuestionRepository questionRepository;
     public final QuestionnaireRepository questionnaireRepository;
-    public final TileRepository tileRepository;
 
 
     @Autowired
-    public RepositoryFactory(UserRepository userRepository, GameInstanceRepository gameInstanceRepository, MapRepository mapRepository, QuestionRepository questionRepository, QuestionnaireRepository questionnaireRepository, TileRepository tileRepository){
+    public RepositoryFactory(UserRepository userRepository, GameInstanceRepository gameInstanceRepository, MapRepository mapRepository, QuestionRepository questionRepository, QuestionnaireRepository questionnaireRepository){
         this.gameInstanceRepository = gameInstanceRepository;
-        this.tileRepository = tileRepository;
         this.userRepository = userRepository;
         this.mapRepository = mapRepository;
         this.questionRepository = questionRepository;

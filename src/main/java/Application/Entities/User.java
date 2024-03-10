@@ -8,7 +8,7 @@ import java.util.UUID;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID) // or GenerationType.IDENTITY
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "user_id", nullable = false, unique = true)
     private UUID id;
 
     @Column(name = "name", nullable = false)
