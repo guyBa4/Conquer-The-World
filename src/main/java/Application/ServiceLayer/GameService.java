@@ -57,9 +57,13 @@ public class GameService {
         questionList.add(question5);
         Question question6 = new Question(UUID.randomUUID(), false, "9 - 3 = ?", "6", new String[2], 5, new String[2]);
         questionList.add(question6);
-        Question question7 = new Question(UUID.randomUUID(), false, "1 * 4 = ?", "4", new String[2], 2, new String[2]);
+        Question question7 = new Question(UUID.randomUUID(), false, "9 - 4 = ?", "5", new String[2], 4, new String[2]);
+        questionList.add(question6);
+        Question question8 = new Question(UUID.randomUUID(), false, "10 * 10 = ?", "100", new String[2], 4, new String[2]);
+        questionList.add(question6);
+        Question question9 = new Question(UUID.randomUUID(), false, "1 * 4 = ?", "4", new String[2], 2, new String[2]);
         questionList.add(question7);
-        Question question8 = new Question(UUID.randomUUID(), false, "5 * 4 = ?", "20", new String[2], 5, new String[2]);
+        Question question10 = new Question(UUID.randomUUID(), false, "5 * 4 = ?", "20", new String[2], 5, new String[2]);
         questionList.add(question8);
         Questionnaire questionnaire = new Questionnaire(UUID.randomUUID(), "math", questionList);
         Map map = new Map(UUID.randomUUID());
