@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
 @Import(Configuration.class)
-public class CtwServerApplication {
+public class CtwServerApplication { // It works!
 
 
 	public static void main(String[] args) {
