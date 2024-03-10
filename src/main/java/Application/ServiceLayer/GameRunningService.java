@@ -110,12 +110,12 @@ public class GameRunningService {
         }
     }
 
-    public Response<Collection<MobilePlayer>> getWaitingRoomDetails(UUID runningGameUuid) {
+    public Response<RunningGameInstance> getWaitingRoomDetails(UUID runningGameUuid) {
         try {
             RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(runningGameUuid);
             if (runningGameInstance == null)
                 return Response.fail("runningGameUuid not exist");
-            return Response.ok(runningGameInstance.getIdToMobilePlayer().values());
+            return Response.ok(runningGameInstance);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
             return Response.fail(500, "Internal Server Error"); // Internal Server Error

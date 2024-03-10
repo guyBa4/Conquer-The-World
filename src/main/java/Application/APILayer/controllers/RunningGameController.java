@@ -3,6 +3,7 @@ package Application.APILayer.controllers;
 import Application.APILayer.TokenHandler;
 import Application.Entities.GameInstance;
 import Application.Entities.MobilePlayer;
+import Application.Entities.Question;
 import Application.Entities.RunningGameInstance;
 import Application.Repositories.RepositoryFactory;
 import Application.Response;
@@ -77,7 +78,7 @@ public class RunningGameController {
     }
 
     @GetMapping(path = "/get_waiting_room/{game_id}")
-    public Response<Collection<MobilePlayer>> getWaitingRoomDetails(@PathVariable (name= "game_id") String gameId,
+    public Response<RunningGameInstance> getWaitingRoomDetails(@PathVariable (name= "game_id") String gameId,
                                                                     @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             UUID gameUuid = UUID.fromString(gameId);
@@ -116,11 +117,11 @@ public class RunningGameController {
             return Response.fail(500, "Internal Server Error");
         }
     }
-
+// hi
 
     @GetMapping(path = "/get_running_game/{difficulty}&{runningGameid}")
-    public Response<RunningGameInstance> getQuestion(@PathVariable (name= "difficulty") int difficulty,@PathVariable (name= "runningGameid") String runningGameid,
-                                                        @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public Response<Question> getQuestion(@PathVariable (name= "difficulty") int difficulty, @PathVariable (name= "runningGameid") String runningGameid,
+                                          @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             return gameRunningService.getQuestion(difficulty, runningGameid);
         } catch (IllegalArgumentException e) {
