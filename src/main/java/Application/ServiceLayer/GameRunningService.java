@@ -192,6 +192,8 @@ public class GameRunningService {
             if (runningGameInstance == null)
                 return Response.fail("runningGameUuid not exist");
             return Response.ok( runningGameInstance.checkAnswer(questionId, answer));
+        } catch (IllegalArgumentException e) {
+            return Response.fail(403, "AUTHORIZATION FAILED");
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
             return Response.fail(500, "Internal Server Error"); // Internal Server Error

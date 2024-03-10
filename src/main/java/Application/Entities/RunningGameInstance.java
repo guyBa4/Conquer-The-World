@@ -89,7 +89,7 @@ public class RunningGameInstance extends GameInstance{
     }
 
     public boolean checkAnswer(UUID questionId, String answer) {
-        List<Question> questionList = this.getQuestionnaire().getQuestions().stream().filter((question) -> (question.getId() == questionId)).toList();
+        List<Question> questionList = this.getQuestionnaire().getQuestions().stream().filter((question) -> (question.getId().equals(questionId))).toList();
         return questionList.get(0).getAnswer().equals(answer);
     }
 }
