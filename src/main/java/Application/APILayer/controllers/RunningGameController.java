@@ -43,7 +43,7 @@ public class RunningGameController {
     public Response<RunningGameInstance> OpenWaitingRoom(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             JSONObject jsonObj = new JSONObject(inputJson);
-            LOG.info("Request received by /open_waiting_room endpoint:\n" + jsonObj);
+//            LOG.info("Request received by /open_waiting_room endpoint:\n" + jsonObj);
             UUID gameId = UUID.fromString(jsonObj.getString("gameId"));
             UUID userId = UUID.fromString(jsonObj.getString("userId"));
             return gameRunningService.OpenWaitingRoom(gameId, userId);
@@ -146,6 +146,7 @@ public class RunningGameController {
     public Response<Boolean> validateAnswer(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             JSONObject jsonObj = new JSONObject(inputJson);
+            LOG.info("Request received by /open_waiting_room endpoint:\n" + jsonObj);
             UUID runningGameid = UUID.fromString(jsonObj.getString("gameId"));
             UUID questionUuid = UUID.fromString(jsonObj.getString("questionId"));
             String answer = jsonObj.getString("answer");
