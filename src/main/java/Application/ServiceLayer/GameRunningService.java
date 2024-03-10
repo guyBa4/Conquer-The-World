@@ -186,10 +186,9 @@ public class GameRunningService {
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }
     }
-    public Response<Boolean> checkAnswer(UUID questionId, String answer, String runningGameid) {
+    public Response<Boolean> checkAnswer( UUID runningGameid, UUID questionId, String answer) {
         try {
-            UUID runningGameUuid = UUID.fromString(runningGameid);
-            RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(runningGameUuid);
+            RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(runningGameid);
             if (runningGameInstance == null)
                 return Response.fail("runningGameUuid not exist");
             return Response.ok( runningGameInstance.checkAnswer(questionId, answer));
@@ -198,4 +197,16 @@ public class GameRunningService {
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }
     }
+
+//    public Response<Boolean> validateAnswer(UUID runningGameUuid, UUID questionUuid, String answer) {
+//        try {
+//            RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(runningGameUuid);
+//            if (runningGameInstance == null)
+//                return Response.fail("runningGameUuid not exist");
+//            return Response.ok( runningGameInstance.checkAnswer(questionId, answer));
+//        } catch (Exception e) {
+//            e.printStackTrace(); // Log the exception or handle it appropriately
+//            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+//        }
+//    }
 }

@@ -128,7 +128,6 @@ public class RunningGameController {
             return Response.fail(500, "Internal Server Error");
         }
     }
-// hi
 
     @GetMapping(path = "/generate_question/{difficulty}&{runningGameid}")
     public Response<Question> getQuestion(@PathVariable (name= "difficulty") int difficulty, @PathVariable (name= "runningGameid") String runningGameId,
@@ -143,5 +142,19 @@ public class RunningGameController {
         }
     }
 
+    @PostMapping(path = "/validate_answer")
+    public Response<Boolean> validateAnswer(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        try {
+            JSONObject jsonObj = new JSONObject(inputJson);
+            UUID runningGameid = UUID.fromString(jsonObj.getString("gameId"));
+            UUID questionUuid = UUID.fromString(jsonObj.getString("questionId"));
+            String answer = jsonObj.getString("answer");
+            return gameRunningService.checkAnswer(runningGameid, questionUuid, answer);
+        } catch (IllegalArgumentException e) {
+            return Response.fail(403, "AUTHORIZATION FAILED");
+        } catch (JSONException e) {
+            return Response.fail(500, "Internal Server Error");
+        }
+    }
 
 }
