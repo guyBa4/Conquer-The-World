@@ -73,7 +73,7 @@ public class RunningGameController {
     public Response<GameInstance> addMobileDetails(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             JSONObject jsonObj = new JSONObject(inputJson);
-            LOG.info("Request received by /enter_player_details endpoint:\n" + jsonObj);
+//            LOG.info("Request received by /enter_player_details endpoint:\n" + jsonObj);
 //            JSONObject jsonAuthorizationHeader = new JSONObject(authorizationHeader);
             String name = jsonObj.getString("name");
             UUID mobileId = UUID.fromString(authorizationHeader);
