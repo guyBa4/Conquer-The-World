@@ -3,9 +3,11 @@ package Application.Entities;
 import Application.Enums.GameStatus;
 import Application.Enums.GroupAssignmentProtocol;
 import Application.Enums.TileType;
+import static java.util.logging.Logger.getLogger;
 
 import java.util.*;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class RunningGameInstance extends GameInstance{
 
@@ -14,10 +16,12 @@ public class RunningGameInstance extends GameInstance{
     private Map<UUID, MobilePlayer> mobilePlayers;
     private String code;
     private Map<String, Tile> tiles;
+    private static Logger LOG;
 
     public RunningGameInstance(GameInstance gameInstance) {
         super(gameInstance); //copy contractor
         runningId = UUID.randomUUID();
+        LOG = getLogger(this.getClass().toString());
 //        this.code = String.valueOf(Math.round(Math.random()*1000000));
         this.code = "666666";
         this.mobilePlayers = new HashMap<>();
@@ -78,6 +82,7 @@ public class RunningGameInstance extends GameInstance{
         if (getStatus().equals(GameStatus.STARTED.toString())) {
             int group = getSmallestGroup();
             mobilePlayer.setGroup(group);
+            LOG.info("Added mobile player " + mobilePlayer.getName() + " to group " + group);
         }
     }
     
@@ -87,12 +92,8 @@ public class RunningGameInstance extends GameInstance{
             groupSizes.put(i, 0);
         for (MobilePlayer player : getMobilePlayers().values()) {
             int playerGroup = player.getGroup();
-            if (groupSizes.containsKey(playerGroup)) {
-                int groupSize = groupSizes.get(playerGroup);
-                groupSizes.put(playerGroup, groupSize + 1);
-            }
-            else
-                groupSizes.put(playerGroup, 1);
+            int groupSize = groupSizes.get(playerGroup);
+            groupSizes.put(playerGroup, groupSize + 1);
         }
         int smallestGroupSize = Integer.MAX_VALUE;
         int smallestGroup = 0;
