@@ -153,7 +153,7 @@ public class GameRunningService {
                 LOG.warning("Game ID does not exist");
                 return Response.fail("Game ID does not exist");
             }
-            if (runningGameInstance.getHost().getId().equals(userId) || runningGameInstance.getMobilePlayers().containsKey(userId)) {
+            if (!runningGameInstance.getHost().getId().equals(userId) || !runningGameInstance.getMobilePlayers().containsKey(userId)) {
                 LOG.warning("User ID not of host or registered player");
                 return Response.fail("Unauthorized request");
             }
