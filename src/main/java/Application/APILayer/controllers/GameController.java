@@ -78,7 +78,7 @@ public class GameController {
 
     @GetMapping(path = "/get_game/id={id}")
     @ResponseBody
-    public Response<FlatGameInstance> GetGamesInstances(@PathVariable (name= "id") UUID id) {
+    public Response<GameInstance> GetGamesInstances(@PathVariable (name= "id") UUID id) {
         try {
             return gameService.getGameInstance(id);
         } catch (IllegalArgumentException e) {

@@ -71,10 +71,13 @@ public class GameService {
         GameInstance gameInstance = new GameInstance(UUID.randomUUID(), host, questionnaire, map, GameStatus.CREATED.toString(), 2, "first game", "this is a very good game!",
                 GroupAssignmentProtocol.RANDOM.toString(), 1000, true, 50);
         this.gameInstanceMap.put(gameInstance.getId(), gameInstance);
+        System.out.println("game uuid " + gameInstance.getId());
+        System.out.println("host uuid " + host.getId());
 
         RunningGameInstance runningGameInstance = new RunningGameInstance(gameInstance);
         System.out.println("game code " + runningGameInstance.getCode());
         this.gameRunningService.addRunningGame(runningGameInstance);
+        System.out.println("running game uuid " + runningGameInstance.getRunningId());
 
 
 //        gameInstanceRepository.save(gameInstance);
@@ -99,11 +102,12 @@ public class GameService {
         }
     }
 
-    public Response<FlatGameInstance> getGameInstance(UUID id){
-
-        return Response.ok(new FlatGameInstance(gameInstanceMap.get(id)));
+//    public Response<FlatGameInstance> getGameInstance(UUID id){
+//        return Response.ok(new FlatGameInstance(gameInstanceMap.get(id)));
+//    }
+    public Response<GameInstance> getGameInstance(UUID id){
+        return Response.ok(gameInstanceMap.get(id));
     }
-
     public Response<Collection<FlatGameInstance>> getAllGameInstance(){
         Collection<FlatGameInstance> flatGames = new ConcurrentLinkedQueue<>();
         for (GameInstance gameInstance : gameInstanceMap.values())

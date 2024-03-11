@@ -41,7 +41,7 @@ public class RunningGameController {
     public Response<RunningGameInstance> OpenWaitingRoom(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             JSONObject jsonObj = new JSONObject(inputJson);
-//            LOG.info("Request received by /open_waiting_room endpoint:\n" + jsonObj);
+            LOG.info("Request received by /open_waiting_room endpoint:\n" + jsonObj);
             UUID gameId = UUID.fromString(jsonObj.getString("gameId"));
             UUID userId = UUID.fromString(jsonObj.getString("userId"));
             return gameRunningService.OpenWaitingRoom(gameId, userId);
@@ -171,5 +171,22 @@ public class RunningGameController {
             return Response.fail(500, "Internal Server Error");
         }
     }
+
+
+    @PostMapping(path = "/end_game")
+    public Response<Boolean> endGame(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        try {
+            JSONObject jsonObj = new JSONObject(inputJson);
+            LOG.info("Request received by /end_game endpoint:\n" + jsonObj);
+            UUID runningGameId = UUID.fromString(jsonObj.getString("gameId"));
+//            UUID hostId = UUID.fromString(authorizationHeader);
+            return gameRunningService.endRunningGame(runningGameId);
+        } catch (IllegalArgumentException e) {
+            return Response.fail(403, "AUTHORIZATION FAILED");
+        } catch (JSONException e) {
+            return Response.fail(500, "Internal Server Error");
+        }
+    }
+
 
 }
