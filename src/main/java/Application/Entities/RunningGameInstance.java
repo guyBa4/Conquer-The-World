@@ -139,7 +139,7 @@ public class RunningGameInstance extends GameInstance{
         int groupToAssign = 1;
         for (MobilePlayer player : getMobilePlayers().values()) {
             player.setGroup(groupToAssign);
-            groupToAssign = (groupToAssign + 1) % numberOfGroups + 1;
+            groupToAssign = groupToAssign == numberOfGroups ? 1 : groupToAssign + 1;
         }
     }
 }
