@@ -10,16 +10,18 @@ public class Tile {
     private TileType tileType;
     private int controllingGroup;   // Set to be the group number of the occupying group, 0 if not controlled and -1 if sea tile or neutral tile
     private int difficultyLevel;
+    private String dimensions;
     
     public Tile(){
 
     }
 
-    public Tile(String id, TileType tileType, int controllingGroup, int difficultyLevel) {
+    public Tile(String id, TileType tileType, int controllingGroup, int difficultyLevel, String dimensions) {
         this.id = id;
         this.tileType = tileType;
         this.controllingGroup = controllingGroup;
         this.difficultyLevel = difficultyLevel;
+        this.dimensions = dimensions;
     }
 
     public String getId() {
@@ -56,5 +58,13 @@ public class Tile {
     public Tile setDifficultyLevel(int difficultyLevel) {
         this.difficultyLevel = difficultyLevel;
         return this;
+    }
+    
+    public String getDimensions() {
+        return dimensions;
+    }
+    
+    public void setDimensions(String dimensions) {
+        this.dimensions = dimensions;
     }
 }
