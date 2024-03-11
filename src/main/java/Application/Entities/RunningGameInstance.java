@@ -1,11 +1,11 @@
 package Application.Entities;
 
+import Application.Enums.GameStatus;
+import Application.Enums.GroupAssignmentProtocol;
 import Application.Enums.TileType;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.Map;
-import java.util.UUID;
 
 public class RunningGameInstance extends GameInstance{
 
@@ -75,8 +75,34 @@ public class RunningGameInstance extends GameInstance{
     public void addMobilePlayer(MobilePlayer mobilePlayer){
         UUID id = mobilePlayer.getUuid();
         mobilePlayers.put(id, mobilePlayer);
+        if (getStatus().equals(GameStatus.STARTED.toString())) {
+            int group = getSmallestGroup();
+            mobilePlayer.setGroup(group);
+        }
     }
-
+    
+    private int getSmallestGroup() {
+        Map<Integer, Integer> groupSizes = new HashMap<>();
+        for (MobilePlayer player : getMobilePlayers().values()) {
+            int playerGroup = player.getGroup();
+            if (groupSizes.containsKey(playerGroup)) {
+                int groupSize = groupSizes.get(playerGroup);
+                groupSizes.put(playerGroup, groupSize + 1);
+            }
+            else
+                groupSizes.put(playerGroup, 1);
+        }
+        int smallestGroupSize = Integer.MAX_VALUE;
+        int smallestGroup = 0;
+        for (Map.Entry<Integer, Integer> group : groupSizes.entrySet()) {
+            if (group.getValue() < smallestGroupSize) {
+                smallestGroupSize = group.getValue();
+                smallestGroup = group.getKey();
+            }
+        }
+        return smallestGroup;
+    }
+    
     public Question getQuestion(int difficulty) {
         List<Question> questionList = this.getQuestionnaire().getQuestions().stream().filter((question) -> (question.getDifficulty() == difficulty)).toList();
         int i = (int) (Math.random()*questionList.size());
@@ -97,5 +123,20 @@ public class RunningGameInstance extends GameInstance{
     
     public MobilePlayer getPlayer(UUID userId) {
         return mobilePlayers.get(userId);
+    }
+    
+    public void assignGroups() {
+        if (getGroupAssignmentProtocol().equals(GroupAssignmentProtocol.RANDOM.toString())) {
+            assignGroupsRandom();
+        }
+    }
+    
+    private void assignGroupsRandom() {
+        int numberOfGroups = getNumberOfGroups();
+        int groupToAssign = 1;
+        for (MobilePlayer player : getMobilePlayers().values()) {
+            player.setGroup(groupToAssign);
+            groupToAssign = (groupToAssign + 1) % numberOfGroups + 1;
+        }
     }
 }

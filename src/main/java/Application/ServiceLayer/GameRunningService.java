@@ -131,6 +131,7 @@ public class GameRunningService {
             if (runningGameInstance == null)
                 return Response.fail("runningGameUuid not exist");
             updateGameStatus(runningGameInstance, GameStatus.STARTED.toString());
+            runningGameInstance.assignGroups();
             return Response.ok(runningGameInstance);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
