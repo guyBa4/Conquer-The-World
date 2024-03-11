@@ -155,6 +155,10 @@ public class GameRunningService {
             }
             if (!runningGameInstance.getHost().getId().equals(userId) && !runningGameInstance.getMobilePlayers().containsKey(userId)) {
                 LOG.warning("User ID not of host or registered player");
+                LOG.warning("userId = " + userId);
+                for (UUID id : runningGameInstance.getMobilePlayers().keySet()){
+                    LOG.warning(id + " : " + runningGameInstance.getMobilePlayers().get(id));
+                }
                 return Response.fail("Unauthorized request");
             }
             return Response.ok(runningGameInstance);
