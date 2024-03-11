@@ -83,6 +83,8 @@ public class RunningGameInstance extends GameInstance{
     
     private int getSmallestGroup() {
         Map<Integer, Integer> groupSizes = new HashMap<>();
+        for (int i = 1; i <= this.getNumberOfGroups(); i++)
+            groupSizes.put(i, 0);
         for (MobilePlayer player : getMobilePlayers().values()) {
             int playerGroup = player.getGroup();
             if (groupSizes.containsKey(playerGroup)) {
