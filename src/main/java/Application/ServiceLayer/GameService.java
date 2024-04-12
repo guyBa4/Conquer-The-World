@@ -44,41 +44,41 @@ public class GameService {
             gameRunningService.init(repositoryFactory);
 
         // init objects:
-        List<Question> questionList = new LinkedList<>();
-        Question question1 = new Question(UUID.randomUUID(), false, "1 + 5 = ?", "6",new String[2], 3, new String[2]);
-        questionList.add(question1);
-        Question question2 = new Question(UUID.randomUUID(), false, "1 + 6 = ?", "7",new String[2], 1, new String[2]);
-        questionList.add(question2);
-        Question question3 = new Question(UUID.randomUUID(), false, "0 + 0 = ?", "0", new String[2], 5, new String[2]);
-        questionList.add(question3);
-        Question question4 = new Question(UUID.randomUUID(), false, "1 + 10 = ?", "11", new String[2], 2, new String[2]);
-        questionList.add(question4);
-        Question question5 = new Question(UUID.randomUUID(), false, "4 + 5 = ?", "9", new String[2], 2, new String[2]);
-        questionList.add(question5);
-        Question question6 = new Question(UUID.randomUUID(), false, "9 - 3 = ?", "6", new String[2], 5, new String[2]);
-        questionList.add(question6);
-        Question question7 = new Question(UUID.randomUUID(), false, "9 - 4 = ?", "5", new String[2], 4, new String[2]);
-        questionList.add(question6);
-        Question question8 = new Question(UUID.randomUUID(), false, "10 * 10 = ?", "100", new String[2], 4, new String[2]);
-        questionList.add(question6);
-        Question question9 = new Question(UUID.randomUUID(), false, "1 * 4 = ?", "4", new String[2], 2, new String[2]);
-        questionList.add(question7);
-        Question question10 = new Question(UUID.randomUUID(), false, "5 * 4 = ?", "20", new String[2], 5, new String[2]);
-        questionList.add(question8);
-        Questionnaire questionnaire = new Questionnaire(UUID.randomUUID(), "math", questionList);
-        Map map = new Map(UUID.randomUUID());
-        User host = repositoryFactory.userRepository.findAll().get(0);
-        GameInstance gameInstance = new GameInstance(UUID.randomUUID(), host, questionnaire, map, GameStatus.CREATED.toString(), 2, "first game", "this is a very good game!",
-                GroupAssignmentProtocol.RANDOM.toString(), 1000, true, 50);
-        this.gameInstanceMap.put(gameInstance.getId(), gameInstance);
-        System.out.println("game uuid " + gameInstance.getId());
-        System.out.println("host uuid " + host.getId());
-
-        RunningGameInstance runningGameInstance = new RunningGameInstance(gameInstance);
-        System.out.println("game code " + runningGameInstance.getCode());
-        this.gameRunningService.addRunningGame(runningGameInstance);
-        System.out.println("running game uuid " + runningGameInstance.getRunningId());
-
+//        List<Question> questionList = new LinkedList<>();
+//        Question question1 = new Question(UUID.randomUUID(), false, "1 + 5 = ?", "6",new String[2], 3, new String[2]);
+//        questionList.add(question1);
+//        Question question2 = new Question(UUID.randomUUID(), false, "1 + 6 = ?", "7",new String[2], 1, new String[2]);
+//        questionList.add(question2);
+//        Question question3 = new Question(UUID.randomUUID(), false, "0 + 0 = ?", "0", new String[2], 5, new String[2]);
+//        questionList.add(question3);
+//        Question question4 = new Question(UUID.randomUUID(), false, "1 + 10 = ?", "11", new String[2], 2, new String[2]);
+//        questionList.add(question4);
+//        Question question5 = new Question(UUID.randomUUID(), false, "4 + 5 = ?", "9", new String[2], 2, new String[2]);
+//        questionList.add(question5);
+//        Question question6 = new Question(UUID.randomUUID(), false, "9 - 3 = ?", "6", new String[2], 5, new String[2]);
+//        questionList.add(question6);
+//        Question question7 = new Question(UUID.randomUUID(), false, "9 - 4 = ?", "5", new String[2], 4, new String[2]);
+//        questionList.add(question6);
+//        Question question8 = new Question(UUID.randomUUID(), false, "10 * 10 = ?", "100", new String[2], 4, new String[2]);
+//        questionList.add(question6);
+//        Question question9 = new Question(UUID.randomUUID(), false, "1 * 4 = ?", "4", new String[2], 2, new String[2]);
+//        questionList.add(question7);
+//        Question question10 = new Question(UUID.randomUUID(), false, "5 * 4 = ?", "20", new String[2], 5, new String[2]);
+//        questionList.add(question8);
+//        Questionnaire questionnaire = new Questionnaire(UUID.randomUUID(), "math", questionList);
+//        Map map = new Map(UUID.randomUUID());
+//        User host = repositoryFactory.userRepository.findAll().get(0);
+//        GameInstance gameInstance = new GameInstance(UUID.randomUUID(), host, questionnaire, map, GameStatus.CREATED.toString(), 2, "first game", "this is a very good game!",
+//                GroupAssignmentProtocol.RANDOM.toString(), 1000, true, 50);
+//        this.gameInstanceMap.put(gameInstance.getId(), gameInstance);
+//        System.out.println("game uuid " + gameInstance.getId());
+//        System.out.println("host uuid " + host.getId());
+//
+//        RunningGameInstance runningGameInstance = new RunningGameInstance(gameInstance);
+//        System.out.println("game code " + runningGameInstance.getCode());
+//        this.gameRunningService.addRunningGame(runningGameInstance);
+//        System.out.println("running game uuid " + runningGameInstance.getRunningId());
+//
 
 //        gameInstanceRepository.save(gameInstance);
     }

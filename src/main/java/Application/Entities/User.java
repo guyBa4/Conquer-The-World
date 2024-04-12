@@ -17,8 +17,8 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "permissions")
-    private String permissions;
+//    @Column(name = "permissions")
+//    private String permissions;
     public User(){
 
     }
@@ -26,7 +26,7 @@ public class User {
     public User(String name, String password,String permissions){
         this.name = name;
         this.password = password;
-        this.permissions = permissions;
+//        this.permissions = permissions;
     }
 
 
@@ -55,13 +55,13 @@ public class User {
         this.password = password;
     }
 
-    public String getPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(String permissions) {
-        this.permissions = permissions;
-    }
+//    public String getPermissions() {
+//        return permissions;
+//    }
+//
+//    public void setPermissions(String permissions) {
+//        this.permissions = permissions;
+//    }
 
     @Override
     public String toString() {
@@ -69,7 +69,7 @@ public class User {
                 "Id=" + id +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
-                ", permissions='" + permissions + '\'' +
+//                ", permissions='" + permissions + '\'' +
                 '}';
     }
 }

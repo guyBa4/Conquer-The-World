@@ -30,17 +30,16 @@ public class GameInstance {
     @JoinColumn(name = "map_id")
     private Map map;
 
-    //    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private String status;
-//
-//    @Temporal(TemporalType.TIMESTAMP)
-//    @Column(name = "time_created")
-//    private Date timeCreated;
-//
-//    @Temporal(TemporalType.TIMESTAMP)
-//    @Column(name = "time_last_updated")
-//    private Date timeLastUpdated;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "time_created")
+    private Date timeCreated;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "time_last_updated")
+    private Date timeLastUpdated;
 
     @Column(name = "number_of_groups")
     private int numberOfGroups;
@@ -61,7 +60,10 @@ public class GameInstance {
 
     @Column(name = "question_time_limit")
     private int questionTimeLimit;
-
+    //    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "Game_instance_id")
+    @Transient
+    private GameInstance gameInstance;
 
 
 
@@ -74,8 +76,8 @@ public class GameInstance {
         this.questionnaire = questionnaire;
         this.map = map;
         this.status = status;
-//        this.timeCreated = timeCreated;
-//        this.timeLastUpdated = timeLastUpdated;
+        this.timeCreated = timeCreated;
+        this.timeLastUpdated = timeLastUpdated;
         this.numberOfGroups = numberOfGroups;
         this.name = name;
         this.description = description;

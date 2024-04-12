@@ -16,17 +16,15 @@ public class Question {
     private boolean multipleChoice;
     @Column
     private String question;
-    @Column
-    private String answer;
-//    @Column
-//    private String answer;
-    @Transient
-    private String[] incorrectAnswers;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "answer_id")
+    private List<Answer> answers;
+
     @Column
     private Integer difficulty;
-    @Transient
-    private String[] tags;
 
+    //    @Transient
 //    private List<String> tags;
 
 
@@ -35,14 +33,14 @@ public class Question {
     }
 
 
-    public Question(UUID id, boolean multipleChoice, String question, String answer, String[] incorrectAnswers, Integer difficulty, String[] tags) {
+    public Question(UUID id, boolean multipleChoice, String question, List<Answer> answer, String[] incorrectAnswers, Integer difficulty, String[] tags) {
         Id = id;
         this.multipleChoice = multipleChoice;
         this.question = question;
-        this.answer = answer;
-        this.incorrectAnswers = incorrectAnswers;
+        this.answers = answer;
+//        this.incorrectAnswers = incorrectAnswers;
         this.difficulty = difficulty;
-        this.tags = tags;
+//        this.tags = tags;
     }
 
     public UUID getId() {
@@ -69,22 +67,36 @@ public class Question {
         this.question = question;
     }
 
-    public String getAnswer() {
-        return answer;
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+    public Answer getAnswer(String answerInput) {
+        for(Answer ans : answers){
+            if (ans.getAnswerText().equals(answerInput))
+                return ans;
+        }
+        return null;
+    }
+    public boolean isAnswerCorrect(String answerInput) {
+        for(Answer ans : answers){
+            if (ans.getAnswerText().equals(answerInput))
+                return ans.isCorrect();
+        }
+        return false;
     }
 
-    public void setAnswer(String answer) {
-        answer = answer;
+    public void setAnswers(String answers) {
+        answers = answers;
     }
 
-    public String[] getIncorrectAnswers() {
-        return incorrectAnswers;
-    }
-
-    public void setIncorrectAnswers(String[] incorrectAnswers) {
-        this.incorrectAnswers = incorrectAnswers;
-    }
-
+//    public String[] getIncorrectAnswers() {
+//        return incorrectAnswers;
+//    }
+//
+//    public void setIncorrectAnswers(String[] incorrectAnswers) {
+//        this.incorrectAnswers = incorrectAnswers;
+//    }
+//
     public Integer getDifficulty() {
         return difficulty;
     }
@@ -93,11 +105,11 @@ public class Question {
         this.difficulty = difficulty;
     }
 
-    public String[] getTags() {
-        return tags;
-    }
-
-    public void setTags(String[] tags) {
-        this.tags = tags;
-    }
+//    public String[] getTags() {
+//        return tags;
+//    }
+//
+//    public void setTags(String[] tags) {
+//        this.tags = tags;
+//    }
 }

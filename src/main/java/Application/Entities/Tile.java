@@ -1,17 +1,32 @@
 package Application.Entities;
 
 import Application.Enums.TileType;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
+@Entity
+@Table(name = "tiles")
 public class Tile {
-    
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", nullable = false, unique = true)
     private String id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tile_type")
     private TileType tileType;
-    private int controllingGroup;   // Set to be the group number of the occupying group, 0 if not controlled and -1 if sea tile or neutral tile
+
+    @Column(name = "controlling_group")
+    private int controllingGroup;
+
+    @Column(name = "difficulty_level")
     private int difficultyLevel;
+
+    @Column(name = "dimensions")
     private String dimensions;
-    
+
     public Tile(){
 
     }

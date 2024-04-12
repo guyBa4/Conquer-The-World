@@ -81,23 +81,23 @@ public class JsonToInstance {
 //        System.out.println("New User: " + newMap());
         return Response.ok(newQuestion);
     }
-
-    public Response<Questionnaire> buildQuestionnaire(JSONObject json) {
-        Questionnaire newQuestionnaire = new Questionnaire();
-        for (String key : json.keySet()) {
-            try {
-                injectFieldFromJson(newQuestionnaire, json, key);
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace(); // Handle the exception as needed
-                return Response.fail("Invalid field: " + key);
-            } catch (Exception e) {
-                e.printStackTrace(); // Handle other exceptions if needed
-                return Response.fail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-            }
-        }
-//        System.out.println("New User: " + newMap());
-        return Response.ok(newQuestionnaire);
-    }
+//
+//    public Response<Questionnaire> buildQuestionnaire(JSONObject json) {
+//        Questionnaire newQuestionnaire = new Questionnaire();
+//        for (String key : json.keySet()) {
+//            try {
+//                injectFieldFromJson(newQuestionnaire, json, key);
+//            } catch (NoSuchFieldException e) {
+//                e.printStackTrace(); // Handle the exception as needed
+//                return Response.fail("Invalid field: " + key);
+//            } catch (Exception e) {
+//                e.printStackTrace(); // Handle other exceptions if needed
+//                return Response.fail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+//            }
+//        }
+////        System.out.println("New User: " + newMap());
+//        return Response.ok(newQuestionnaire);
+//    }
 
     public Response<GameInstance> buildGameInstance(JSONObject json) {
         GameInstance newGameInstance = new GameInstance();

@@ -1,6 +1,7 @@
 package Application.Entities;
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -12,10 +13,13 @@ public class Map {
     @Column(name = "Id", nullable = false, unique = true)
     private UUID id;
 
-    @Transient
+    @Column
     private String name;
-    @Transient
-    String[] startingPositions;
+
+    @ElementCollection
+    @CollectionTable(name = "map_starting_positions", joinColumns = @JoinColumn(name = "map_id"))
+    @Column(name = "starting_position")
+    private List<String> startingPositions;
 
     public Map(){
 
@@ -25,7 +29,7 @@ public class Map {
         this.id = id;
     }
 
-    public Map(UUID id, String name, String[] startingPositions) {
+    public Map(UUID id, String name, List<String> startingPositions) {
         this.id = id;
         this.name = name;
         this.startingPositions = startingPositions;

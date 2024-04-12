@@ -1,9 +1,7 @@
 package Application.APILayer.controllers;
 
 import Application.APILayer.TokenHandler;
-import Application.Entities.GameInstance;
-import Application.Entities.Question;
-import Application.Entities.RunningGameInstance;
+import Application.Entities.*;
 import Application.Repositories.RepositoryFactory;
 import Application.Response;
 import Application.ServiceLayer.GameRunningService;
@@ -13,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -68,7 +67,7 @@ public class RunningGameController {
 
     @PostMapping(path = "/enter_player_details")
     @ResponseBody
-    public Response<GameInstance> addMobileDetails(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public Response<RunningGameInstance> addMobileDetails(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             JSONObject jsonObj = new JSONObject(inputJson);
 //            LOG.info("Request received by /enter_player_details endpoint:\n" + jsonObj);
@@ -129,8 +128,8 @@ public class RunningGameController {
     }
 
     @GetMapping(path = "/generate_question/{difficulty}&{runningGameid}")
-    public Response<Question> getQuestion(@PathVariable (name= "difficulty") int difficulty, @PathVariable (name= "runningGameid") String runningGameId,
-                                          @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public Response<AssignedQuestion> getQuestion(@PathVariable (name= "difficulty") int difficulty, @PathVariable (name= "runningGameid") String runningGameId,
+                                                  @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             LOG.info(String.format("Request received by /generate_question endpoint:\n {'difficulty': %s, 'runningGameId': %s}", difficulty, runningGameId));
             return gameRunningService.getQuestion(difficulty, runningGameId);

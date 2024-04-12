@@ -1,16 +1,16 @@
 package Application.ServiceLayer;
 
 import Application.APILayer.JsonToInstance;
-import Application.Entities.GameInstance;
-import Application.Entities.MobilePlayer;
-import Application.Entities.Question;
-import Application.Entities.RunningGameInstance;
+import Application.Entities.*;
 import Application.Enums.GameStatus;
 import Application.Repositories.GameInstanceRepository;
 import Application.Repositories.RepositoryFactory;
+import Application.Repositories.RunningGameInstanceRepository;
 import Application.Repositories.UserRepository;
 import Application.Response;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 import java.util.logging.*;
 import static java.util.logging.Logger.getLogger;
 import java.util.*;
@@ -98,7 +98,7 @@ public class GameRunningService {
         }
     }
 
-    public Response<GameInstance> addMobileDetails(UUID mobileId, String name) {
+    public Response<RunningGameInstance> addMobileDetails(UUID mobileId, String name) {
         try {
             RunningGameInstance runningGameInstance = mobileIdToRunningGameInstance.get(mobileId);
             if (runningGameInstance == null || !(runningGameInstance.getStatus().equals(GameStatus.WAITING_ROOM.toString()) || runningGameInstance.getStatus().equals(GameStatus.STARTED.toString())))
@@ -153,16 +153,21 @@ public class GameRunningService {
 
     public Response<RunningGameInstance> getRunningGame(UUID gameId, UUID userId) {
         try {
-            RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(gameId);
+            RunningGameInstanceRepository runningGameInstanceRepository = repositoryFactory.runningGameInstanceRepository;
+            RunningGameInstance runningGameInstance = runningGameInstanceRepository.findByRunningIdAndMobilePlayers_uuid(gameId, userId);
+//            RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(gameId);
             if (runningGameInstance == null) {
-                LOG.warning("Game ID does not exist");
-                return Response.fail("Game ID does not exist");
-            }
-            if (!runningGameInstance.getHost().getId().equals(userId) && !runningGameInstance.getMobilePlayers().containsKey(userId)) {
-                LOG.warning("User ID not of host or registered player");
-                LOG.warning("userId = " + userId);
-                for (UUID id : runningGameInstance.getMobilePlayers().keySet()){
-                    LOG.warning(id + " : " + runningGameInstance.getMobilePlayers().get(id));
+                Optional<RunningGameInstance> optionalRunningGameInstance = runningGameInstanceRepository.findById(gameId);
+                if (optionalRunningGameInstance.isEmpty()){
+                    LOG.warning("Game ID does not exist");
+                    return Response.fail("Game ID does not exist");
+                }else{
+                    runningGameInstance = optionalRunningGameInstance.get();
+                    LOG.warning("User ID not of host or registered player");
+                    LOG.warning("userId = " + userId);
+                    for (MobilePlayer mobilePlayer : runningGameInstance.getMobilePlayers()){
+                        LOG.warning(mobilePlayer.toString());
+                    }
                 }
                 return Response.fail("Unauthorized request");
             }
@@ -188,20 +193,20 @@ public class GameRunningService {
         this.runningGamesIdToRunningGameInstance = runningGamesIdToRunningGameInstance;
     }
 
-    public Response<Question> getQuestion(int difficulty, String runningGameid) {
+    public Response<AssignedQuestion> getQuestion(int difficulty, String runningGameid) {
         try {
             UUID runningGameUuid = UUID.fromString(runningGameid);
             RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(runningGameUuid);
             if (runningGameInstance == null)
                 return Response.fail("runningGameUuid not exist");
-            Question question = runningGameInstance.getQuestion(difficulty);
+            AssignedQuestion question = runningGameInstance.getQuestion(difficulty);
             return Response.ok(question);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }
     }
-    public Response<Boolean> checkAnswer( UUID gameId, String tileId, UUID userId, UUID questionId, String answer) {
+    public Response<Boolean> checkAnswer(UUID gameId, String tileId, UUID userId, UUID questionId, String answer) {
         try {
             RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(gameId);
             if (runningGameInstance == null) {
@@ -229,7 +234,7 @@ public class GameRunningService {
             runningGameInstance.setStatus(GameStatus.ENDED.toString());
             runningGamesIdToRunningGameInstance.remove(runningGameId);
             gameCodeToRunningGameInstance.remove(runningGameInstance.getCode());
-            for (MobilePlayer mobilePlayer : runningGameInstance.getMobilePlayers().values()){
+            for (MobilePlayer mobilePlayer : runningGameInstance.getMobilePlayers()){
                 mobileIdToRunningGameInstance.remove(mobilePlayer.getUuid());
             }
             return Response.ok(true);

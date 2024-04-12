@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.UUID;
 
-@Table(name = "questionnaire_questions")
+@Table(name = "AssignedQuestion")
 @Entity
 public class AssignedQuestion {
     @Id
