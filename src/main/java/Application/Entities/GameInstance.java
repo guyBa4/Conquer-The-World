@@ -70,8 +70,7 @@ public class GameInstance {
     public GameInstance(){
     }
 
-    public GameInstance(UUID id, User host, Questionnaire questionnaire, Map map, String status, int numberOfGroups, String name, String description, String groupAssignmentProtocol, int gameTime, boolean shared, int questionTimeLimit) {
-        this.id = id;
+    public GameInstance(User host, Questionnaire questionnaire, Map map, String status, int numberOfGroups, String name, String description, String groupAssignmentProtocol, int gameTime, boolean shared, int questionTimeLimit) {
         this.host = host;
         this.questionnaire = questionnaire;
         this.map = map;

@@ -18,7 +18,16 @@ public class MobilePlayer {
     @Column(name = "group_number")
     private int group;
 
-    public MobilePlayer(){}
+
+    @Column(name = "ready")
+    private boolean ready;
+
+
+
+    public MobilePlayer(){
+        ready = false;
+        group = 0;
+    }
     public MobilePlayer(UUID uuid, String name) {
         this.uuid = uuid;
         this.name = name;
@@ -46,5 +55,13 @@ public class MobilePlayer {
     
     public void setGroup(int group) {
         this.group = group;
+    }
+
+    public boolean isReady() {
+        return ready;
+    }
+
+    public void setReady(boolean ready) {
+        this.ready = ready;
     }
 }

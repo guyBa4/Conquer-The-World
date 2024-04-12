@@ -3,10 +3,7 @@ package Application.ServiceLayer;
 import Application.APILayer.JsonToInstance;
 import Application.Entities.*;
 import Application.Enums.GameStatus;
-import Application.Repositories.GameInstanceRepository;
-import Application.Repositories.RepositoryFactory;
-import Application.Repositories.RunningGameInstanceRepository;
-import Application.Repositories.UserRepository;
+import Application.Repositories.*;
 import Application.Response;
 import org.springframework.stereotype.Service;
 
@@ -22,11 +19,19 @@ public class GameRunningService {
     private static final Object instanceLock = new Object();
     private RepositoryFactory repositoryFactory;
     private GameInstanceRepository gameInstanceRepository;
+    private RunningGameInstanceRepository runningGameInstanceRepository;
+    private MobilePlayerRepository mobilePlayerRepository;
     private UserRepository userRepository;
-    private Map<String, RunningGameInstance> gameCodeToRunningGameInstance;
-    private Map<UUID, RunningGameInstance> mobileIdToRunningGameInstance;
-    private Map<UUID, RunningGameInstance> runningGamesIdToRunningGameInstance;
+//    private Map<String, RunningGameInstance> gameCodeToRunningGameInstance;
+//    private Map<UUID, RunningGameInstance> mobileIdToRunningGameInstance;
+//    private Map<UUID, RunningGameInstance> runningGamesIdToRunningGameInstance;
     private static Logger LOG;
+
+    public boolean isInit() {
+        return isInit;
+    }
+
+    private boolean isInit;
 
 
 
@@ -44,37 +49,42 @@ public class GameRunningService {
         this.repositoryFactory = repositoryFactory;
         jsonToInstance = JsonToInstance.getInstance();
         setRepositories(repositoryFactory);
-        mobileIdToRunningGameInstance = new HashMap<>();
-        gameCodeToRunningGameInstance = new HashMap<>();
-        runningGamesIdToRunningGameInstance = new HashMap<>();
+//        mobileIdToRunningGameInstance = new HashMap<>();
+//        gameCodeToRunningGameInstance = new HashMap<>();
+//        runningGamesIdToRunningGameInstance = new HashMap<>();
         LOG = getLogger(this.getClass().toString());
 //        for (GameInstance gameInstance : gameInstanceRepository.findAll()){
 //            gameCodeToRunningGameInstance.put(gameInstance.getGameCode(), gameInstance);
 //        }
+        isInit = true;
     }
 
     private void setRepositories(RepositoryFactory repositoryFactory) {
         this.gameInstanceRepository = repositoryFactory.gameInstanceRepository;
         this.userRepository = repositoryFactory.userRepository;
+        this.runningGameInstanceRepository = repositoryFactory.runningGameInstanceRepository;
+        this.mobilePlayerRepository = repositoryFactory.mobilePlayerRepository;
     }
 
-    public Response<RunningGameInstance> OpenWaitingRoom(UUID gameId, UUID hostId){
+    public Response<RunningGameInstance> OpenWaitingRoom(UUID gameId, UUID hostId){ // in this function RunningGameInstance is created
         try{
-//            Optional<GameInstance> optGameInstance = gameInstanceRepository.findById(gameId);
-//            if (optGameInstance.isEmpty())
+            Optional<GameInstance> optGameInstance = gameInstanceRepository.findById(gameId);
+            if (optGameInstance.isEmpty())
+                return Response.fail("there is no game with this UUID");
+            GameInstance gameInstance = optGameInstance.get();
+//            if (gameInstance.getStatus() == )
 //                return Response.fail("there is no game with this UUID");
-//            GameInstance gameInstance = optGameInstance.get();
             Response<GameInstance> response = GameService.getInstance().getGameInstance(gameId);
             if(response.isError())
                 return Response.fail(response.getMessage());
-            GameInstance gameInstance = response.getValue();
+//            GameInstance gameInstance = response.getValue();
             if (!gameInstance.getHost().getId().equals(hostId))
                 return Response.fail("wrong host UUID");
             RunningGameInstance runningGameInstance = new RunningGameInstance(gameInstance);
-            gameCodeToRunningGameInstance.put(runningGameInstance.getCode(), runningGameInstance);
-            runningGamesIdToRunningGameInstance.put(runningGameInstance.getRunningId(), runningGameInstance);
+//            gameCodeToRunningGameInstance.put(runningGameInstance.getCode(), runningGameInstance);
+//            runningGamesIdToRunningGameInstance.put(runningGameInstance.getRunningId(), runningGameInstance);
             updateGameStatus(runningGameInstance, GameStatus.WAITING_ROOM.toString());
-//            gameInstanceRepository.save(gameInstance);
+            gameInstanceRepository.save(gameInstance);
             return Response.ok(runningGameInstance);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
@@ -84,27 +94,36 @@ public class GameRunningService {
 
     public Response<UUID> enterGameWithCode(String gameCode) {
         try {
-            RunningGameInstance runningGameInstance = gameCodeToRunningGameInstance.get(gameCode);
-            if (runningGameInstance == null || !(runningGameInstance.getStatus().equals(GameStatus.WAITING_ROOM.toString()) || runningGameInstance.getStatus().equals(GameStatus.STARTED.toString())))
+            List<RunningGameInstance> runningGameInstanceList = runningGameInstanceRepository.findByCode(gameCode);
+            RunningGameInstance runningGameInstance;
+            if (runningGameInstanceList.isEmpty())
                 return Response.fail("game code not valid");
-            UUID mobileId = UUID.randomUUID();
-            mobileIdToRunningGameInstance.put(mobileId, runningGameInstance);
-            LOG.info("mobile enter code : " + mobileId);
+            runningGameInstance = runningGameInstanceList.get(0);
+            MobilePlayer mobilePlayer = new MobilePlayer();
+            runningGameInstance.addMobilePlayer(mobilePlayer);
+            runningGameInstanceRepository.save(runningGameInstance);
+            LOG.info("mobile enter code : " + mobilePlayer.getUuid());
             LOG.info("for running game instance with id : " + runningGameInstance.getRunningId() + " : " + runningGameInstance.getName());
-            return Response.ok(mobileId);
+            return Response.ok(mobilePlayer.getUuid());
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }
     }
 
-    public Response<RunningGameInstance> addMobileDetails(UUID mobileId, String name) {
+    public Response<RunningGameInstance> addMobileDetails(UUID runningGameId,UUID mobileId, String name) {
         try {
-            RunningGameInstance runningGameInstance = mobileIdToRunningGameInstance.get(mobileId);
-            if (runningGameInstance == null || !(runningGameInstance.getStatus().equals(GameStatus.WAITING_ROOM.toString()) || runningGameInstance.getStatus().equals(GameStatus.STARTED.toString())))
-                return Response.fail("game code not valid");
-            MobilePlayer mobilePlayer = new MobilePlayer(mobileId, name);
-            runningGameInstance.addMobilePlayer(mobilePlayer);
+            Optional<RunningGameInstance> optionalRunningGameInstance = runningGameInstanceRepository.findById(runningGameId);
+            RunningGameInstance runningGameInstance;
+            if (optionalRunningGameInstance.isEmpty())
+                return Response.fail("game id not valid");
+            runningGameInstance = optionalRunningGameInstance.get();
+            MobilePlayer mobilePlayer = runningGameInstance.getPlayer(mobileId);
+            if (mobilePlayer == null)
+                return Response.fail("mobile id not valid");
+            mobilePlayer.setName(name);
+            mobilePlayer.setReady(true);
+            runningGameInstanceRepository.save(runningGameInstance);
             LOG.info("mobile enter name : " + mobilePlayer.getName());
             LOG.info("for running game instance with id : " + runningGameInstance.getRunningId() + " : " + runningGameInstance.getName());
             return Response.ok(runningGameInstance);
@@ -114,24 +133,29 @@ public class GameRunningService {
         }
     }
 
-    public Response<RunningGameInstance> getWaitingRoomDetails(UUID runningGameUuid) {
+    public Response<RunningGameInstance> getWaitingRoomDetails(UUID runningGameid) {
         try {
-            RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(runningGameUuid);
-            if (runningGameInstance == null)
-                return Response.fail("runningGameUuid not exist");
+            Optional<RunningGameInstance> optionalRunningGameInstance = runningGameInstanceRepository.findById(runningGameid);
+            RunningGameInstance runningGameInstance;
+            if (optionalRunningGameInstance.isEmpty())
+                return Response.fail("game id not valid");
+            runningGameInstance = optionalRunningGameInstance.get();
             return Response.ok(runningGameInstance);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }
     }
-    public Response<RunningGameInstance> startGame(UUID runningGameUuid) {
+    public Response<RunningGameInstance> startGame(UUID runningGameid) {
         try {
-            RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(runningGameUuid);
-            if (runningGameInstance == null)
-                return Response.fail("runningGameUuid not exist");
+            Optional<RunningGameInstance> optionalRunningGameInstance = runningGameInstanceRepository.findById(runningGameid);
+            RunningGameInstance runningGameInstance;
+            if (optionalRunningGameInstance.isEmpty())
+                return Response.fail("game id not valid");
+            runningGameInstance = optionalRunningGameInstance.get();
             updateGameStatus(runningGameInstance, GameStatus.STARTED.toString());
             runningGameInstance.assignGroups();
+            runningGameInstanceRepository.save(runningGameInstance);
             return Response.ok(runningGameInstance);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
@@ -151,13 +175,12 @@ public class GameRunningService {
     }
 
 
-    public Response<RunningGameInstance> getRunningGame(UUID gameId, UUID userId) {
+    public Response<RunningGameInstance> getRunningGame(UUID runningGameId, UUID userId) {
         try {
-            RunningGameInstanceRepository runningGameInstanceRepository = repositoryFactory.runningGameInstanceRepository;
-            RunningGameInstance runningGameInstance = runningGameInstanceRepository.findByRunningIdAndMobilePlayers_uuid(gameId, userId);
-//            RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(gameId);
-            if (runningGameInstance == null) {
-                Optional<RunningGameInstance> optionalRunningGameInstance = runningGameInstanceRepository.findById(gameId);
+            List<RunningGameInstance> runningGameInstanceList = runningGameInstanceRepository.findByRunningIdAndMobilePlayers_uuid(runningGameId, userId);
+            RunningGameInstance runningGameInstance;
+            if (runningGameInstanceList.isEmpty()) {
+                Optional<RunningGameInstance> optionalRunningGameInstance = runningGameInstanceRepository.findById(runningGameId);
                 if (optionalRunningGameInstance.isEmpty()){
                     LOG.warning("Game ID does not exist");
                     return Response.fail("Game ID does not exist");
@@ -170,35 +193,25 @@ public class GameRunningService {
                     }
                 }
                 return Response.fail("Unauthorized request");
+            }else{
+                runningGameInstance = runningGameInstanceList.get(0);
+                return Response.ok(runningGameInstance);
             }
-            return Response.ok(runningGameInstance);
+
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }
     }
 
-    public void addRunningGame(RunningGameInstance runningGameInstance){
-        this.runningGamesIdToRunningGameInstance.put(runningGameInstance.getRunningId(), runningGameInstance);
-        this.gameCodeToRunningGameInstance.put(runningGameInstance.getCode(), runningGameInstance);
-        runningGameInstance.setStatus(GameStatus.WAITING_ROOM.toString());
-    }
 
-
-    public Map<UUID, RunningGameInstance> getRunningGamesIdToRunningGameInstance() {
-        return runningGamesIdToRunningGameInstance;
-    }
-
-    public void setRunningGamesIdToRunningGameInstance(Map<UUID, RunningGameInstance> runningGamesIdToRunningGameInstance) {
-        this.runningGamesIdToRunningGameInstance = runningGamesIdToRunningGameInstance;
-    }
-
-    public Response<AssignedQuestion> getQuestion(int difficulty, String runningGameid) {
+    public Response<AssignedQuestion> getQuestion(int difficulty, UUID runningGameId) {
         try {
-            UUID runningGameUuid = UUID.fromString(runningGameid);
-            RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(runningGameUuid);
-            if (runningGameInstance == null)
-                return Response.fail("runningGameUuid not exist");
+            Optional<RunningGameInstance> optionalRunningGameInstance = runningGameInstanceRepository.findById(runningGameId);
+            RunningGameInstance runningGameInstance;
+            if (optionalRunningGameInstance.isEmpty())
+                return Response.fail("game id not valid");
+            runningGameInstance = optionalRunningGameInstance.get();
             AssignedQuestion question = runningGameInstance.getQuestion(difficulty);
             return Response.ok(question);
         } catch (Exception e) {
@@ -206,13 +219,13 @@ public class GameRunningService {
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }
     }
-    public Response<Boolean> checkAnswer(UUID gameId, String tileId, UUID userId, UUID questionId, String answer) {
+    public Response<Boolean> checkAnswer(UUID runningGameId, String tileId, UUID userId, UUID questionId, String answer) {
         try {
-            RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(gameId);
-            if (runningGameInstance == null) {
-                LOG.severe("Did not find running game with ID: " + gameId.toString());
-                return Response.fail("Game ID does not exist");
-            }
+            Optional<RunningGameInstance> optionalRunningGameInstance = runningGameInstanceRepository.findById(runningGameId);
+            RunningGameInstance runningGameInstance;
+            if (optionalRunningGameInstance.isEmpty())
+                return Response.fail("game id not valid");
+            runningGameInstance = optionalRunningGameInstance.get();
             MobilePlayer player = runningGameInstance.getPlayer(userId);
             if (player == null) {
                 LOG.severe("Did not find user with ID: " + userId.toString());
@@ -228,15 +241,12 @@ public class GameRunningService {
 
     public Response<Boolean> endRunningGame(UUID runningGameId) {
         try {
-            RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(runningGameId);
-            if (runningGameInstance == null)
-                return Response.fail("runningGameUuid not exist");
-            runningGameInstance.setStatus(GameStatus.ENDED.toString());
-            runningGamesIdToRunningGameInstance.remove(runningGameId);
-            gameCodeToRunningGameInstance.remove(runningGameInstance.getCode());
-            for (MobilePlayer mobilePlayer : runningGameInstance.getMobilePlayers()){
-                mobileIdToRunningGameInstance.remove(mobilePlayer.getUuid());
-            }
+            Optional<RunningGameInstance> optionalRunningGameInstance = runningGameInstanceRepository.findById(runningGameId);
+            RunningGameInstance runningGameInstance;
+            if (optionalRunningGameInstance.isEmpty())
+                return Response.fail("game id not valid");
+            runningGameInstance = optionalRunningGameInstance.get();
+            runningGameInstanceRepository.delete(runningGameInstance);
             return Response.ok(true);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately

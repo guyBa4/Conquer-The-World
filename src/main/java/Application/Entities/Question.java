@@ -17,8 +17,8 @@ public class Question {
     @Column
     private String question;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "answer_id")
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_id")
     private List<Answer> answers;
 
     @Column
@@ -33,14 +33,16 @@ public class Question {
     }
 
 
-    public Question(UUID id, boolean multipleChoice, String question, List<Answer> answer, String[] incorrectAnswers, Integer difficulty, String[] tags) {
-        Id = id;
+    public Question(boolean multipleChoice, String question, List<Answer> answer, Integer difficulty) {
         this.multipleChoice = multipleChoice;
         this.question = question;
         this.answers = answer;
-//        this.incorrectAnswers = incorrectAnswers;
         this.difficulty = difficulty;
-//        this.tags = tags;
+    }
+    public Question(boolean multipleChoice, String question, Integer difficulty) {
+        this.multipleChoice = multipleChoice;
+        this.question = question;
+        this.difficulty = difficulty;
     }
 
     public UUID getId() {
@@ -85,8 +87,8 @@ public class Question {
         return false;
     }
 
-    public void setAnswers(String answers) {
-        answers = answers;
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
     }
 
 //    public String[] getIncorrectAnswers() {

@@ -47,6 +47,7 @@ public class RunningGameInstance {
 
 
     public RunningGameInstance(GameInstance gameInstance) {//copy contractor
+        this.gameInstance = gameInstance;
         runningId = UUID.randomUUID();
         LOG = getLogger(this.getClass().toString());
 //        this.code = String.valueOf(Math.round(Math.random()*1000000));

@@ -19,9 +19,21 @@ public class Answer {
     @Column(name = "correct")
     private boolean correct;
     
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id")
-    private Question question;
+//    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "question_id")
+//    private Question question;
+
+    public Answer(){}
+    public Answer(String answerText, boolean correct) {
+        this.answerText = answerText;
+        this.correct = correct;
+//        this.question = question;
+    }
+//    public Answer(String answerText, boolean correct) {
+//        this.answerText = answerText;
+//        this.correct = correct;
+//    }
+
 
     public UUID getId() {
         return id;
@@ -50,12 +62,12 @@ public class Answer {
         return this;
     }
 
-    public Question getQuestion() {
-        return question;
-    }
-
-    public Answer setQuestion(Question question) {
-        this.question = question;
-        return this;
-    }
+//    public Question getQuestion() {
+//        return question;
+//    }
+//
+//    public Answer setQuestion(Question question) {
+//        this.question = question;
+//        return this;
+//    }
 }

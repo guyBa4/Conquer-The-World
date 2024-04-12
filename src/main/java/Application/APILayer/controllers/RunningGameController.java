@@ -29,7 +29,7 @@ public class RunningGameController {
     public RunningGameController(RepositoryFactory repositoryFactory)
     {
         this.gameRunningService = GameRunningService.getInstance();
-        if (gameRunningService.getRunningGamesIdToRunningGameInstance() == null)
+        if (!gameRunningService.isInit())
             gameRunningService.init(repositoryFactory);
         tokenHandler = TokenHandler.getInstance();
         LOG = getLogger(this.getClass().toString());
@@ -73,8 +73,9 @@ public class RunningGameController {
 //            LOG.info("Request received by /enter_player_details endpoint:\n" + jsonObj);
 //            JSONObject jsonAuthorizationHeader = new JSONObject(authorizationHeader);
             String name = jsonObj.getString("name");
+            UUID runningGameId = UUID.fromString(jsonObj.getString("runningGameId"));
             UUID mobileId = UUID.fromString(authorizationHeader);
-            return gameRunningService.addMobileDetails(mobileId, name);
+            return gameRunningService.addMobileDetails(runningGameId, mobileId, name);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
@@ -132,7 +133,7 @@ public class RunningGameController {
                                                   @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             LOG.info(String.format("Request received by /generate_question endpoint:\n {'difficulty': %s, 'runningGameId': %s}", difficulty, runningGameId));
-            return gameRunningService.getQuestion(difficulty, runningGameId);
+            return gameRunningService.getQuestion(difficulty, UUID.fromString(runningGameId));
         } catch (IllegalArgumentException e) {
             return Response.fail(403, "AUTHORIZATION FAILED");
         } catch (JSONException e) {
