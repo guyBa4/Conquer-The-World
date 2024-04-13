@@ -81,15 +81,15 @@ public class GameService {
         if (!gameRunningService.isInit())
             gameRunningService.init(repositoryFactory);
 //        initObjects();
-        Questionnaire questionnaire = questionnaireRepository.findById(UUID.fromString("d4120482-93e3-4972-8525-60f420b514aa")).get();
-        List<Question> questions = initQuestionsObjects();
-        List<AssignedQuestion> assignedQuestions = new LinkedList<>();
-        for (Question question : questions){
-            AssignedQuestion assignedQuestion = new AssignedQuestion(question);
-            assignedQuestions.add(assignedQuestion);
-        }
-        questionnaire.setQuestions(assignedQuestions);
-        this.questionnaireRepository.save(questionnaire);
+//        Questionnaire questionnaire = questionnaireRepository.findById(UUID.fromString("d4120482-93e3-4972-8525-60f420b514aa")).get();
+//        List<Question> questions = initQuestionsObjects();
+//        List<AssignedQuestion> assignedQuestions = new LinkedList<>();
+//        for (Question question : questions){
+//            AssignedQuestion assignedQuestion = new AssignedQuestion(question);
+//            assignedQuestions.add(assignedQuestion);
+//        }
+//        questionnaire.setQuestions(assignedQuestions);
+//        this.questionnaireRepository.save(questionnaire);
 
 
 

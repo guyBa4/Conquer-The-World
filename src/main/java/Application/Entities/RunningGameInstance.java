@@ -141,7 +141,7 @@ public class RunningGameInstance {
     }
 
     public boolean checkAnswer(String tileId, int group, UUID questionId, String answer) {
-        List<AssignedQuestion> questionList = gameInstance.getQuestionnaire().getQuestions().stream().filter((question) -> (question.getId().equals(questionId))).toList();
+        List<AssignedQuestion> questionList = gameInstance.getQuestionnaire().getQuestions().stream().filter((question) -> (question.getQuestion().getId().equals(questionId))).toList();
         if (questionList.get(0).getQuestion().getAnswers().equals(answer)) {
             RunningTile tile = null;
             for(RunningTile runningTile : tiles){
