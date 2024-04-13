@@ -10,11 +10,10 @@ import Application.Response;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
-import javax.management.modelmbean.ModelMBeanNotificationInfo;
 import java.util.*;
 
 //import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedQueue;
+
 
 @Service
 public class GameService {
@@ -149,12 +148,12 @@ public class GameService {
 //    public Response<FlatGameInstance> getGameInstance(UUID id){
 //        return Response.ok(new FlatGameInstance(gameInstanceMap.get(id)));
 //    }
-    public Response<GameInstance> getGameInstance(UUID id){
+    public Response<java.util.Map<String, String>> getGameInstance(UUID id){
 
         Optional<GameInstance> optionalGameInstance = gameInstanceRepository.findById(id);
         if (!optionalGameInstance.isEmpty()) {
 //            FlatGameInstance flatGameInstance = new FlatGameInstance(optionalGameInstance.get());
-            return Response.ok(optionalGameInstance.get());
+            return Response.ok(optionalGameInstance.get().toJsonMap());
         }
         return Response.fail("game instance id not exist");
     }
@@ -164,7 +163,7 @@ public class GameService {
         List<java.util.Map<String, String>> flatGameInstances = new LinkedList<>();
 
         for(GameInstance gameInstance : gameInstances){
-            flatGameInstances.add(gameInstance.toJson());
+            flatGameInstances.add(gameInstance.toJsonMap());
         }
         return Response.ok(flatGameInstances);
     }

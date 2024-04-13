@@ -51,22 +51,6 @@ public class GameController {
     }
 
 
-    @PostMapping(path = "/jsonExample")
-    @ResponseBody
-    public ResponseEntity<String> jsonTalking(@RequestBody String inputJson) {
-        try {
-            Question q = new Question();
-            JSONObject jsonObj = new JSONObject(inputJson);
-            String message = jsonObj.get(jsonObj.keys().next().toString()).toString();
-            JSONObject responseJson = new JSONObject();
-            responseJson.put("status", 200);
-            responseJson.put("message", message);
-            return ResponseEntity.ok(responseJson.toString());
-        } catch (JSONException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing JSON");
-        }
-    }
-
     @GetMapping(path = "/get_all_games")
     @ResponseBody
     public Response<List<Map<String,String>>> GetGamesInstances() {
@@ -82,7 +66,7 @@ public class GameController {
 
     @GetMapping(path = "/get_game/id={id}")
     @ResponseBody
-    public Response<GameInstance> GetGamesInstances(@PathVariable (name= "id") UUID id) {
+    public Response<Map<String,String>> GetGamesInstances(@PathVariable (name= "id") UUID id) {
         try {
             return gameService.getGameInstance(id);
         } catch (IllegalArgumentException e) {
@@ -93,8 +77,4 @@ public class GameController {
     }
 
 
-    @GetMapping(path = "/hello")
-    public String register() {
-        return "hello world";
-    }
 }

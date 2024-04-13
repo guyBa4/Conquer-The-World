@@ -27,6 +27,9 @@ public class RunningGameInstance {
     @Column(name = "code")
     private String code;
 
+    @Column(name = "status")
+    private String status;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "running_game_instance_id")
     private List<RunningTile> tiles;
@@ -54,6 +57,7 @@ public class RunningGameInstance {
         this.tiles = new LinkedList<>();
         for(Tile tile : gameInstance.getMap().getTiles())
             tiles.add(new RunningTile(tile));
+        this.status = gameInstance.getStatus();
     }
 
     public UUID getRunningId() {
@@ -164,7 +168,7 @@ public class RunningGameInstance {
     }
 
     public String getStatus() {
-        return gameInstance.getStatus();
+        return this.status;
     }
 
     public String getName() {
@@ -172,7 +176,7 @@ public class RunningGameInstance {
     }
 
     public void setStatus(String status) {
-        gameInstance.setStatus(status);
+        this.status = status;
     }
     public GameInstance getGameInstance() {
         return gameInstance;
@@ -180,5 +184,11 @@ public class RunningGameInstance {
 
     public void setGameInstance(GameInstance gameInstance) {
         this.gameInstance = gameInstance;
+    }
+
+    public java.util.Map<String, String> toJsonMap() {
+        java.util.Map<String, String>  jsonMap = gameInstance.toJsonMap();
+        jsonMap.put("code", code);
+        return jsonMap;
     }
 }

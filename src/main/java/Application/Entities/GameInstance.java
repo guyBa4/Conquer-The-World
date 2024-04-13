@@ -246,24 +246,24 @@ public class GameInstance {
         this.timeLastUpdated = timeLastUpdated;
     }
 
-    public java.util.Map<String, String> toJson() {
-        java.util.Map<String, String>  jsonObject = new HashMap<>();
-        jsonObject.put("id", id.toString());
-        jsonObject.put("name", name);
-        jsonObject.put("host", host.getId().toString());
-        jsonObject.put("status", status);
-        jsonObject.put("timeCreated", timeCreated.toString());
-        jsonObject.put("timeLastUpdated", timeLastUpdated.toString());
-        jsonObject.put("numberOfGroups", String.valueOf(numberOfGroups));
-        jsonObject.put("description", description);
-        jsonObject.put("groupAssignmentProtocol", groupAssignmentProtocol);
-        jsonObject.put("gameTime", String.valueOf(gameTime));
-        jsonObject.put("shared", String.valueOf(shared));
-        jsonObject.put("questionTimeLimit", String.valueOf(questionTimeLimit));
-        jsonObject.put("mapId", map.getId().toString());
-        jsonObject.put("mapName", map.getName());
-        jsonObject.put("questionnaireId", questionnaire.getId().toString());
-        jsonObject.put("questionnaireName", questionnaire.getName());
-        return jsonObject;
+    public java.util.Map<String, String> toJsonMap() {
+        java.util.Map<String, String>  jsonMap = new HashMap<>();
+        jsonMap.put("id", id.toString());
+        jsonMap.put("name", name);
+        jsonMap.put("host", host.getId().toString());
+        jsonMap.put("status", status);
+        jsonMap.put("timeCreated", timeCreated.toString());
+        jsonMap.put("timeLastUpdated", timeLastUpdated.toString());
+        jsonMap.put("numberOfGroups", String.valueOf(numberOfGroups));
+        jsonMap.put("description", description);
+        jsonMap.put("groupAssignmentProtocol", groupAssignmentProtocol);
+        jsonMap.put("gameTime", String.valueOf(gameTime));
+        jsonMap.put("shared", String.valueOf(shared));
+        jsonMap.put("questionTimeLimit", String.valueOf(questionTimeLimit));
+        jsonMap.put("mapId", map.getId().toString());
+        jsonMap.put("mapName", map.getName());
+        jsonMap.put("questionnaireId", questionnaire.getId().toString());
+        jsonMap.put("questionnaireName", questionnaire.getName());
+        return jsonMap;
     }
 }
