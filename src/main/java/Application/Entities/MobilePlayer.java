@@ -24,7 +24,6 @@ public class MobilePlayer {
     @JsonIgnore
     private RunningGameInstance runningGameInstance;
 
-
     @Column(name = "ready")
     private boolean ready;
 

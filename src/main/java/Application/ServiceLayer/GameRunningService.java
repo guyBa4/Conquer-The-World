@@ -237,7 +237,8 @@ public class GameRunningService {
                 LOG.severe("Did not find user with ID: " + userId.toString());
                 return Response.fail("Did not find user by ID");
             }
-            return Response.ok(runningGameInstance.checkAnswer(tileId, player.getGroup(), questionId, answer));
+            boolean isCorrect = runningGameInstance.checkAnswer(tileId, player.getGroup(), questionId, answer);
+            return Response.ok(isCorrect);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
             LOG.severe("Exception caught: " + e.getMessage());

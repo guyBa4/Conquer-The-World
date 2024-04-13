@@ -106,7 +106,6 @@ public class RunningGameInstance {
     }
 
     public void addMobilePlayer(MobilePlayer mobilePlayer){
-        UUID id = mobilePlayer.getUuid();
         mobilePlayers.add(mobilePlayer);
         if (gameInstance.getStatus().equals(GameStatus.STARTED.toString())) {
             int group = getSmallestGroup();

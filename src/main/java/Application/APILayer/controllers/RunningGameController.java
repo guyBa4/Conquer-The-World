@@ -37,7 +37,7 @@ public class RunningGameController {
 
     @PostMapping(path = "/open_waiting_room")
     @ResponseBody
-    public Response<java.util.Map<String, String>> OpenWaitingRoom(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public Response<java.util.Map<String, String>> OpenWaitingRoom(@RequestBody String inputJson) {
         try {
             JSONObject jsonObj = new JSONObject(inputJson);
             LOG.info("Request received by /open_waiting_room endpoint:\n" + jsonObj);
@@ -138,16 +138,19 @@ public class RunningGameController {
     }
 
     @PostMapping(path = "/validate_answer")
-    public Response<Boolean> validateAnswer(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public Response<Boolean> validateAnswer(@RequestBody String inputJson){
+//                                            ,@RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             JSONObject jsonObj = new JSONObject(inputJson);
             LOG.info("Request received by /validate_answer endpoint:\n" + jsonObj);
             UUID runningGameId = UUID.fromString(jsonObj.getString("gameId"));
             UUID questionUuid = UUID.fromString(jsonObj.getString("questionId"));
             String tileId = jsonObj.getString("tileId");
-            UUID userId = UUID.fromString(authorizationHeader);
+            String mobileId = jsonObj.getString("mobileId");
+            UUID mobileUuid = UUID.fromString(mobileId);
+//            UUID userId = UUID.fromString(authorizationHeader);
             String answer = jsonObj.getString("answer");
-            return gameRunningService.checkAnswer(runningGameId, tileId, userId, questionUuid, answer);
+            return gameRunningService.checkAnswer(runningGameId, tileId, mobileUuid, questionUuid, answer);
         } catch (IllegalArgumentException e) {
             return Response.fail(403, "AUTHORIZATION FAILED");
         } catch (JSONException e) {
