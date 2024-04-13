@@ -3,6 +3,7 @@ import Application.Response;
 import jakarta.persistence.*;
 import org.json.JSONObject;
 
+import java.sql.Time;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -81,8 +82,8 @@ public class GameInstance {
         this.map = map;
         this.startingPositions =startingPositions;
         this.status = status;
-        this.timeCreated = timeCreated;
-        this.timeLastUpdated = timeLastUpdated;
+        this.timeCreated = new Time(new Date().getTime());
+        this.timeLastUpdated = new Time(new Date().getTime());
         this.numberOfGroups = numberOfGroups;
         this.name = name;
         this.description = description;

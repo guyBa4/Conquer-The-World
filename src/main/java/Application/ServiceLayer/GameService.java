@@ -22,6 +22,7 @@ public class GameService {
     private GameInstanceRepository gameInstanceRepository;
     private QuestionRepository questionRepository;
     private UserRepository userRepository;
+    private MapRepository mapRepository;
     private QuestionnaireRepository questionnaireRepository;
     private java.util.Map<UUID, GameInstance> gameInstanceMap;
     private GameRunningService gameRunningService;
@@ -48,16 +49,17 @@ public class GameService {
             AssignedQuestion assignedQuestion = new AssignedQuestion(question);
             assignedQuestions.add(assignedQuestion);
         }
-        Questionnaire questionnaire = new Questionnaire("common knolage questionnaire", assignedQuestions, guyUser);
+        Questionnaire questionnaire = new Questionnaire("common knowledge questionnaire", assignedQuestions, guyUser);
         this.questionnaireRepository.save(questionnaire);
         List<Tile> tiles = init_tiles();
         Map map = new Map("USA", tiles, true);
+        mapRepository.save(map);
         List<String> startingPossitions = new LinkedList<>();
         startingPossitions.add("TX");
         startingPossitions.add("NM");
         startingPossitions.add("ID");
         startingPossitions.add("SD");
-        GameInstance gameInstance = new GameInstance (nitzanUser, questionnaire, null, GameStatus.CREATED.toString(), 3, "for fun",
+        GameInstance gameInstance = new GameInstance (nitzanUser, questionnaire, map, GameStatus.CREATED.toString(), 3, "for fun",
                 "the first game instance", GroupAssignmentProtocol.RANDOM.toString(), 1000 , true, 30, startingPossitions);
         gameInstanceRepository.save(gameInstance);
         }
@@ -115,6 +117,7 @@ public class GameService {
         this.questionRepository = repositoryFactory.questionRepository;
         this.questionnaireRepository =  repositoryFactory.questionnaireRepository;
         this.userRepository = repositoryFactory.userRepository;
+        this.mapRepository = repositoryFactory.mapRepository;
     }
 
     public Response<GameInstance> addGameInstance(JSONObject jsonObject) {

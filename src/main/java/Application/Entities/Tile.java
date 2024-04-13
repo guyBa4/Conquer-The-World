@@ -10,7 +10,6 @@ import java.util.UUID;
 public class Tile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false, unique = true)
     private String id;
 
@@ -24,7 +23,7 @@ public class Tile {
     @Column(name = "difficulty_level")
     private int difficultyLevel;
 
-    @Column(name = "dimensions")
+    @Column(name = "dimensions", columnDefinition = "TEXT")
     private String dimensions;
 
     public Tile(){
