@@ -9,8 +9,8 @@ public class MobilePlayer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "uuid", nullable = false, unique = true)
-    private UUID uuid;
+    @Column(name = "id", nullable = false, unique = true)
+    private UUID id;
 
     @Column(name = "name")
     private String name;
@@ -22,23 +22,22 @@ public class MobilePlayer {
     @Column(name = "ready")
     private boolean ready;
 
-
-
     public MobilePlayer(){
         ready = false;
         group = 0;
     }
-    public MobilePlayer(UUID uuid, String name) {
-        this.uuid = uuid;
+    public MobilePlayer(String name) {
         this.name = name;
+        ready = false;
+        group = 0;
     }
 
     public UUID getUuid() {
-        return uuid;
+        return id;
     }
 
     public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+        this.id = uuid;
     }
 
     public String getName() {

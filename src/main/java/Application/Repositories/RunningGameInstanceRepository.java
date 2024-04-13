@@ -11,6 +11,6 @@ import java.util.UUID;
 @Repository
 public interface RunningGameInstanceRepository extends JpaRepository<RunningGameInstance, UUID> {
 
-    List<RunningGameInstance> findByRunningIdAndMobilePlayers_uuid(UUID gameId, UUID userId);
+    List<RunningGameInstance> findByRunningIdAndMobilePlayers_id(UUID gameId, UUID userId);
     List<RunningGameInstance> findByCode(String code);
 }

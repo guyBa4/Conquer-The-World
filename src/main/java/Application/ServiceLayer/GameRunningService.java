@@ -7,7 +7,6 @@ import Application.Repositories.*;
 import Application.Response;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.logging.*;
 import static java.util.logging.Logger.getLogger;
 import java.util.*;
@@ -66,7 +65,7 @@ public class GameRunningService {
         this.mobilePlayerRepository = repositoryFactory.mobilePlayerRepository;
     }
 
-    public Response<RunningGameInstance> OpenWaitingRoom(UUID gameId, UUID hostId){ // in this function RunningGameInstance is created
+    public Response<RunningGameInstance> OpenWaitingRoom(UUID gameId, UUID hostId, String code){ // in this function RunningGameInstance is created
         try{
             Optional<GameInstance> optGameInstance = gameInstanceRepository.findById(gameId);
             if (optGameInstance.isEmpty())
@@ -80,7 +79,7 @@ public class GameRunningService {
 //            GameInstance gameInstance = response.getValue();
             if (!gameInstance.getHost().getId().equals(hostId))
                 return Response.fail("wrong host UUID");
-            RunningGameInstance runningGameInstance = new RunningGameInstance(gameInstance);
+            RunningGameInstance runningGameInstance = new RunningGameInstance(gameInstance, code);
 //            gameCodeToRunningGameInstance.put(runningGameInstance.getCode(), runningGameInstance);
 //            runningGamesIdToRunningGameInstance.put(runningGameInstance.getRunningId(), runningGameInstance);
             updateGameStatus(runningGameInstance, GameStatus.WAITING_ROOM.toString());
@@ -177,7 +176,7 @@ public class GameRunningService {
 
     public Response<RunningGameInstance> getRunningGame(UUID runningGameId, UUID userId) {
         try {
-            List<RunningGameInstance> runningGameInstanceList = runningGameInstanceRepository.findByRunningIdAndMobilePlayers_uuid(runningGameId, userId);
+            List<RunningGameInstance> runningGameInstanceList = runningGameInstanceRepository.findByRunningIdAndMobilePlayers_id(runningGameId, userId);
             RunningGameInstance runningGameInstance;
             if (runningGameInstanceList.isEmpty()) {
                 Optional<RunningGameInstance> optionalRunningGameInstance = runningGameInstanceRepository.findById(runningGameId);

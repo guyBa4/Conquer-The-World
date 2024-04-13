@@ -37,6 +37,14 @@ public class Tile {
         this.difficultyLevel = difficultyLevel;
         this.dimensions = dimensions;
     }
+    // Copy constructor
+    public Tile(Tile other) {
+        this.id = other.id;
+        this.tileType = other.tileType;
+        this.controllingGroup = other.controllingGroup;
+        this.difficultyLevel = other.difficultyLevel;
+        this.dimensions = other.dimensions;
+    }
 
     public String getId() {
         return id;

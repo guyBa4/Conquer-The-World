@@ -17,8 +17,6 @@ public class User {
     @Column(name = "password")
     private String password;
 
-//    @Column(name = "permissions")
-//    private String permissions;
     public User(){
 
     }

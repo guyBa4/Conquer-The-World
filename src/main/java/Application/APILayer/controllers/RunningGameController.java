@@ -43,7 +43,8 @@ public class RunningGameController {
             LOG.info("Request received by /open_waiting_room endpoint:\n" + jsonObj);
             UUID gameId = UUID.fromString(jsonObj.getString("gameId"));
             UUID userId = UUID.fromString(jsonObj.getString("userId"));
-            return gameRunningService.OpenWaitingRoom(gameId, userId);
+            String code = jsonObj.getString("code");
+            return gameRunningService.OpenWaitingRoom(gameId, userId, code);
         } catch (IllegalArgumentException e) {
             return Response.fail(403, "AUTHORIZATION FAILED");
         } catch (JSONException e) {

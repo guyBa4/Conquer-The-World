@@ -66,10 +66,6 @@ public class GameInstance {
 
     @Column(name = "question_time_limit")
     private int questionTimeLimit;
-    //    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JoinColumn(name = "Game_instance_id")
-    @Transient
-    private GameInstance gameInstance;
 
 
 
@@ -94,13 +90,13 @@ public class GameInstance {
     }
 
     public GameInstance(GameInstance original) {
-        this.id = original.id;
+//        this.id = original.id;
         this.host = original.host;
         this.questionnaire = original.questionnaire;
         this.map = original.map;
         this.status = original.status;
-//        this.timeCreated = original.timeCreated;
-//        this.timeLastUpdated = original.timeLastUpdated;
+        this.timeCreated = original.timeCreated;
+        this.timeLastUpdated = original.timeLastUpdated;
         this.numberOfGroups = original.numberOfGroups;
         this.name = original.name;
         this.description = original.description;
@@ -168,21 +164,6 @@ public class GameInstance {
         this.status = status;
     }
 
-//    public Date getTimeCreated() {
-//        return timeCreated;
-//    }
-//
-//    public void setTimeCreated(Date timeCreated) {
-//        this.timeCreated = timeCreated;
-//    }
-//
-//    public Date getTimeLastUpdated() {
-//        return timeLastUpdated;
-//    }
-//
-//    public void setTimeLastUpdated(Date timeLastUpdated) {
-//        this.timeLastUpdated = timeLastUpdated;
-//    }
 
     public int getNumberOfGroups() {
         return numberOfGroups;
@@ -239,4 +220,30 @@ public class GameInstance {
     public void setQuestionTimeLimit(int questionTimeLimit) {
         this.questionTimeLimit = questionTimeLimit;
     }
+
+    public List<String> getStartingPositions() {
+        return startingPositions;
+    }
+
+    public void setStartingPositions(List<String> startingPositions) {
+        this.startingPositions = startingPositions;
+    }
+
+    public Date getTimeCreated() {
+        return timeCreated;
+    }
+
+    public void setTimeCreated(Date timeCreated) {
+        this.timeCreated = timeCreated;
+    }
+
+    public Date getTimeLastUpdated() {
+        return timeLastUpdated;
+    }
+
+    public void setTimeLastUpdated(Date timeLastUpdated) {
+        this.timeLastUpdated = timeLastUpdated;
+    }
+
+
 }

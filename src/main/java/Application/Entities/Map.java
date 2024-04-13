@@ -41,4 +41,28 @@ public class Map {
     public void setId(UUID id) {
         this.id = id;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isShared() {
+        return shared;
+    }
+
+    public void setShared(boolean shared) {
+        this.shared = shared;
+    }
+
+    public List<Tile> getTiles() {
+        return tiles;
+    }
+
+    public void setTiles(List<Tile> tiles) {
+        this.tiles = tiles;
+    }
 }
