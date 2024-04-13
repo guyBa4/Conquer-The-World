@@ -38,7 +38,6 @@ public class RunningGameInstance {
     @PersistenceContext
     private EntityManager entityManager;
 
-
     //    @Transient
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "Game_instance_id")

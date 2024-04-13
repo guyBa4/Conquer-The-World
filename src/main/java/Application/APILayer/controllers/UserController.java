@@ -10,6 +10,8 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("user")
 public class UserController {
@@ -36,10 +38,13 @@ public class UserController {
         }
     }
 
-    @GetMapping(path = "/login/username={username}&password={password}")
+    @PostMapping(path = "/login")
     @ResponseBody
-    public Response<User> login(@PathVariable (name= "username") String username,@PathVariable (name= "password") String password) {
+    public Response<User> login(@RequestBody String inputJson) {
         try {
+            JSONObject jsonObj = new JSONObject(inputJson);
+            String username = jsonObj.getString("username");
+            String password = jsonObj.getString("password");
             Response<User> response = userService.Login(username, password);
             return response;
         } catch (JSONException e) {
