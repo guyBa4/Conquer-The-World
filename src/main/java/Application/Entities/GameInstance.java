@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.json.JSONObject;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -19,7 +20,7 @@ public class GameInstance {
     private String name;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "host_id") // Assuming a many-to-one relationship with User
+    @JoinColumn(name = "user_id") // Assuming a many-to-one relationship with User
     private User host;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -29,6 +30,11 @@ public class GameInstance {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "map_id")
     private Map map;
+
+    @ElementCollection
+    @CollectionTable(name = "map_starting_positions", joinColumns = @JoinColumn(name = "map_id"))
+    @Column(name = "starting_position")
+    private List<String> startingPositions;
 
     @Column(name = "status")
     private String status;
@@ -43,7 +49,6 @@ public class GameInstance {
 
     @Column(name = "number_of_groups")
     private int numberOfGroups;
-
 
     @Column(name = "description")
     private String description;
@@ -70,10 +75,11 @@ public class GameInstance {
     public GameInstance(){
     }
 
-    public GameInstance(User host, Questionnaire questionnaire, Map map, String status, int numberOfGroups, String name, String description, String groupAssignmentProtocol, int gameTime, boolean shared, int questionTimeLimit) {
+    public GameInstance(User host, Questionnaire questionnaire, Map map, String status, int numberOfGroups, String name, String description, String groupAssignmentProtocol, int gameTime, boolean shared, int questionTimeLimit, List<String> startingPositions) {
         this.host = host;
         this.questionnaire = questionnaire;
         this.map = map;
+        this.startingPositions =startingPositions;
         this.status = status;
         this.timeCreated = timeCreated;
         this.timeLastUpdated = timeLastUpdated;

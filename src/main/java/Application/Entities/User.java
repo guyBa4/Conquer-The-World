@@ -23,7 +23,7 @@ public class User {
 
     }
 
-    public User(String name, String password,String permissions){
+    public User(String name, String password){
         this.name = name;
         this.password = password;
 //        this.permissions = permissions;

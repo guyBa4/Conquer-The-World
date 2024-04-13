@@ -5,7 +5,7 @@ import java.sql.Time;
 import java.util.*;
 
 @Entity
-@Table(name = "questionnaire")
+@Table(name = "questionnaires")
 public class Questionnaire {
 
     @Id
@@ -16,7 +16,12 @@ public class Questionnaire {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "questionnaire", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User creator;
+
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JoinColumn(name = "questionnaire_id")
     private List<AssignedQuestion> questions;
 
     @Column(name = "time_created")
@@ -33,10 +38,12 @@ public class Questionnaire {
 
     }
 
-    public Questionnaire(UUID id, String name, List<AssignedQuestion> questionList) {
-        uuid = id;
+    public Questionnaire(String name, List<AssignedQuestion> questionList, User creator) {
         this.name = name;
         this.questions = questionList;
+        this.timeCreated = new Time(new Date().getTime());
+        this.lastUpdated = new Time(new Date().getTime());
+        this.creator = creator;
     }
 
     public UUID getId() {

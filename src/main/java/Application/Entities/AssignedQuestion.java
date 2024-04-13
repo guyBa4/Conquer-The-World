@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.UUID;
 
-@Table(name = "AssignedQuestion")
+@Table(name = "assigned_questions")
 @Entity
 public class AssignedQuestion {
     @Id
@@ -15,14 +15,17 @@ public class AssignedQuestion {
     @ManyToOne
     @JoinColumn(name = "question_id")
     private Question question;
-    
-    @ManyToOne
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "questionnaire_id")
     private Questionnaire questionnaire;
     
     @Column(name = "difficulty_level")
     private int difficultyLevel;
 
+    public AssignedQuestion(Question question) {
+        this.question = question;
+    }
     public AssignedQuestion() {
     }
 

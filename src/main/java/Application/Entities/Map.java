@@ -9,30 +9,31 @@ import java.util.UUID;
 public class Map {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID) // or GenerationType.IDENTITY
-    @Column(name = "Id", nullable = false, unique = true)
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", nullable = false, unique = true)
     private UUID id;
 
     @Column
     private String name;
 
-    @ElementCollection
-    @CollectionTable(name = "map_starting_positions", joinColumns = @JoinColumn(name = "map_id"))
-    @Column(name = "starting_position")
-    private List<String> startingPositions;
+    @Column
+    private boolean shared;
+
+
+
+
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JoinColumn(name = "map_id")
+    private List<Tile> tiles;
 
     public Map(){
 
     }
 
-    public Map(UUID id){
-        this.id = id;
-    }
-
-    public Map(UUID id, String name, List<String> startingPositions) {
-        this.id = id;
+    public Map(String name, List<Tile> tiles, boolean shared) {
         this.name = name;
-        this.startingPositions = startingPositions;
+        this.tiles = tiles;
+        this.shared = shared;
     }
 
     public UUID getId() {
