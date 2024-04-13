@@ -82,11 +82,9 @@ public class RunningGameController {
     }
 
     @GetMapping(path = "/get_waiting_room/{game_id}")
-    public Response<RunningGameInstance> getWaitingRoomDetails(@PathVariable (name= "game_id") String gameId,
-                                                                    @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public Response<RunningGameInstance> getWaitingRoomDetails(@PathVariable (name= "game_id") String gameId) {
         try {
             UUID gameUuid = UUID.fromString(gameId);
-//            LOG.info("Request received by /get_waiting_room endpoint:\n{'gameId': " + gameId + "}");
             return gameRunningService.getWaitingRoomDetails(gameUuid);
         } catch (IllegalArgumentException e) {
             return Response.fail(403, "AUTHORIZATION FAILED");
