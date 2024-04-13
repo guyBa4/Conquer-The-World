@@ -164,7 +164,7 @@ public class RunningGameController {
                                                     @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             UUID runningGameId = UUID.fromString(gameId);
-            UUID mobileUuid = UUID.fromString(mobileId);
+//            UUID mobileUuid = UUID.fromString(mobileId);
             return gameRunningService.getRunningTiles(runningGameId);
         } catch (IllegalArgumentException e) {
             return Response.fail(403, "AUTHORIZATION FAILED");

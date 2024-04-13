@@ -1,5 +1,6 @@
 package Application.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.UUID;
@@ -18,6 +19,7 @@ public class AssignedQuestion {
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "questionnaire_id")
+    @JsonIgnore
     private Questionnaire questionnaire;
     
     @Column(name = "difficulty_level")
