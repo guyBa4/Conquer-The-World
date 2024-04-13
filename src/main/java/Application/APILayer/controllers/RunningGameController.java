@@ -67,15 +67,13 @@ public class RunningGameController {
 
     @PostMapping(path = "/enter_player_details")
     @ResponseBody
-    public Response<RunningGameInstance> addMobileDetails(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public Response<RunningGameInstance> addMobileDetails(@RequestBody String inputJson) {
         try {
             JSONObject jsonObj = new JSONObject(inputJson);
-//            LOG.info("Request received by /enter_player_details endpoint:\n" + jsonObj);
-//            JSONObject jsonAuthorizationHeader = new JSONObject(authorizationHeader);
             String name = jsonObj.getString("name");
-            UUID runningGameId = UUID.fromString(jsonObj.getString("runningGameId"));
-            UUID mobileId = UUID.fromString(authorizationHeader);
-            return gameRunningService.addMobileDetails(runningGameId, mobileId, name);
+            String mobileId = jsonObj.getString("mobileId");
+            UUID mobileUUid = UUID.fromString(mobileId);
+            return gameRunningService.addMobileDetails(mobileUUid, name);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
@@ -160,8 +158,7 @@ public class RunningGameController {
     }
     
     @GetMapping(path = "/refresh_map/runningGameId={gameId}&userId={mobileId}")
-    public Response<List<RunningTile>> refreshMap(@PathVariable(name = "gameId") String gameId, @PathVariable(name = "mobileId") String mobileId,
-                                                    @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public Response<List<RunningTile>> refreshMap(@PathVariable(name = "gameId") String gameId, @PathVariable(name = "mobileId") String mobileId) {
         try {
             UUID runningGameId = UUID.fromString(gameId);
 //            UUID mobileUuid = UUID.fromString(mobileId);

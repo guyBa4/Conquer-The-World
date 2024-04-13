@@ -4,6 +4,8 @@ import Application.Enums.GameStatus;
 import Application.Enums.GroupAssignmentProtocol;
 import Application.Enums.TileType;
 import static java.util.logging.Logger.getLogger;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.*;
@@ -22,6 +24,7 @@ public class RunningGameInstance {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "running_game_instance_id")
+    @JsonIgnore
     private List<MobilePlayer> mobilePlayers;
 
     @Column(name = "code")

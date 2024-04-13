@@ -1,4 +1,5 @@
 package Application.Entities;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.UUID;
@@ -18,6 +19,11 @@ public class MobilePlayer {
     @Column(name = "group_number")
     private int group;
 
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "running_game_instance_id")
+    @JsonIgnore
+    private RunningGameInstance runningGameInstance;
+
 
     @Column(name = "ready")
     private boolean ready;
@@ -26,10 +32,11 @@ public class MobilePlayer {
         ready = false;
         group = 0;
     }
-    public MobilePlayer(String name) {
+    public MobilePlayer(String name, RunningGameInstance runningGameInstance) {
         this.name = name;
         ready = false;
         group = 0;
+        this.runningGameInstance = runningGameInstance;
     }
 
     public UUID getUuid() {
@@ -63,4 +70,20 @@ public class MobilePlayer {
     public void setReady(boolean ready) {
         this.ready = ready;
     }
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public RunningGameInstance getRunningGameInstance() {
+        return runningGameInstance;
+    }
+
+    public void setRunningGameInstance(RunningGameInstance runningGameInstance) {
+        this.runningGameInstance = runningGameInstance;
+    }
+
 }

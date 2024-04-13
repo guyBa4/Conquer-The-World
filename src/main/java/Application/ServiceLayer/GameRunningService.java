@@ -106,18 +106,15 @@ public class GameRunningService {
         }
     }
 
-    public Response<RunningGameInstance> addMobileDetails(UUID runningGameId,UUID mobileId, String name) {
+    public Response<RunningGameInstance> addMobileDetails(UUID mobileId, String name) {
         try {
-            Optional<RunningGameInstance> optionalRunningGameInstance = runningGameInstanceRepository.findById(runningGameId);
-            RunningGameInstance runningGameInstance;
-            if (optionalRunningGameInstance.isEmpty())
-                return Response.fail("game id not valid");
-            runningGameInstance = optionalRunningGameInstance.get();
-            MobilePlayer mobilePlayer = runningGameInstance.getPlayer(mobileId);
-            if (mobilePlayer == null)
+            Optional<MobilePlayer> optionalMobilePlayer = mobilePlayerRepository.findById(mobileId);
+            if (optionalMobilePlayer.isEmpty())
                 return Response.fail("mobile id not valid");
+            MobilePlayer mobilePlayer = optionalMobilePlayer.get();
             mobilePlayer.setName(name);
             mobilePlayer.setReady(true);
+            RunningGameInstance runningGameInstance = mobilePlayer.getRunningGameInstance();
             runningGameInstanceRepository.save(runningGameInstance);
             LOG.info("mobile enter name : " + mobilePlayer.getName());
             LOG.info("for running game instance with id : " + runningGameInstance.getRunningId() + " : " + runningGameInstance.getName());
