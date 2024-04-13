@@ -22,6 +22,9 @@ public class RunningTile {
     @JoinColumn(name = "permanent_tile_id")
     private Tile tile;
 
+    @Column(name = "controlling_group")
+    private int controllingGroup;
+
 
     public RunningTile() {
     }
@@ -29,6 +32,7 @@ public class RunningTile {
     public RunningTile(Tile tile) {
         this.tile = tile;
         this.tileType = tile.getTileType();
+        this.controllingGroup = controllingGroup;
     }
 
     public UUID getId() {
@@ -53,5 +57,14 @@ public class RunningTile {
 
     public void setTile(Tile tile) {
         this.tile = tile;
+    }
+
+
+    public int getControllingGroup() {
+        return controllingGroup;
+    }
+
+    public void setControllingGroup(int controllingGroup) {
+        this.controllingGroup = controllingGroup;
     }
 }

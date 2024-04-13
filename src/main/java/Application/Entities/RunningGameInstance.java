@@ -20,14 +20,14 @@ public class RunningGameInstance {
     @Column(name = "running_id", nullable = false, unique = true)
     private UUID runningId;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "running_game_instance_id")
     private List<MobilePlayer> mobilePlayers;
 
     @Column(name = "code")
     private String code;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "running_game_instance_id")
     private List<RunningTile> tiles;
 
@@ -84,8 +84,8 @@ public class RunningGameInstance {
         return gameInstance.getMap().getTiles();
     }
 
-    public void setTiles(List<Tile> tiles) {
-        this.gameInstance.getMap().setTiles(tiles);
+    public void setTiles(List<RunningTile> tiles) {
+        this.tiles = tiles;
     }
 
     public void addMobilePlayer(MobilePlayer mobilePlayer){
@@ -127,9 +127,13 @@ public class RunningGameInstance {
     public boolean checkAnswer(String tileId, int group, UUID questionId, String answer) {
         List<AssignedQuestion> questionList = gameInstance.getQuestionnaire().getQuestions().stream().filter((question) -> (question.getId().equals(questionId))).toList();
         if (questionList.get(0).getQuestion().getAnswers().equals(answer)) {
-            Tile tile = entityManager.find(Tile.class, tileId);
+            RunningTile tile = null;
+            for(RunningTile runningTile : tiles){
+                if (runningTile.getTile().getId().equals(tileId))
+                    tile = runningTile;
+            }
             if (tile == null)
-                throw new IllegalArgumentException("Failed to find tile.");
+                throw new IllegalArgumentException("Failed to find tile by tileId.");
             tile.setControllingGroup(group);
             return true;
         }
@@ -137,8 +141,12 @@ public class RunningGameInstance {
     }
     
     public MobilePlayer getPlayer(UUID userId) {
-        return entityManager.find(MobilePlayer.class, userId);
-//         return null;
+        for (MobilePlayer mobilePlayer : mobilePlayers){
+            if (mobilePlayer.getUuid().equals(userId)){
+                return mobilePlayer;
+            }
+        }
+        return null;
     }
     
     public void assignGroups() {
