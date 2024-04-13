@@ -84,41 +84,6 @@ public class GameService {
 
 
 
-//        questionList.add(question1);
-//        Question question2 = new Question(UUID.randomUUID(), false, "1 + 6 = ?", "7",new String[2], 1, new String[2]);
-//        questionList.add(question2);
-//        Question question3 = new Question(UUID.randomUUID(), false, "0 + 0 = ?", "0", new String[2], 5, new String[2]);
-//        questionList.add(question3);
-//        Question question4 = new Question(UUID.randomUUID(), false, "1 + 10 = ?", "11", new String[2], 2, new String[2]);
-//        questionList.add(question4);
-//        Question question5 = new Question(UUID.randomUUID(), false, "4 + 5 = ?", "9", new String[2], 2, new String[2]);
-//        questionList.add(question5);
-//        Question question6 = new Question(UUID.randomUUID(), false, "9 - 3 = ?", "6", new String[2], 5, new String[2]);
-//        questionList.add(question6);
-//        Question question7 = new Question(UUID.randomUUID(), false, "9 - 4 = ?", "5", new String[2], 4, new String[2]);
-//        questionList.add(question6);
-//        Question question8 = new Question(UUID.randomUUID(), false, "10 * 10 = ?", "100", new String[2], 4, new String[2]);
-//        questionList.add(question6);
-//        Question question9 = new Question(UUID.randomUUID(), false, "1 * 4 = ?", "4", new String[2], 2, new String[2]);
-//        questionList.add(question7);
-//        Question question10 = new Question(UUID.randomUUID(), false, "5 * 4 = ?", "20", new String[2], 5, new String[2]);
-//        questionList.add(question8);
-//        Questionnaire questionnaire = new Questionnaire(UUID.randomUUID(), "math", questionList);
-//        Map map = new Map(UUID.randomUUID());
-//        User host = repositoryFactory.userRepository.findAll().get(0);
-//        GameInstance gameInstance = new GameInstance(UUID.randomUUID(), host, questionnaire, map, GameStatus.CREATED.toString(), 2, "first game", "this is a very good game!",
-//                GroupAssignmentProtocol.RANDOM.toString(), 1000, true, 50);
-//        this.gameInstanceMap.put(gameInstance.getId(), gameInstance);
-//        System.out.println("game uuid " + gameInstance.getId());
-//        System.out.println("host uuid " + host.getId());
-//
-//        RunningGameInstance runningGameInstance = new RunningGameInstance(gameInstance);
-//        System.out.println("game code " + runningGameInstance.getCode());
-//        this.gameRunningService.addRunningGame(runningGameInstance);
-//        System.out.println("running game uuid " + runningGameInstance.getRunningId());
-//
-
-//        gameInstanceRepository.save(gameInstance);
     }
 
     private void setRepositories(RepositoryFactory repositoryFactory) {
@@ -257,149 +222,149 @@ public class GameService {
         questionRepository.save(question10);
         questionList.add(question10);
 
-// Question 11
-        List<Answer> answerList11 = new LinkedList<>();
-        answerList11.add(new Answer("Russia", true));
-        answerList11.add(new Answer("Canada", false));
-        answerList11.add(new Answer("China", false));
-        Question question11 = new Question(false, "Which country is the largest by land area?", answerList11, 1);
-        questionRepository.save(question11);
-        questionList.add(question11);
-
-// Question 12
-        List<Answer> answerList12 = new LinkedList<>();
-        answerList12.add(new Answer("Mozart", false));
-        answerList12.add(new Answer("Beethoven", true));
-        answerList12.add(new Answer("Bach", false));
-        Question question12 = new Question(false, "Who composed the Moonlight Sonata?", answerList12, 2);
-        questionRepository.save(question12);
-        questionList.add(question12);
-
-// Question 13
-        List<Answer> answerList13 = new LinkedList<>();
-        answerList13.add(new Answer("New York City", false));
-        answerList13.add(new Answer("Los Angeles", false));
-        answerList13.add(new Answer("Chicago", true));
-        Question question13 = new Question(false, "Which city is known as the Windy City?", answerList13, 3);
-        questionRepository.save(question13);
-        questionList.add(question13);
-
-// Question 14
-        List<Answer> answerList14 = new LinkedList<>();
-        answerList14.add(new Answer("Shakespeare", true));
-        answerList14.add(new Answer("Hemingway", false));
-        answerList14.add(new Answer("Tolstoy", false));
-        Question question14 = new Question(false, "Who wrote the play 'Romeo and Juliet'?", answerList14, 4);
-        questionRepository.save(question14);
-        questionList.add(question14);
-
-// Question 15
-        List<Answer> answerList15 = new LinkedList<>();
-        answerList15.add(new Answer("Beijing", true));
-        answerList15.add(new Answer("Shanghai", false));
-        answerList15.add(new Answer("Guangzhou", false));
-        Question question15 = new Question(false, "What is the capital of China?", answerList15, 5);
-        questionRepository.save(question15);
-        questionList.add(question15);
-
-// Question 16
-        List<Answer> answerList16 = new LinkedList<>();
-        answerList16.add(new Answer("Michael Jordan", false));
-        answerList16.add(new Answer("LeBron James", true));
-        answerList16.add(new Answer("Kobe Bryant", false));
-        Question question16 = new Question(false, "Who is widely regarded as the greatest basketball player of all time?", answerList16, 5);
-        questionRepository.save(question16);
-        questionList.add(question16);
-
-        // Question 17
-        List<Answer> answerList17 = new LinkedList<>();
-        answerList17.add(new Answer("Great Wall of China", true));
-        answerList17.add(new Answer("Taj Mahal", false));
-        answerList17.add(new Answer("Machu Picchu", false));
-        Question question17 = new Question(false, "Which is the longest wall in the world?", answerList17, 3);
-        questionRepository.save(question17);
-        questionList.add(question17);
-
-// Question 18
-        List<Answer> answerList18 = new LinkedList<>();
-        answerList18.add(new Answer("Ganges", false));
-        answerList18.add(new Answer("Nile", false));
-        answerList18.add(new Answer("Amazon", true));
-        Question question18 = new Question(false, "Which river has the largest drainage basin?", answerList18, 1);
-        questionRepository.save(question18);
-        questionList.add(question18);
-
-// Question 19
-        List<Answer> answerList19 = new LinkedList<>();
-        answerList19.add(new Answer("Madrid", false));
-        answerList19.add(new Answer("Barcelona", false));
-        answerList19.add(new Answer("Seville", true));
-        Question question19 = new Question(false, "Which city is the capital of Andalusia?", answerList19, 1);
-        questionRepository.save(question19);
-        questionList.add(question19);
-
-// Question 20
-        List<Answer> answerList20 = new LinkedList<>();
-        answerList20.add(new Answer("Paris", false));
-        answerList20.add(new Answer("London", true));
-        answerList20.add(new Answer("Rome", false));
-        Question question20 = new Question(false, "Which city lies on the River Thames?", answerList20, 2);
-        questionRepository.save(question20);
-        questionList.add(question20);
-
-// Question 21
-        List<Answer> answerList21 = new LinkedList<>();
-        answerList21.add(new Answer("Neptune", true));
-        answerList21.add(new Answer("Saturn", false));
-        answerList21.add(new Answer("Mars", false));
-        Question question21 = new Question(false, "Which planet is the farthest from the Sun?", answerList21, 1);
-        questionRepository.save(question21);
-        questionList.add(question21);
-
-// Question 22
-        List<Answer> answerList22 = new LinkedList<>();
-        answerList22.add(new Answer("Berlin", true));
-        answerList22.add(new Answer("Munich", false));
-        answerList22.add(new Answer("Frankfurt", false));
-        Question question22 = new Question(false, "Which city is the capital of Germany?", answerList22, 2);
-        questionRepository.save(question22);
-        questionList.add(question22);
-
-// Question 23
-        List<Answer> answerList23 = new LinkedList<>();
-        answerList23.add(new Answer("Sydney", true));
-        answerList23.add(new Answer("Melbourne", false));
-        answerList23.add(new Answer("Brisbane", false));
-        Question question23 = new Question(false, "Which city is home to the Sydney Opera House?", answerList23, 3);
-        questionRepository.save(question23);
-        questionList.add(question23);
-
-// Question 24
-        List<Answer> answerList24 = new LinkedList<>();
-        answerList24.add(new Answer("William Shakespeare", true));
-        answerList24.add(new Answer("Charles Dickens", false));
-        answerList24.add(new Answer("Jane Austen", false));
-        Question question24 = new Question(false, "Who wrote the play 'Hamlet'?", answerList24, 4);
-        questionRepository.save(question24);
-        questionList.add(question24);
-
-// Question 25
-        List<Answer> answerList25 = new LinkedList<>();
-        answerList25.add(new Answer("India", true));
-        answerList25.add(new Answer("China", false));
-        answerList25.add(new Answer("Brazil", false));
-        Question question25 = new Question(false, "Which country celebrates Diwali?", answerList25, 5);
-        questionRepository.save(question25);
-        questionList.add(question25);
-
-// Question 26
-        List<Answer> answerList26 = new LinkedList<>();
-        answerList26.add(new Answer("Giraffe", true));
-        answerList26.add(new Answer("Elephant", false));
-        answerList26.add(new Answer("Lion", false));
-        Question question26 = new Question(false, "Which animal has the longest neck?", answerList26, 2);
-        questionRepository.save(question26);
-        questionList.add(question26);
+//// Question 11
+//        List<Answer> answerList11 = new LinkedList<>();
+//        answerList11.add(new Answer("Russia", true));
+//        answerList11.add(new Answer("Canada", false));
+//        answerList11.add(new Answer("China", false));
+//        Question question11 = new Question(false, "Which country is the largest by land area?", answerList11, 1);
+//        questionRepository.save(question11);
+//        questionList.add(question11);
+//
+//// Question 12
+//        List<Answer> answerList12 = new LinkedList<>();
+//        answerList12.add(new Answer("Mozart", false));
+//        answerList12.add(new Answer("Beethoven", true));
+//        answerList12.add(new Answer("Bach", false));
+//        Question question12 = new Question(false, "Who composed the Moonlight Sonata?", answerList12, 2);
+//        questionRepository.save(question12);
+//        questionList.add(question12);
+//
+//// Question 13
+//        List<Answer> answerList13 = new LinkedList<>();
+//        answerList13.add(new Answer("New York City", false));
+//        answerList13.add(new Answer("Los Angeles", false));
+//        answerList13.add(new Answer("Chicago", true));
+//        Question question13 = new Question(false, "Which city is known as the Windy City?", answerList13, 3);
+//        questionRepository.save(question13);
+//        questionList.add(question13);
+//
+//// Question 14
+//        List<Answer> answerList14 = new LinkedList<>();
+//        answerList14.add(new Answer("Shakespeare", true));
+//        answerList14.add(new Answer("Hemingway", false));
+//        answerList14.add(new Answer("Tolstoy", false));
+//        Question question14 = new Question(false, "Who wrote the play 'Romeo and Juliet'?", answerList14, 4);
+//        questionRepository.save(question14);
+//        questionList.add(question14);
+//
+//// Question 15
+//        List<Answer> answerList15 = new LinkedList<>();
+//        answerList15.add(new Answer("Beijing", true));
+//        answerList15.add(new Answer("Shanghai", false));
+//        answerList15.add(new Answer("Guangzhou", false));
+//        Question question15 = new Question(false, "What is the capital of China?", answerList15, 5);
+//        questionRepository.save(question15);
+//        questionList.add(question15);
+//
+//// Question 16
+//        List<Answer> answerList16 = new LinkedList<>();
+//        answerList16.add(new Answer("Michael Jordan", false));
+//        answerList16.add(new Answer("LeBron James", true));
+//        answerList16.add(new Answer("Kobe Bryant", false));
+//        Question question16 = new Question(false, "Who is widely regarded as the greatest basketball player of all time?", answerList16, 5);
+//        questionRepository.save(question16);
+//        questionList.add(question16);
+//
+//        // Question 17
+//        List<Answer> answerList17 = new LinkedList<>();
+//        answerList17.add(new Answer("Great Wall of China", true));
+//        answerList17.add(new Answer("Taj Mahal", false));
+//        answerList17.add(new Answer("Machu Picchu", false));
+//        Question question17 = new Question(false, "Which is the longest wall in the world?", answerList17, 3);
+//        questionRepository.save(question17);
+//        questionList.add(question17);
+//
+//// Question 18
+//        List<Answer> answerList18 = new LinkedList<>();
+//        answerList18.add(new Answer("Ganges", false));
+//        answerList18.add(new Answer("Nile", false));
+//        answerList18.add(new Answer("Amazon", true));
+//        Question question18 = new Question(false, "Which river has the largest drainage basin?", answerList18, 1);
+//        questionRepository.save(question18);
+//        questionList.add(question18);
+//
+//// Question 19
+//        List<Answer> answerList19 = new LinkedList<>();
+//        answerList19.add(new Answer("Madrid", false));
+//        answerList19.add(new Answer("Barcelona", false));
+//        answerList19.add(new Answer("Seville", true));
+//        Question question19 = new Question(false, "Which city is the capital of Andalusia?", answerList19, 1);
+//        questionRepository.save(question19);
+//        questionList.add(question19);
+//
+//// Question 20
+//        List<Answer> answerList20 = new LinkedList<>();
+//        answerList20.add(new Answer("Paris", false));
+//        answerList20.add(new Answer("London", true));
+//        answerList20.add(new Answer("Rome", false));
+//        Question question20 = new Question(false, "Which city lies on the River Thames?", answerList20, 2);
+//        questionRepository.save(question20);
+//        questionList.add(question20);
+//
+//// Question 21
+//        List<Answer> answerList21 = new LinkedList<>();
+//        answerList21.add(new Answer("Neptune", true));
+//        answerList21.add(new Answer("Saturn", false));
+//        answerList21.add(new Answer("Mars", false));
+//        Question question21 = new Question(false, "Which planet is the farthest from the Sun?", answerList21, 1);
+//        questionRepository.save(question21);
+//        questionList.add(question21);
+//
+//// Question 22
+//        List<Answer> answerList22 = new LinkedList<>();
+//        answerList22.add(new Answer("Berlin", true));
+//        answerList22.add(new Answer("Munich", false));
+//        answerList22.add(new Answer("Frankfurt", false));
+//        Question question22 = new Question(false, "Which city is the capital of Germany?", answerList22, 2);
+//        questionRepository.save(question22);
+//        questionList.add(question22);
+//
+//// Question 23
+//        List<Answer> answerList23 = new LinkedList<>();
+//        answerList23.add(new Answer("Sydney", true));
+//        answerList23.add(new Answer("Melbourne", false));
+//        answerList23.add(new Answer("Brisbane", false));
+//        Question question23 = new Question(false, "Which city is home to the Sydney Opera House?", answerList23, 3);
+//        questionRepository.save(question23);
+//        questionList.add(question23);
+//
+//// Question 24
+//        List<Answer> answerList24 = new LinkedList<>();
+//        answerList24.add(new Answer("William Shakespeare", true));
+//        answerList24.add(new Answer("Charles Dickens", false));
+//        answerList24.add(new Answer("Jane Austen", false));
+//        Question question24 = new Question(false, "Who wrote the play 'Hamlet'?", answerList24, 4);
+//        questionRepository.save(question24);
+//        questionList.add(question24);
+//
+//// Question 25
+//        List<Answer> answerList25 = new LinkedList<>();
+//        answerList25.add(new Answer("India", true));
+//        answerList25.add(new Answer("China", false));
+//        answerList25.add(new Answer("Brazil", false));
+//        Question question25 = new Question(false, "Which country celebrates Diwali?", answerList25, 5);
+//        questionRepository.save(question25);
+//        questionList.add(question25);
+//
+//// Question 26
+//        List<Answer> answerList26 = new LinkedList<>();
+//        answerList26.add(new Answer("Giraffe", true));
+//        answerList26.add(new Answer("Elephant", false));
+//        answerList26.add(new Answer("Lion", false));
+//        Question question26 = new Question(false, "Which animal has the longest neck?", answerList26, 2);
+//        questionRepository.save(question26);
+//        questionList.add(question26);
 
         return questionList;
     }

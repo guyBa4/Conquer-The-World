@@ -48,7 +48,7 @@ public class RunningGameInstance {
 
     public RunningGameInstance(){}
 
-    public RunningGameInstance(GameInstance gameInstance, String code) {//copy contractor
+    public RunningGameInstance(GameInstance gameInstance) {//copy contractor
         this.gameInstance = gameInstance;
         runningId = UUID.randomUUID();
         LOG = getLogger(this.getClass().toString());
@@ -58,6 +58,17 @@ public class RunningGameInstance {
         for(Tile tile : gameInstance.getMap().getTiles())
             tiles.add(new RunningTile(tile));
         this.status = gameInstance.getStatus();
+        this.code = generateGameCode(6);
+    }
+
+    private String generateGameCode(int length){
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int digit = random.nextInt(10); // Generates a random number between 0 and 9
+            sb.append(digit);
+        }
+        return sb.toString();
     }
 
     public UUID getRunningId() {

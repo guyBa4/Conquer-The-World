@@ -65,15 +65,16 @@ public class GameRunningService {
         this.mobilePlayerRepository = repositoryFactory.mobilePlayerRepository;
     }
 
-    public Response<java.util.Map<String, String>> OpenWaitingRoom(UUID gameId, UUID hostId, String code){ // in this function RunningGameInstance is created
+    public Response<java.util.Map<String, String>> OpenWaitingRoom(UUID gameId, UUID hostId){ // in this function RunningGameInstance is created
         try{
+
             Optional<GameInstance> optGameInstance = gameInstanceRepository.findById(gameId);
             if (optGameInstance.isEmpty())
                 return Response.fail("there is no game with this UUID");
             GameInstance gameInstance = optGameInstance.get();
 //            if (!gameInstance.getHost().getId().equals(hostId))
 //                return Response.fail("wrong host UUID");
-            RunningGameInstance runningGameInstance = new RunningGameInstance(gameInstance, code);
+            RunningGameInstance runningGameInstance = new RunningGameInstance(gameInstance);
 //            gameCodeToRunningGameInstance.put(runningGameInstance.getCode(), runningGameInstance);
 //            runningGamesIdToRunningGameInstance.put(runningGameInstance.getRunningId(), runningGameInstance);
             updateGameStatus(runningGameInstance, GameStatus.WAITING_ROOM.toString());
