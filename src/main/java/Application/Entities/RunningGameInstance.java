@@ -94,8 +94,8 @@ public class RunningGameInstance {
         this.code = code;
     }
 
-    public List<Tile> getTiles() {
-        return gameInstance.getMap().getTiles();
+    public List<RunningTile> getTiles() {
+        return this.tiles;
     }
 
     public void setTiles(List<RunningTile> tiles) {

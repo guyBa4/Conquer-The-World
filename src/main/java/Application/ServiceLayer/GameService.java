@@ -64,7 +64,7 @@ public class GameService {
         GameInstance gameInstance = new GameInstance (nitzanUser, questionnaire, map, GameStatus.CREATED.toString(), 3, "for fun",
                 "the first game instance", GroupAssignmentProtocol.RANDOM.toString(), 1000 , true, 30, startingPossitions);
         gameInstanceRepository.save(gameInstance);
-        RunningGameInstance runningGameInstance = new RunningGameInstance(gameInstance, "666666");
+        RunningGameInstance runningGameInstance = new RunningGameInstance(gameInstance);
         runningGameInstanceRepository.save(runningGameInstance);
         MobilePlayer mobilePlayer = new MobilePlayer();
         runningGameInstance.addMobilePlayer(mobilePlayer);

@@ -160,12 +160,12 @@ public class RunningGameController {
     }
     
     @GetMapping(path = "/refresh_map/{gameId}&{mobileId}")
-    public Response<RunningGameInstance> refreshMap(@PathVariable(name = "gameId") String gameId, @PathVariable(name = "mobileId") String mobileId,
+    public Response<List<RunningTile>> refreshMap(@PathVariable(name = "gameId") String gameId, @PathVariable(name = "mobileId") String mobileId,
                                                     @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             UUID runningGameId = UUID.fromString(gameId);
             UUID mobileUuid = UUID.fromString(mobileId);
-            return gameRunningService.getRunningGame(runningGameId, mobileUuid);
+            return gameRunningService.getRunningTiles(runningGameId);
         } catch (IllegalArgumentException e) {
             return Response.fail(403, "AUTHORIZATION FAILED");
         } catch (JSONException e) {

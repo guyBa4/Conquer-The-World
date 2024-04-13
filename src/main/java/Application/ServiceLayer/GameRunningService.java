@@ -199,6 +199,19 @@ public class GameRunningService {
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }
     }
+    public Response<List<RunningTile>> getRunningTiles(UUID runningGameId) {
+        try {
+            Optional<RunningGameInstance> optionalRunningGameInstance = runningGameInstanceRepository.findById(runningGameId);
+            RunningGameInstance runningGameInstance;
+            if (optionalRunningGameInstance.isEmpty())
+                return Response.fail("game id not valid");
+            runningGameInstance = optionalRunningGameInstance.get();
+                return Response.ok(runningGameInstance.getTiles());
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the exception or handle it appropriately
+            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+        }
+    }
 
 
     public Response<AssignedQuestion> getQuestion(int difficulty, UUID runningGameId) {
