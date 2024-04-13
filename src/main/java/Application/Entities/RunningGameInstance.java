@@ -204,6 +204,7 @@ public class RunningGameInstance {
         java.util.Map<String, String>  jsonMap = gameInstance.toJsonMap();
         jsonMap.put("code", code);
         jsonMap.put("runningId", this.runningId.toString());
+        jsonMap.put("status", this.status);
         return jsonMap;
     }
 }
