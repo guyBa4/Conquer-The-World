@@ -159,7 +159,7 @@ public class RunningGameController {
         }
     }
     
-    @GetMapping(path = "/refresh_map/{gameId}&{mobileId}")
+    @GetMapping(path = "/refresh_map/runningGameId={gameId}&userId={mobileId}")
     public Response<List<RunningTile>> refreshMap(@PathVariable(name = "gameId") String gameId, @PathVariable(name = "mobileId") String mobileId,
                                                     @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {

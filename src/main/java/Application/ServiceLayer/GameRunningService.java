@@ -78,7 +78,7 @@ public class GameRunningService {
 //            gameCodeToRunningGameInstance.put(runningGameInstance.getCode(), runningGameInstance);
 //            runningGamesIdToRunningGameInstance.put(runningGameInstance.getRunningId(), runningGameInstance);
             updateGameStatus(runningGameInstance, GameStatus.WAITING_ROOM.toString());
-            gameInstanceRepository.save(gameInstance);
+            runningGameInstanceRepository.save(runningGameInstance);
             java.util.Map<String, String> runningGameInstanceMap = runningGameInstance.toJsonMap();
             return Response.ok(runningGameInstanceMap);
         } catch (Exception e) {
