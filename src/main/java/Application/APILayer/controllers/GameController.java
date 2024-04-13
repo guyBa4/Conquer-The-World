@@ -36,7 +36,7 @@ public class GameController {
     @ResponseBody
     public Response<GameInstance> addGameInstance(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
-            tokenHandler.verifyWebUserToken(authorizationHeader);
+//            tokenHandler.verifyWebUserToken(authorizationHeader);
             JSONObject jsonObj = new JSONObject(inputJson);
             Response<GameInstance> response = gameService.addGameInstance(jsonObj);
             return response;
