@@ -39,7 +39,7 @@ public class RunningGameInstance {
     private EntityManager entityManager;
 
     //    @Transient
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "Game_instance_id")
     private GameInstance gameInstance;
 

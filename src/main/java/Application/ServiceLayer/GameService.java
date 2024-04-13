@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import javax.management.modelmbean.ModelMBeanNotificationInfo;
 import java.util.*;
+
+//import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Service
@@ -23,10 +25,9 @@ public class GameService {
     private GameInstanceRepository gameInstanceRepository;
     private QuestionRepository questionRepository;
     private RunningGameInstanceRepository runningGameInstanceRepository;
+    private QuestionnaireRepository questionnaireRepository;
     private UserRepository userRepository;
     private MapRepository mapRepository;
-    private QuestionnaireRepository questionnaireRepository;
-    private java.util.Map<UUID, GameInstance> gameInstanceMap;
     private GameRunningService gameRunningService;
 
     private GameService(){}
@@ -77,7 +78,6 @@ public class GameService {
         this.repositoryFactory = repositoryFactory;
         jsonToInstance = JsonToInstance.getInstance();
         setRepositories(repositoryFactory);
-        this.gameInstanceMap = new HashMap<>();
         this.gameRunningService = GameRunningService.getInstance();
         if (!gameRunningService.isInit())
             gameRunningService.init(repositoryFactory);
@@ -150,13 +150,23 @@ public class GameService {
 //        return Response.ok(new FlatGameInstance(gameInstanceMap.get(id)));
 //    }
     public Response<GameInstance> getGameInstance(UUID id){
-        return Response.ok(gameInstanceMap.get(id));
+
+        Optional<GameInstance> optionalGameInstance = gameInstanceRepository.findById(id);
+        if (!optionalGameInstance.isEmpty()) {
+//            FlatGameInstance flatGameInstance = new FlatGameInstance(optionalGameInstance.get());
+            return Response.ok(optionalGameInstance.get());
+        }
+        return Response.fail("game instance id not exist");
     }
-    public Response<Collection<FlatGameInstance>> getAllGameInstance(){
-        Collection<FlatGameInstance> flatGames = new ConcurrentLinkedQueue<>();
-        for (GameInstance gameInstance : gameInstanceMap.values())
-            flatGames.add(new FlatGameInstance(gameInstance));
-        return Response.ok(flatGames);
+    public Response<List<java.util.Map<String, String>>> getAllGameInstance(){
+        List<GameInstance> gameInstances = gameInstanceRepository.findAll();
+//        return gameInstances.stream().map()
+        List<java.util.Map<String, String>> flatGameInstances = new LinkedList<>();
+
+        for(GameInstance gameInstance : gameInstances){
+            flatGameInstances.add(gameInstance.toJson());
+        }
+        return Response.ok(flatGameInstances);
     }
 
     private List<Question> initQuestionsObjects(){

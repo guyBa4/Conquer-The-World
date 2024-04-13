@@ -20,7 +20,7 @@ public class Map {
     private boolean shared;
 
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "map_id")
     private List<Tile> tiles;
 

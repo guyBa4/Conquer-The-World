@@ -14,9 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -66,9 +69,10 @@ public class GameController {
 
     @GetMapping(path = "/get_all_games")
     @ResponseBody
-    public Response<Collection<FlatGameInstance>> GetGamesInstances() {
+    public Response<List<Map<String,String>>> GetGamesInstances() {
         try {
-            return gameService.getAllGameInstance();
+            Response<List<Map<String, String>>> response = gameService.getAllGameInstance();
+            return response;
         } catch (IllegalArgumentException e) {
             return Response.fail(403, "AUTHORIZATION FAILED");
         } catch (JSONException e) {

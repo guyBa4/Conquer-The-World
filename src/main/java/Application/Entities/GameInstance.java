@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import java.sql.Time;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -245,5 +246,24 @@ public class GameInstance {
         this.timeLastUpdated = timeLastUpdated;
     }
 
-
+    public java.util.Map<String, String> toJson() {
+        java.util.Map<String, String>  jsonObject = new HashMap<>();
+        jsonObject.put("id", id.toString());
+        jsonObject.put("name", name);
+        jsonObject.put("host", host.getId().toString());
+        jsonObject.put("status", status);
+        jsonObject.put("timeCreated", timeCreated.toString());
+        jsonObject.put("timeLastUpdated", timeLastUpdated.toString());
+        jsonObject.put("numberOfGroups", String.valueOf(numberOfGroups));
+        jsonObject.put("description", description);
+        jsonObject.put("groupAssignmentProtocol", groupAssignmentProtocol);
+        jsonObject.put("gameTime", String.valueOf(gameTime));
+        jsonObject.put("shared", String.valueOf(shared));
+        jsonObject.put("questionTimeLimit", String.valueOf(questionTimeLimit));
+        jsonObject.put("mapId", map.getId().toString());
+        jsonObject.put("mapName", map.getName());
+        jsonObject.put("questionnaireId", questionnaire.getId().toString());
+        jsonObject.put("questionnaireName", questionnaire.getName());
+        return jsonObject;
+    }
 }

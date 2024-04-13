@@ -18,7 +18,7 @@ public class RunningTile {
     @Column(name = "tile_type")
     private TileType tileType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "permanent_tile_id")
     private Tile tile;
 

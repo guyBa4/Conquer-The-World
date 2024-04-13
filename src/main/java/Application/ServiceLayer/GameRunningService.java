@@ -65,31 +65,31 @@ public class GameRunningService {
         this.mobilePlayerRepository = repositoryFactory.mobilePlayerRepository;
     }
 
-    public Response<RunningGameInstance> OpenWaitingRoom(UUID gameId, UUID hostId, String code){ // in this function RunningGameInstance is created
-        try{
-            Optional<GameInstance> optGameInstance = gameInstanceRepository.findById(gameId);
-            if (optGameInstance.isEmpty())
-                return Response.fail("there is no game with this UUID");
-            GameInstance gameInstance = optGameInstance.get();
-//            if (gameInstance.getStatus() == )
+//    public Response<RunningGameInstance> OpenWaitingRoom(UUID gameId, UUID hostId, String code){ // in this function RunningGameInstance is created
+//        try{
+//            Optional<GameInstance> optGameInstance = gameInstanceRepository.findById(gameId);
+//            if (optGameInstance.isEmpty())
 //                return Response.fail("there is no game with this UUID");
-            Response<GameInstance> response = GameService.getInstance().getGameInstance(gameId);
-            if(response.isError())
-                return Response.fail(response.getMessage());
-//            GameInstance gameInstance = response.getValue();
-            if (!gameInstance.getHost().getId().equals(hostId))
-                return Response.fail("wrong host UUID");
-            RunningGameInstance runningGameInstance = new RunningGameInstance(gameInstance, code);
-//            gameCodeToRunningGameInstance.put(runningGameInstance.getCode(), runningGameInstance);
-//            runningGamesIdToRunningGameInstance.put(runningGameInstance.getRunningId(), runningGameInstance);
-            updateGameStatus(runningGameInstance, GameStatus.WAITING_ROOM.toString());
-            gameInstanceRepository.save(gameInstance);
-            return Response.ok(runningGameInstance);
-        } catch (Exception e) {
-            e.printStackTrace(); // Log the exception or handle it appropriately
-            return Response.fail(500, "Internal Server Error"); // Internal Server Error
-        }
-    }
+//            GameInstance gameInstance = optGameInstance.get();
+////            if (gameInstance.getStatus() == )
+////                return Response.fail("there is no game with this UUID");
+//            Response<GameInstance> response = GameService.getInstance().getGameInstance(gameId);
+//            if(response.isError())
+//                return Response.fail(response.getMessage());
+////            GameInstance gameInstance = response.getValue();
+//            if (!gameInstance.getHost().getId().equals(hostId))
+//                return Response.fail("wrong host UUID");
+//            RunningGameInstance runningGameInstance = new RunningGameInstance(gameInstance, code);
+////            gameCodeToRunningGameInstance.put(runningGameInstance.getCode(), runningGameInstance);
+////            runningGamesIdToRunningGameInstance.put(runningGameInstance.getRunningId(), runningGameInstance);
+//            updateGameStatus(runningGameInstance, GameStatus.WAITING_ROOM.toString());
+//            gameInstanceRepository.save(gameInstance);
+//            return Response.ok(runningGameInstance);
+//        } catch (Exception e) {
+//            e.printStackTrace(); // Log the exception or handle it appropriately
+//            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+//        }
+//    }
 
     public Response<UUID> enterGameWithCode(String gameCode) {
         try {

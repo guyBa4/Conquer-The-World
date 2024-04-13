@@ -20,7 +20,7 @@ public class Questionnaire {
     @JoinColumn(name = "user_id")
     private User creator;
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "questionnaire_id")
     private List<AssignedQuestion> questions;
 

@@ -35,22 +35,22 @@ public class RunningGameController {
         LOG = getLogger(this.getClass().toString());
     }
 
-    @PostMapping(path = "/open_waiting_room")
-    @ResponseBody
-    public Response<RunningGameInstance> OpenWaitingRoom(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
-        try {
-            JSONObject jsonObj = new JSONObject(inputJson);
-            LOG.info("Request received by /open_waiting_room endpoint:\n" + jsonObj);
-            UUID gameId = UUID.fromString(jsonObj.getString("gameId"));
-            UUID userId = UUID.fromString(jsonObj.getString("userId"));
-            String code = jsonObj.getString("code");
-            return gameRunningService.OpenWaitingRoom(gameId, userId, code);
-        } catch (IllegalArgumentException e) {
-            return Response.fail(403, "AUTHORIZATION FAILED");
-        } catch (JSONException e) {
-            return Response.fail(500, "Internal Server Error");
-        }
-    }
+//    @PostMapping(path = "/open_waiting_room")
+//    @ResponseBody
+//    public Response<RunningGameInstance> OpenWaitingRoom(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+//        try {
+//            JSONObject jsonObj = new JSONObject(inputJson);
+//            LOG.info("Request received by /open_waiting_room endpoint:\n" + jsonObj);
+//            UUID gameId = UUID.fromString(jsonObj.getString("gameId"));
+//            UUID userId = UUID.fromString(jsonObj.getString("userId"));
+//            String code = jsonObj.getString("code");
+//            return gameRunningService.OpenWaitingRoom(gameId, userId, code);
+//        } catch (IllegalArgumentException e) {
+//            return Response.fail(403, "AUTHORIZATION FAILED");
+//        } catch (JSONException e) {
+//            return Response.fail(500, "Internal Server Error");
+//        }
+//    }
 
     @PostMapping(path = "/enter_game_code")
     @ResponseBody
