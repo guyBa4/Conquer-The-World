@@ -149,7 +149,7 @@ public class RunningGameInstance {
         if (!answers.isEmpty() && answers.get(0) != null && answers.get(0).getAnswerText().equals(answer)) {
             RunningTile tile = null;
             for(RunningTile runningTile : tiles){
-                if (runningTile.getTile().getId().equals(tileId))
+                if (runningTile.getId().equals(UUID.fromString(tileId)))
                     tile = runningTile;
             }
             if (tile == null)
