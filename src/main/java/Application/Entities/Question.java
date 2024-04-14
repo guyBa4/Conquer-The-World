@@ -18,6 +18,7 @@ public class Question {
     private String question;
 
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinColumn(name = "question_id")
     private List<Answer> answers;
 
     @Column
