@@ -2,15 +2,15 @@ package Application.Entities;
 
 import Application.Enums.GameStatus;
 import Application.Enums.GroupAssignmentProtocol;
-import Application.Enums.TileType;
+
 import static java.util.logging.Logger.getLogger;
 
+import Application.Repositories.AnswerRepository;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.*;
 import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.logging.Logger;
 
 @Entity
@@ -46,7 +46,7 @@ public class RunningGameInstance {
 
     //    @Transient
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "Game_instance_id")
+    @JoinColumn(name = "game_instance_id")
     private GameInstance gameInstance;
 
     public RunningGameInstance(){}
@@ -140,9 +140,13 @@ public class RunningGameInstance {
         return questionList.get(i);
     }
 
-    public boolean checkAnswer(String tileId, int group, UUID questionId, String answer) {
-        List<AssignedQuestion> questionList = gameInstance.getQuestionnaire().getQuestions().stream().filter((question) -> (question.getQuestion().getId().equals(questionId))).toList();
-        if (questionList.get(0).getQuestion().getAnswers().equals(answer)) {
+    public boolean checkAnswer(String tileId, int group, UUID questionId, String answer, AnswerRepository answerRepository) {
+        List<Answer> answers = answerRepository.findByQuestionId(questionId);
+        if (answers == null || answers.isEmpty()) {
+            throw new IllegalArgumentException("Failed to find answers for question " + questionId);
+        }
+        answers = answers.stream().filter(Answer::getCorrect).toList();
+        if (!answers.isEmpty() && answers.get(0) != null && answers.get(0).getAnswerText().equals(answer)) {
             RunningTile tile = null;
             for(RunningTile runningTile : tiles){
                 if (runningTile.getTile().getId().equals(tileId))

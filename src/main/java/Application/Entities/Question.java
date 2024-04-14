@@ -11,14 +11,13 @@ public class Question {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID) // or GenerationType.IDENTITY
-    @Column(name = "Id", nullable = false, unique = true)
-    private UUID Id;
+    @Column(name = "id", nullable = false, unique = true)
+    private UUID id;
     private boolean multipleChoice;
     @Column
     private String question;
 
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @JoinColumn(name = "question_id")
     private List<Answer> answers;
 
     @Column
@@ -46,11 +45,11 @@ public class Question {
     }
 
     public UUID getId() {
-        return Id;
+        return id;
     }
 
     public void setId(UUID id) {
-        Id = id;
+        this.id = id;
     }
 
     public boolean isMultipleChoice() {
@@ -82,7 +81,7 @@ public class Question {
     public boolean isAnswerCorrect(String answerInput) {
         for(Answer ans : answers){
             if (ans.getAnswerText().equals(answerInput))
-                return ans.isCorrect();
+                return ans.getCorrect();
         }
         return false;
     }

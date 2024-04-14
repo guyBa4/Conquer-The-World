@@ -11,7 +11,7 @@ public class Questionnaire {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false, unique = true)
-    private UUID uuid;
+    private UUID id;
 
     @Column(name = "name")
     private String name;
@@ -47,7 +47,7 @@ public class Questionnaire {
     }
 
     public UUID getId() {
-        return uuid;
+        return id;
     }
 
     public void setId(UUID uuid) {

@@ -21,9 +21,6 @@ public class GameRunningService {
     private RunningGameInstanceRepository runningGameInstanceRepository;
     private MobilePlayerRepository mobilePlayerRepository;
     private UserRepository userRepository;
-//    private Map<String, RunningGameInstance> gameCodeToRunningGameInstance;
-//    private Map<UUID, RunningGameInstance> mobileIdToRunningGameInstance;
-//    private Map<UUID, RunningGameInstance> runningGamesIdToRunningGameInstance;
     private static Logger LOG;
 
     public boolean isInit() {
@@ -237,7 +234,7 @@ public class GameRunningService {
                 LOG.severe("Did not find user with ID: " + userId.toString());
                 return Response.fail("Did not find user by ID");
             }
-            boolean isCorrect = runningGameInstance.checkAnswer(tileId, player.getGroup(), questionId, answer);
+            boolean isCorrect = runningGameInstance.checkAnswer(tileId, player.getGroup(), questionId, answer, repositoryFactory.answerRepository);
             return Response.ok(isCorrect);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
@@ -260,16 +257,4 @@ public class GameRunningService {
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }
     }
-
-//    public Response<Boolean> validateAnswer(UUID runningGameUuid, UUID questionUuid, String answer) {
-//        try {
-//            RunningGameInstance runningGameInstance = runningGamesIdToRunningGameInstance.get(runningGameUuid);
-//            if (runningGameInstance == null)
-//                return Response.fail("runningGameUuid not exist");
-//            return Response.ok( runningGameInstance.checkAnswer(questionId, answer));
-//        } catch (Exception e) {
-//            e.printStackTrace(); // Log the exception or handle it appropriately
-//            return Response.fail(500, "Internal Server Error"); // Internal Server Error
-//        }
-//    }
 }

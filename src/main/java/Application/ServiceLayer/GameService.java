@@ -28,6 +28,7 @@ public class GameService {
     private UserRepository userRepository;
     private MapRepository mapRepository;
     private GameRunningService gameRunningService;
+    private AnswerRepository answerRepository;
 
     private GameService(){}
 
@@ -103,6 +104,7 @@ public class GameService {
         this.userRepository = repositoryFactory.userRepository;
         this.mapRepository = repositoryFactory.mapRepository;
         this.runningGameInstanceRepository = repositoryFactory.runningGameInstanceRepository;
+        this.answerRepository = repositoryFactory.answerRepository;
     }
 
     public Response<GameInstance> addGameInstance(JSONObject jsonObject) {
@@ -151,6 +153,9 @@ public class GameService {
         answerList1.add(new Answer("-5", false));
         Question question1 = new Question(true, "1 + 5 = ?", answerList1,1);
         questionRepository.save(question1);
+        for (Answer answer : answerList1)
+            answer.setQuestion(question1);
+        answerRepository.saveAll(answerList1);
         questionList.add(question1);
         // Question 2
         List<Answer> answerList2 = new LinkedList<>();
@@ -159,6 +164,9 @@ public class GameService {
         answerList2.add(new Answer("Italy", true));
         Question question2 = new Question(true, "What is the capital of Italy?", answerList2, 2);
         questionRepository.save(question2);
+        for (Answer answer : answerList2)
+            answer.setQuestion(question2);
+        answerRepository.saveAll(answerList2);
         questionList.add(question2);
 
 // Question 3
@@ -168,6 +176,9 @@ public class GameService {
         answerList3.add(new Answer("Venus", false));
         Question question3 = new Question(true, "Which planet is known as the Red Planet?", answerList3, 3);
         questionRepository.save(question3);
+        for (Answer answer : answerList3)
+            answer.setQuestion(question3);
+        answerRepository.saveAll(answerList3);
         questionList.add(question3);
 
 // Question 4
@@ -177,6 +188,9 @@ public class GameService {
         answerList4.add(new Answer("Canada", false));
         Question question4 = new Question(true, "Which country is also a continent?", answerList4, 4);
         questionRepository.save(question4);
+        for (Answer answer : answerList4)
+            answer.setQuestion(question4);
+        answerRepository.saveAll(answerList4);
         questionList.add(question4);
 
 // Question 5
@@ -186,6 +200,9 @@ public class GameService {
         answerList5.add(new Answer("Pablo Picasso", false));
         Question question5 = new Question(true, "Who painted the Mona Lisa?", answerList5, 5);
         questionRepository.save(question5);
+        for (Answer answer : answerList5)
+            answer.setQuestion(question5);
+        answerRepository.saveAll(answerList5);
         questionList.add(question5);
 
 // Question 6
@@ -195,6 +212,9 @@ public class GameService {
         answerList6.add(new Answer("Chile", true));
         Question question6 = new Question(true, "Which country is located along the western coast of South America?", answerList6, 1);
         questionRepository.save(question6);
+        for (Answer answer : answerList6)
+            answer.setQuestion(question6);
+        answerRepository.saveAll(answerList6);
         questionList.add(question6);
 // Question 7
         List<Answer> answerList7 = new LinkedList<>();
@@ -203,6 +223,9 @@ public class GameService {
         answerList7.add(new Answer("Seoul", false));
         Question question7 = new Question(true, "What is the capital of Japan?", answerList7, 3);
         questionRepository.save(question7);
+        for (Answer answer : answerList7)
+            answer.setQuestion(question7);
+        answerRepository.saveAll(answerList7);
         questionList.add(question7);
 
 // Question 8
@@ -212,6 +235,9 @@ public class GameService {
         answerList8.add(new Answer("Big Ben", false));
         Question question8 = new Question(true, "Which famous landmark is located in Italy?", answerList8, 3);
         questionRepository.save(question8);
+        for (Answer answer : answerList8)
+            answer.setQuestion(question8);
+        answerRepository.saveAll(answerList8);
         questionList.add(question8);
 
 // Question 9
@@ -221,6 +247,9 @@ public class GameService {
         answerList9.add(new Answer("Java", false));
         Question question9 = new Question(true, "Which programming language uses indentation for block delimiters?", answerList9, 4);
         questionRepository.save(question9);
+        for (Answer answer : answerList9)
+            answer.setQuestion(question9);
+        answerRepository.saveAll(answerList9);
         questionList.add(question9);
 
 // Question 10
@@ -230,6 +259,9 @@ public class GameService {
         answerList10.add(new Answer("Mississippi River", false));
         Question question10 = new Question(true, "Which river is the longest in the world?", answerList10, 1);
         questionRepository.save(question10);
+        for (Answer answer : answerList10)
+            answer.setQuestion(question10);
+        answerRepository.saveAll(answerList10);
         questionList.add(question10);
 
 // Question 11
@@ -239,6 +271,9 @@ public class GameService {
         answerList11.add(new Answer("China", false));
         Question question11 = new Question(true, "Which country is the largest by land area?", answerList11, 1);
         questionRepository.save(question11);
+        for (Answer answer : answerList11)
+            answer.setQuestion(question11);
+        answerRepository.saveAll(answerList11);
         questionList.add(question11);
 
 // Question 12
@@ -248,6 +283,9 @@ public class GameService {
         answerList12.add(new Answer("Bach", false));
         Question question12 = new Question(true, "Who composed the Moonlight Sonata?", answerList12, 2);
         questionRepository.save(question12);
+        for (Answer answer : answerList12)
+            answer.setQuestion(question12);
+        answerRepository.saveAll(answerList12);
         questionList.add(question12);
 
 // Question 13
@@ -257,6 +295,9 @@ public class GameService {
         answerList13.add(new Answer("Chicago", true));
         Question question13 = new Question(true, "Which city is known as the Windy City?", answerList13, 3);
         questionRepository.save(question13);
+        for (Answer answer : answerList13)
+            answer.setQuestion(question13);
+        answerRepository.saveAll(answerList13);
         questionList.add(question13);
 
 // Question 14
@@ -266,6 +307,9 @@ public class GameService {
         answerList14.add(new Answer("Tolstoy", false));
         Question question14 = new Question(true, "Who wrote the play 'Romeo and Juliet'?", answerList14, 4);
         questionRepository.save(question14);
+        for (Answer answer : answerList14)
+            answer.setQuestion(question14);
+        answerRepository.saveAll(answerList14);
         questionList.add(question14);
 
 // Question 15
@@ -275,6 +319,9 @@ public class GameService {
         answerList15.add(new Answer("Guangzhou", false));
         Question question15 = new Question(true, "What is the capital of China?", answerList15, 5);
         questionRepository.save(question15);
+        for (Answer answer : answerList15)
+            answer.setQuestion(question15);
+        answerRepository.saveAll(answerList15);
         questionList.add(question15);
 
 // Question 16
@@ -284,6 +331,9 @@ public class GameService {
         answerList16.add(new Answer("Kobe Bryant", false));
         Question question16 = new Question(true, "Who is widely regarded as the greatest basketball player of all time?", answerList16, 5);
         questionRepository.save(question16);
+        for (Answer answer : answerList16)
+            answer.setQuestion(question16);
+        answerRepository.saveAll(answerList16);
         questionList.add(question16);
 
         // Question 17
@@ -293,6 +343,9 @@ public class GameService {
         answerList17.add(new Answer("Machu Picchu", false));
         Question question17 = new Question(true, "Which is the longest wall in the world?", answerList17, 3);
         questionRepository.save(question17);
+        for (Answer answer : answerList17)
+            answer.setQuestion(question17);
+        answerRepository.saveAll(answerList17);
         questionList.add(question17);
 
 // Question 18
@@ -302,6 +355,9 @@ public class GameService {
         answerList18.add(new Answer("Amazon", true));
         Question question18 = new Question(true, "Which river has the largest drainage basin?", answerList18, 1);
         questionRepository.save(question18);
+        for (Answer answer : answerList18)
+            answer.setQuestion(question18);
+        answerRepository.saveAll(answerList18);
         questionList.add(question18);
 
 // Question 19
@@ -311,6 +367,9 @@ public class GameService {
         answerList19.add(new Answer("Seville", true));
         Question question19 = new Question(true, "Which city is the capital of Andalusia?", answerList19, 1);
         questionRepository.save(question19);
+        for (Answer answer : answerList19)
+            answer.setQuestion(question19);
+        answerRepository.saveAll(answerList19);
         questionList.add(question19);
 
 // Question 20
@@ -320,6 +379,9 @@ public class GameService {
         answerList20.add(new Answer("Rome", false));
         Question question20 = new Question(true, "Which city lies on the River Thames?", answerList20, 2);
         questionRepository.save(question20);
+        for (Answer answer : answerList20)
+            answer.setQuestion(question20);
+        answerRepository.saveAll(answerList20);
         questionList.add(question20);
 
 // Question 21
@@ -329,6 +391,9 @@ public class GameService {
         answerList21.add(new Answer("Mars", false));
         Question question21 = new Question(true, "Which planet is the farthest from the Sun?", answerList21, 1);
         questionRepository.save(question21);
+        for (Answer answer : answerList21)
+            answer.setQuestion(question21);
+        answerRepository.saveAll(answerList21);
         questionList.add(question21);
 
 // Question 22
@@ -338,6 +403,9 @@ public class GameService {
         answerList22.add(new Answer("Frankfurt", false));
         Question question22 = new Question(true, "Which city is the capital of Germany?", answerList22, 2);
         questionRepository.save(question22);
+        for (Answer answer : answerList22)
+            answer.setQuestion(question22);
+        answerRepository.saveAll(answerList22);
         questionList.add(question22);
 
 // Question 23
@@ -347,6 +415,9 @@ public class GameService {
         answerList23.add(new Answer("Brisbane", false));
         Question question23 = new Question(true, "Which city is home to the Sydney Opera House?", answerList23, 3);
         questionRepository.save(question23);
+        for (Answer answer : answerList23)
+            answer.setQuestion(question23);
+        answerRepository.saveAll(answerList23);
         questionList.add(question23);
 
 // Question 24
@@ -356,6 +427,9 @@ public class GameService {
         answerList24.add(new Answer("Jane Austen", false));
         Question question24 = new Question(true, "Who wrote the play 'Hamlet'?", answerList24, 4);
         questionRepository.save(question24);
+        for (Answer answer : answerList24)
+            answer.setQuestion(question24);
+        answerRepository.saveAll(answerList24);
         questionList.add(question24);
 
 // Question 25
@@ -365,6 +439,9 @@ public class GameService {
         answerList25.add(new Answer("Brazil", false));
         Question question25 = new Question(true, "Which country celebrates Diwali?", answerList25, 5);
         questionRepository.save(question25);
+        for (Answer answer : answerList25)
+            answer.setQuestion(question25);
+        answerRepository.saveAll(answerList25);
         questionList.add(question25);
 
 // Question 26
@@ -374,6 +451,9 @@ public class GameService {
         answerList26.add(new Answer("Lion", false));
         Question question26 = new Question(true, "Which animal has the longest neck?", answerList26, 2);
         questionRepository.save(question26);
+        for (Answer answer : answerList26)
+            answer.setQuestion(question26);
+        answerRepository.saveAll(answerList26);
         questionList.add(question26);
 
         return questionList;
