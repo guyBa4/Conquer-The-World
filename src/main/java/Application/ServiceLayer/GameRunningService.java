@@ -235,6 +235,7 @@ public class GameRunningService {
                 return Response.fail("Did not find user by ID");
             }
             boolean isCorrect = runningGameInstance.checkAnswer(tileId, player.getGroup(), questionId, answer, repositoryFactory.answerRepository);
+            runningGameInstanceRepository.save(runningGameInstance);
             return Response.ok(isCorrect);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately

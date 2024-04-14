@@ -148,8 +148,10 @@ public class RunningGameInstance {
         if (!answers.isEmpty() && answers.get(0) != null && answers.get(0).getAnswerText().equals(answer)) {
             RunningTile tile = null;
             for(RunningTile runningTile : tiles){
-                if (runningTile.getId().equals(UUID.fromString(tileId)))
+                if (runningTile.getId().equals(UUID.fromString(tileId))) {
                     tile = runningTile;
+                    break;
+                }
             }
             if (tile == null)
                 throw new IllegalArgumentException("Failed to find tile by tileId.");
