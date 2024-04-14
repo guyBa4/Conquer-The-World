@@ -38,7 +38,7 @@ public class RunningGameInstance {
     private List<RunningTile> tiles;
 
     @Transient
-    private static Logger LOG;
+    private static Logger LOG = getLogger(RunningGameInstance.class.toString());
 
     @Transient
     @PersistenceContext
@@ -54,7 +54,6 @@ public class RunningGameInstance {
     public RunningGameInstance(GameInstance gameInstance) {//copy contractor
         this.gameInstance = gameInstance;
         runningId = UUID.randomUUID();
-        LOG = getLogger(this.getClass().toString());
         this.code = code;
         this.mobilePlayers = new LinkedList<>();
         this.tiles = new LinkedList<>();
@@ -106,12 +105,12 @@ public class RunningGameInstance {
     }
 
     public void addMobilePlayer(MobilePlayer mobilePlayer){
-        mobilePlayers.add(mobilePlayer);
-        if (gameInstance.getStatus().equals(GameStatus.STARTED.toString())) {
+        if (status.equals(GameStatus.STARTED.toString())) {
             int group = getSmallestGroup();
             mobilePlayer.setGroup(group);
-            LOG.info("Added mobile player " + mobilePlayer.getName() + " to group " + group);
+            LOG.info("Added new mobile player to group " + group);
         }
+        mobilePlayers.add(mobilePlayer);
     }
     
     private int getSmallestGroup() {
@@ -124,7 +123,7 @@ public class RunningGameInstance {
             groupSizes.put(playerGroup, groupSize + 1);
         }
         int smallestGroupSize = Integer.MAX_VALUE;
-        int smallestGroup = 0;
+        int smallestGroup = 1;
         for (Map.Entry<Integer, Integer> group : groupSizes.entrySet()) {
             if (group.getValue() < smallestGroupSize) {
                 smallestGroupSize = group.getValue();
