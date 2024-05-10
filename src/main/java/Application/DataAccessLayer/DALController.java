@@ -68,7 +68,7 @@ public class DALController {
     public RunningGameInstance getRunningGameInstance(UUID uuid){
         Optional<RunningGameInstance> optional = repositoryFactory.runningGameInstanceRepository.findById(uuid);
         if (optional.isEmpty())
-            throw new IllegalArgumentException("there is no user with this UUID : " + uuid);
+            throw new IllegalArgumentException("there is no running game instance with this UUID : " + uuid);
         RunningGameInstance object = optional.get();
         return object;
     }
@@ -76,8 +76,16 @@ public class DALController {
     public MobilePlayer getMobilePlayer(UUID uuid){
         Optional<MobilePlayer> optional = repositoryFactory.mobilePlayerRepository.findById(uuid);
         if (optional.isEmpty())
-            throw new IllegalArgumentException("there is no user with this UUID : " + uuid);
+            throw new IllegalArgumentException("there is no MobilePlayer with this UUID : " + uuid);
         MobilePlayer object = optional.get();
+        return object;
+    }
+
+    public Map getMap(UUID uuid){
+        Optional<Map> optional = repositoryFactory.mapRepository.findById(uuid);
+        if (optional.isEmpty())
+            throw new IllegalArgumentException("there is no Map with this UUID : " + uuid);
+        Map object = optional.get();
         return object;
     }
 

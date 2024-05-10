@@ -46,7 +46,7 @@ public class RunningGameController {
             UUID userId = UUID.fromString(jsonObj.getString("userId"));
             return gameRunningService.OpenWaitingRoom(gameId, userId);
         } catch (IllegalArgumentException e) {
-            return Response.fail(403, "AUTHORIZATION FAILED");
+            return Response.fail(403, e.toString());
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error");
         }
@@ -88,7 +88,7 @@ public class RunningGameController {
             UUID gameUuid = UUID.fromString(gameId);
             return gameRunningService.getWaitingRoomDetails(gameUuid);
         } catch (IllegalArgumentException e) {
-            return Response.fail(403, "AUTHORIZATION FAILED");
+            return Response.fail(403, e.toString());
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error");
         }
@@ -103,7 +103,7 @@ public class RunningGameController {
             UUID gameId = UUID.fromString(jsonObj.getString("gameId"));
             return gameRunningService.startGame(gameId);
         } catch (IllegalArgumentException e) {
-            return Response.fail(403, "AUTHORIZATION FAILED");
+            return Response.fail(403, e.toString());
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
@@ -132,7 +132,7 @@ public class RunningGameController {
             LOG.info(String.format("Request received by /generate_question endpoint:\n {'difficulty': %s, 'runningGameId': %s}", difficulty, runningGameId));
             return gameRunningService.getQuestion(difficulty, UUID.fromString(runningGameId));
         } catch (IllegalArgumentException e) {
-            return Response.fail(403, "AUTHORIZATION FAILED");
+            return Response.fail(403, e.toString());
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error");
         }
@@ -153,7 +153,7 @@ public class RunningGameController {
             String answer = jsonObj.getString("answer");
             return gameRunningService.checkAnswer(runningGameId, tileId, mobileUuid, questionUuid, answer);
         } catch (IllegalArgumentException e) {
-            return Response.fail(403, "AUTHORIZATION FAILED");
+            return Response.fail(403, e.toString());
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error");
         }
@@ -166,7 +166,7 @@ public class RunningGameController {
 //            UUID mobileUuid = UUID.fromString(mobileId);
             return gameRunningService.getRunningTiles(runningGameId);
         } catch (IllegalArgumentException e) {
-            return Response.fail(403, "AUTHORIZATION FAILED");
+            return Response.fail(403, e.toString());
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error");
         }
@@ -182,11 +182,10 @@ public class RunningGameController {
 //            UUID hostId = UUID.fromString(authorizationHeader);
             return gameRunningService.endRunningGame(runningGameId);
         } catch (IllegalArgumentException e) {
-            return Response.fail(403, "AUTHORIZATION FAILED");
+            return Response.fail(403, e.toString());
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error");
         }
     }
-
 
 }

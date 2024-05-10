@@ -24,7 +24,7 @@ public class Question {
     @Column
     private Integer difficulty;
 
-    //    @Transient
+//    @Transient
 //    private List<String> tags;
 
 
@@ -33,10 +33,10 @@ public class Question {
     }
 
 
-    public Question(boolean multipleChoice, String question, List<Answer> answer, Integer difficulty) {
+    public Question(boolean multipleChoice, String question, List<Answer> answers, Integer difficulty) {
         this.multipleChoice = multipleChoice;
         this.question = question;
-        this.answers = answer;
+        this.answers = answers;
         this.difficulty = difficulty;
     }
     public Question(boolean multipleChoice, String question, Integer difficulty) {

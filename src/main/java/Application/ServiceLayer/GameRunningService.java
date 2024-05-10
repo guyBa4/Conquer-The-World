@@ -69,9 +69,12 @@ public class GameRunningService {
             updateGameStatus(runningGameInstance, GameStatus.WAITING_ROOM);
             runningGameInstanceRepository.save(runningGameInstance);
             return Response.ok(runningGameInstance);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.fail(403, e.toString());
         } catch (Exception e) {
-            e.printStackTrace(); // Log the exception or handle it appropriately
-            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+            e.printStackTrace();
+            return Response.fail(500, "Internal Server Error : \n" + e.toString());
         }
     }
 
@@ -88,9 +91,12 @@ public class GameRunningService {
             LOG.info("mobile enter code : " + mobilePlayer.getUuid());
             LOG.info("for running game instance with id : " + runningGameInstance.getRunningId() + " : " + runningGameInstance.getName());
             return Response.ok(mobilePlayer.getUuid());
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.fail(403, e.toString());
         } catch (Exception e) {
-            e.printStackTrace(); // Log the exception or handle it appropriately
-            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+            e.printStackTrace();
+            return Response.fail(500, "Internal Server Error : \n" + e.toString());
         }
     }
 
@@ -104,9 +110,12 @@ public class GameRunningService {
             LOG.info("mobile enter name : " + mobilePlayer.getName());
             LOG.info("for running game instance with id : " + runningGameInstance.getRunningId() + " : " + runningGameInstance.getName());
             return Response.ok(runningGameInstance);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.fail(403, e.toString());
         } catch (Exception e) {
-            e.printStackTrace(); // Log the exception or handle it appropriately
-            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+            e.printStackTrace();
+            return Response.fail(500, "Internal Server Error : \n" + e.toString());
         }
     }
 
@@ -114,9 +123,12 @@ public class GameRunningService {
         try {
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameid);
             return Response.ok(runningGameInstance);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.fail(403, e.toString());
         } catch (Exception e) {
-            e.printStackTrace(); // Log the exception or handle it appropriately
-            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+            e.printStackTrace();
+            return Response.fail(500, "Internal Server Error : \n" + e.toString());
         }
     }
     public Response<RunningGameInstance> startGame(UUID runningGameid) {
@@ -126,9 +138,12 @@ public class GameRunningService {
             runningGameInstance.assignGroups();
             runningGameInstanceRepository.save(runningGameInstance);
             return Response.ok(runningGameInstance);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.fail(403, e.toString());
         } catch (Exception e) {
-            e.printStackTrace(); // Log the exception or handle it appropriately
-            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+            e.printStackTrace();
+            return Response.fail(500, "Internal Server Error : \n" + e.toString());
         }
     }
 
@@ -160,18 +175,24 @@ public class GameRunningService {
                 return Response.ok(runningGameInstance);
             }
 
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.fail(403, e.toString());
         } catch (Exception e) {
-            e.printStackTrace(); // Log the exception or handle it appropriately
-            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+            e.printStackTrace();
+            return Response.fail(500, "Internal Server Error : \n" + e.toString());
         }
     }
     public Response<List<RunningTile>> getRunningTiles(UUID runningGameId) {
         try {
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
                 return Response.ok(runningGameInstance.getTiles());
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.fail(403, e.toString());
         } catch (Exception e) {
-            e.printStackTrace(); // Log the exception or handle it appropriately
-            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+            e.printStackTrace();
+            return Response.fail(500, "Internal Server Error : \n" + e.toString());
         }
     }
 
@@ -181,9 +202,12 @@ public class GameRunningService {
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
             AssignedQuestion question = runningGameInstance.getQuestion(difficulty);
             return Response.ok(question);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.fail(403, e.toString());
         } catch (Exception e) {
-            e.printStackTrace(); // Log the exception or handle it appropriately
-            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+            e.printStackTrace();
+            return Response.fail(500, "Internal Server Error : \n" + e.toString());
         }
     }
     public Response<Boolean> checkAnswer(UUID runningGameId, String tileId, UUID userId, UUID questionId, String answer) {
@@ -197,10 +221,12 @@ public class GameRunningService {
             boolean isCorrect = runningGameInstance.checkAnswer(tileId, player.getGroup(), questionId, answer, repositoryFactory.answerRepository);
             runningGameInstanceRepository.save(runningGameInstance);
             return Response.ok(isCorrect);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.fail(403, e.toString());
         } catch (Exception e) {
-            e.printStackTrace(); // Log the exception or handle it appropriately
-            LOG.severe("Exception caught: " + e.getMessage());
-            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+            e.printStackTrace();
+            return Response.fail(500, "Internal Server Error : \n" + e.toString());
         }
     }
 
@@ -209,9 +235,12 @@ public class GameRunningService {
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
             runningGameInstanceRepository.delete(runningGameInstance);
             return Response.ok(true);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.fail(403, e.toString());
         } catch (Exception e) {
-            e.printStackTrace(); // Log the exception or handle it appropriately
-            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+            e.printStackTrace();
+            return Response.fail(500, "Internal Server Error : \n" + e.toString());
         }
     }
 }

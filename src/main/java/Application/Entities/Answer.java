@@ -26,9 +26,16 @@ public class Answer {
     private Question question;
 
     public Answer(){}
+
     public Answer(String answerText, boolean correct) {
         this.answerText = answerText;
         this.correct = correct;
+    }
+
+    public Answer(String answerText, boolean correct, Question question) {
+        this.answerText = answerText;
+        this.correct = correct;
+        this.question = question;
     }
 
 

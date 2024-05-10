@@ -53,9 +53,12 @@ public class UserService {
                 userRepository.save(user);
             }
             return response;
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.fail(403, e.toString());
         } catch (Exception e) {
-            e.printStackTrace(); // Log the exception or handle it appropriately
-            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+            e.printStackTrace();
+            return Response.fail(500, "Internal Server Error : \n" + e.toString());
         }
     }
 
@@ -69,9 +72,12 @@ public class UserService {
             if (user.getPassword().equals(password))
                 return Response.ok(user);
             return Response.fail("password incorrect");
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.fail(403, e.toString());
         } catch (Exception e) {
-            e.printStackTrace(); // Log the exception or handle it appropriately
-            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+            e.printStackTrace();
+            return Response.fail(500, "Internal Server Error : \n" + e.toString());
         }
     }
 }

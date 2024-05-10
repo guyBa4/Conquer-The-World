@@ -36,7 +36,13 @@ public class QuestionController {
     public Response<Question> addQuestion(@RequestBody String inputJson) {
         try {
             JSONObject jsonObj = new JSONObject(inputJson);
-            Response<Question> response = questionService.addQuestion(jsonObj);
+            String question = jsonObj.getString("question");
+            boolean isMultipleChoice = jsonObj.getBoolean("isMultipleChoice");
+            String correctAnswer = jsonObj.getString("correctAnswer");
+            List<Object> incorrectAnswers = jsonObj.getJSONArray("incorrectAnswers").toList();
+            List<Object> tags = jsonObj.getJSONArray("tags").toList();
+            int difficulty = jsonObj.getInt("difficulty");
+            Response<Question> response = questionService.addQuestion(question, isMultipleChoice,  correctAnswer,  incorrectAnswers, tags, difficulty);
             return response;
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error"); // Internal Server Error

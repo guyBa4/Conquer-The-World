@@ -45,18 +45,30 @@ public class QuestionService {
     }
 
 
-    public Response<Question> addQuestion(JSONObject jsonObject) {
+    public Response<Question> addQuestion(String question, boolean isMultipleChoice, String correctAnswer, List<Object> incorrectAnswers, List<Object> tags, int difficulty) {
         try {
-            Response<Question> response = jsonToInstance.buildQuestion(jsonObject);
-            if (response.isSuccessful()) {
-                Question question = response.getValue();
-                questionRepository.save(question);
-            }
-            return response;
+            Question questionObj = new Question(isMultipleChoice, question, difficulty);
+            List<Answer> answers = buildAnswers(correctAnswer, incorrectAnswers, questionObj);
+            questionObj.setAnswers(answers);
+            questionRepository.save(questionObj);
+            return Response.ok(questionObj);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.fail(403, e.toString());
         } catch (Exception e) {
-            e.printStackTrace(); // Log the exception or handle it appropriately
-            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+            e.printStackTrace();
+            return Response.fail(500, "Internal Server Error : \n" + e.toString());
         }
+    }
+
+    private List<Answer> buildAnswers(String correctAnswer, List<Object> incorrectAnswers, Question questionObj) {
+        List<Answer> answers = new LinkedList<>();
+        answers.add(new Answer(correctAnswer, true, questionObj));
+        for (Object incorrectAnswer : incorrectAnswers){
+            answers.add(new Answer((String) incorrectAnswer, false, questionObj));
+        }
+
+        return answers;
     }
 
     public Response<List<AssignedQuestion>> getQuestionsByQuestionnaireId(UUID questionnaireId) {
@@ -64,9 +76,12 @@ public class QuestionService {
             Questionnaire questionnaire = dalController.getQuestionnaire(questionnaireId);
             List<AssignedQuestion> assignedQuestions = questionnaire.getQuestions();
             return Response.ok(assignedQuestions);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.fail(403, e.toString());
         } catch (Exception e) {
-            e.printStackTrace(); // Log the exception or handle it appropriately
-            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+            e.printStackTrace();
+            return Response.fail(500, "Internal Server Error : \n" + e.toString());
         }
     }
 
@@ -78,9 +93,12 @@ public class QuestionService {
             Questionnaire questionnaire = new Questionnaire(title, assignedQuestions, creator);
             questionnaireRepository.save(questionnaire);
             return Response.ok(questionnaire);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.fail(403, e.toString());
         } catch (Exception e) {
-            e.printStackTrace(); // Log the exception or handle it appropriately
-            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+            e.printStackTrace();
+            return Response.fail(500, "Internal Server Error : \n" + e.toString());
         }
     }
 

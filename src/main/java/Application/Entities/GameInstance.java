@@ -6,10 +6,7 @@ import jakarta.persistence.*;
 import org.json.JSONObject;
 
 import java.sql.Time;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "game_instances")
@@ -109,6 +106,24 @@ public class GameInstance {
         this.shared = original.shared;
         this.questionTimeLimit = original.questionTimeLimit;
     }
+
+    public GameInstance(User creator, Questionnaire questionnaire, Map map, GameStatus created, int numberOfGroups, String title, String description, GroupAssignmentProtocol groupAssignmentProtocol, int gameTime, boolean shared, int questionTimeLimit) {
+        this.host = creator;
+        this.questionnaire = questionnaire;
+        this.map = map;
+        this.startingPositions =new LinkedList<>();
+        this.status = created;
+        this.timeCreated = new Time(new Date().getTime());
+        this.timeLastUpdated = new Time(new Date().getTime());
+        this.numberOfGroups = numberOfGroups;
+        this.name = title;
+        this.description = description;
+        this.groupAssignmentProtocol = groupAssignmentProtocol;
+        this.gameTime = gameTime;
+        this.shared = shared;
+        this.questionTimeLimit = questionTimeLimit;
+    }
+
 
     public static Response<GameInstance> fromJson(JSONObject jsonObject){
         GameInstance gameInstance = new GameInstance();
