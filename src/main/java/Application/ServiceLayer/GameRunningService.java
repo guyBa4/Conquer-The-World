@@ -1,6 +1,7 @@
 package Application.ServiceLayer;
 
 import Application.APILayer.JsonToInstance;
+import Application.DataAccessLayer.DALController;
 import Application.Entities.*;
 import Application.Enums.GameStatus;
 import Application.Repositories.*;
@@ -21,6 +22,7 @@ public class GameRunningService {
     private RunningGameInstanceRepository runningGameInstanceRepository;
     private MobilePlayerRepository mobilePlayerRepository;
     private UserRepository userRepository;
+    private DALController dalController;
     private static Logger LOG;
 
     public boolean isInit() {
@@ -45,13 +47,9 @@ public class GameRunningService {
         this.repositoryFactory = repositoryFactory;
         jsonToInstance = JsonToInstance.getInstance();
         setRepositories(repositoryFactory);
-//        mobileIdToRunningGameInstance = new HashMap<>();
-//        gameCodeToRunningGameInstance = new HashMap<>();
-//        runningGamesIdToRunningGameInstance = new HashMap<>();
+        this.dalController = DALController.getInstance();
         LOG = getLogger(this.getClass().toString());
-//        for (GameInstance gameInstance : gameInstanceRepository.findAll()){
-//            gameCodeToRunningGameInstance.put(gameInstance.getGameCode(), gameInstance);
-//        }
+
         isInit = true;
     }
 
@@ -62,22 +60,15 @@ public class GameRunningService {
         this.mobilePlayerRepository = repositoryFactory.mobilePlayerRepository;
     }
 
-    public Response<java.util.Map<String, String>> OpenWaitingRoom(UUID gameId, UUID hostId){ // in this function RunningGameInstance is created
+    public Response<RunningGameInstance> OpenWaitingRoom(UUID gameId, UUID hostId){ // in this function RunningGameInstance is created
         try{
-
-            Optional<GameInstance> optGameInstance = gameInstanceRepository.findById(gameId);
-            if (optGameInstance.isEmpty())
-                return Response.fail("there is no game with this UUID");
-            GameInstance gameInstance = optGameInstance.get();
+            GameInstance gameInstance = dalController.getGameInstance(gameId);
 //            if (!gameInstance.getHost().getId().equals(hostId))
 //                return Response.fail("wrong host UUID");
             RunningGameInstance runningGameInstance = new RunningGameInstance(gameInstance);
-//            gameCodeToRunningGameInstance.put(runningGameInstance.getCode(), runningGameInstance);
-//            runningGamesIdToRunningGameInstance.put(runningGameInstance.getRunningId(), runningGameInstance);
-            updateGameStatus(runningGameInstance, GameStatus.WAITING_ROOM.toString());
+            updateGameStatus(runningGameInstance, GameStatus.WAITING_ROOM);
             runningGameInstanceRepository.save(runningGameInstance);
-            java.util.Map<String, String> runningGameInstanceMap = runningGameInstance.toJsonMap();
-            return Response.ok(runningGameInstanceMap);
+            return Response.ok(runningGameInstance);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
@@ -105,10 +96,7 @@ public class GameRunningService {
 
     public Response<RunningGameInstance> addMobileDetails(UUID mobileId, String name) {
         try {
-            Optional<MobilePlayer> optionalMobilePlayer = mobilePlayerRepository.findById(mobileId);
-            if (optionalMobilePlayer.isEmpty())
-                return Response.fail("mobile id not valid");
-            MobilePlayer mobilePlayer = optionalMobilePlayer.get();
+            MobilePlayer mobilePlayer = dalController.getMobilePlayer(mobileId);
             mobilePlayer.setName(name);
             mobilePlayer.setReady(true);
             RunningGameInstance runningGameInstance = mobilePlayer.getRunningGameInstance();
@@ -124,44 +112,28 @@ public class GameRunningService {
 
     public Response<RunningGameInstance> getWaitingRoomDetails(UUID runningGameid) {
         try {
-            Optional<RunningGameInstance> optionalRunningGameInstance = runningGameInstanceRepository.findById(runningGameid);
-            RunningGameInstance runningGameInstance;
-            if (optionalRunningGameInstance.isEmpty())
-                return Response.fail("game id not valid");
-            runningGameInstance = optionalRunningGameInstance.get();
+            RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameid);
             return Response.ok(runningGameInstance);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }
     }
-    public Response<java.util.Map<String, String>> startGame(UUID runningGameid) {
+    public Response<RunningGameInstance> startGame(UUID runningGameid) {
         try {
-            Optional<RunningGameInstance> optionalRunningGameInstance = runningGameInstanceRepository.findById(runningGameid);
-            RunningGameInstance runningGameInstance;
-            if (optionalRunningGameInstance.isEmpty())
-                return Response.fail("game id not valid");
-            runningGameInstance = optionalRunningGameInstance.get();
-            updateGameStatus(runningGameInstance, GameStatus.STARTED.toString());
+            RunningGameInstance runningGameInstance =dalController.getRunningGameInstance(runningGameid);
+            updateGameStatus(runningGameInstance, GameStatus.STARTED);
             runningGameInstance.assignGroups();
             runningGameInstanceRepository.save(runningGameInstance);
-            java.util.Map<String, String> runningGameInstanceMap = runningGameInstance.toJsonMap();
-            return Response.ok(runningGameInstanceMap);
+            return Response.ok(runningGameInstance);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }
     }
 
-    private void updateGameStatus(RunningGameInstance runningGameInstance, String status){
+    private void updateGameStatus(RunningGameInstance runningGameInstance, GameStatus status){
         runningGameInstance.setStatus(status);
-//        Optional<GameInstance> optGameInstance = gameInstanceRepository.findById(runningGameInstance.getId());
-//        if (optGameInstance.isEmpty())
-//            throw new IllegalArgumentException("there is no game with this UUID");
-//        GameInstance gameInstance = optGameInstance.get();
-//        gameInstance.setStatus(status);
-//        gameInstanceRepository.save(gameInstance);
-
     }
 
 
@@ -195,11 +167,7 @@ public class GameRunningService {
     }
     public Response<List<RunningTile>> getRunningTiles(UUID runningGameId) {
         try {
-            Optional<RunningGameInstance> optionalRunningGameInstance = runningGameInstanceRepository.findById(runningGameId);
-            RunningGameInstance runningGameInstance;
-            if (optionalRunningGameInstance.isEmpty())
-                return Response.fail("game id not valid");
-            runningGameInstance = optionalRunningGameInstance.get();
+            RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
                 return Response.ok(runningGameInstance.getTiles());
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
@@ -210,11 +178,7 @@ public class GameRunningService {
 
     public Response<AssignedQuestion> getQuestion(int difficulty, UUID runningGameId) {
         try {
-            Optional<RunningGameInstance> optionalRunningGameInstance = runningGameInstanceRepository.findById(runningGameId);
-            RunningGameInstance runningGameInstance;
-            if (optionalRunningGameInstance.isEmpty())
-                return Response.fail("game id not valid");
-            runningGameInstance = optionalRunningGameInstance.get();
+            RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
             AssignedQuestion question = runningGameInstance.getQuestion(difficulty);
             return Response.ok(question);
         } catch (Exception e) {
@@ -224,11 +188,7 @@ public class GameRunningService {
     }
     public Response<Boolean> checkAnswer(UUID runningGameId, String tileId, UUID userId, UUID questionId, String answer) {
         try {
-            Optional<RunningGameInstance> optionalRunningGameInstance = runningGameInstanceRepository.findById(runningGameId);
-            RunningGameInstance runningGameInstance;
-            if (optionalRunningGameInstance.isEmpty())
-                return Response.fail("game id not valid");
-            runningGameInstance = optionalRunningGameInstance.get();
+            RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
             MobilePlayer player = runningGameInstance.getPlayer(userId);
             if (player == null) {
                 LOG.severe("Did not find user with ID: " + userId.toString());
@@ -246,11 +206,7 @@ public class GameRunningService {
 
     public Response<Boolean> endRunningGame(UUID runningGameId) {
         try {
-            Optional<RunningGameInstance> optionalRunningGameInstance = runningGameInstanceRepository.findById(runningGameId);
-            RunningGameInstance runningGameInstance;
-            if (optionalRunningGameInstance.isEmpty())
-                return Response.fail("game id not valid");
-            runningGameInstance = optionalRunningGameInstance.get();
+            RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
             runningGameInstanceRepository.delete(runningGameInstance);
             return Response.ok(true);
         } catch (Exception e) {

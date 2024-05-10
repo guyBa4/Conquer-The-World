@@ -53,9 +53,9 @@ public class GameController {
 
     @GetMapping(path = "/get_all_games")
     @ResponseBody
-    public Response<List<Map<String,String>>> GetGamesInstances() {
+    public Response<List<GameInstance>> GetGamesInstances() {
         try {
-            Response<List<Map<String, String>>> response = gameService.getAllGameInstance();
+            Response<List<GameInstance>> response = gameService.getAllGameInstance();
             return response;
         } catch (IllegalArgumentException e) {
             return Response.fail(403, "AUTHORIZATION FAILED");
@@ -66,7 +66,7 @@ public class GameController {
 
     @GetMapping(path = "/get_game/id={id}")
     @ResponseBody
-    public Response<Map<String,String>> GetGamesInstances(@PathVariable (name= "id") UUID id) {
+    public Response<GameInstance> GetGamesInstances(@PathVariable (name= "id") UUID id) {
         try {
             return gameService.getGameInstance(id);
         } catch (IllegalArgumentException e) {

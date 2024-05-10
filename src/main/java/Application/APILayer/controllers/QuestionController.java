@@ -1,8 +1,6 @@
 package Application.APILayer.controllers;
 
-import Application.Entities.Map;
-import Application.Entities.Question;
-import Application.Entities.User;
+import Application.Entities.*;
 import Application.Repositories.RepositoryFactory;
 import Application.Response;
 import Application.ServiceLayer.QuestionService;
@@ -17,6 +15,8 @@ import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -37,6 +37,33 @@ public class QuestionController {
         try {
             JSONObject jsonObj = new JSONObject(inputJson);
             Response<Question> response = questionService.addQuestion(jsonObj);
+            return response;
+        } catch (JSONException e) {
+            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+        }
+    }
+
+    @PostMapping(path = "/add_questionnaire")
+    @ResponseBody
+    public Response<Questionnaire> addQuestionnaire(@RequestBody String inputJson) {
+        try {
+            JSONObject jsonObj = new JSONObject(inputJson);
+            String title = jsonObj.getString("title");
+            String creatorId = jsonObj.getString("creatorId");
+            JSONObject questionsIdsObject = jsonObj.getJSONObject("questionsIds");
+            java.util.Map questionsIdsToDifficulty = questionsIdsObject.toMap();
+            Response<Questionnaire> response = questionService.addQuestionnaire(title, creatorId, questionsIdsToDifficulty);
+            return response;
+        } catch (JSONException e) {
+            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+        }
+    }
+
+    @GetMapping(path = "/get_questions/questionnaireId={questionnaireId}")
+    @ResponseBody
+    public Response<List<AssignedQuestion>> getQuestionsByQuestionnaireId(@PathVariable (name= "questionnaireId") UUID questionnaireId) {
+        try {
+            Response<List<AssignedQuestion>> response = questionService.getQuestionsByQuestionnaireId(questionnaireId);
             return response;
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error"); // Internal Server Error

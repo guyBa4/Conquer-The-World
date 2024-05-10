@@ -32,12 +32,13 @@ public class RunningGameController {
         if (!gameRunningService.isInit())
             gameRunningService.init(repositoryFactory);
         tokenHandler = TokenHandler.getInstance();
+
         LOG = getLogger(this.getClass().toString());
     }
 
     @PostMapping(path = "/open_waiting_room")
     @ResponseBody
-    public Response<java.util.Map<String, String>> OpenWaitingRoom(@RequestBody String inputJson) {
+    public Response<RunningGameInstance> OpenWaitingRoom(@RequestBody String inputJson) {
         try {
             JSONObject jsonObj = new JSONObject(inputJson);
             LOG.info("Request received by /open_waiting_room endpoint:\n" + jsonObj);
@@ -95,7 +96,7 @@ public class RunningGameController {
 
     @PostMapping(path = "/start_game")
     @ResponseBody
-    public Response<java.util.Map<String, String>> startGame(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public Response<RunningGameInstance> startGame(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             JSONObject jsonObj = new JSONObject(inputJson);
 //            LOG.info("Request received by /start_game endpoint:\n " + jsonObj);

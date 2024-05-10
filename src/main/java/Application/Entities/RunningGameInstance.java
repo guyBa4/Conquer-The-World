@@ -30,8 +30,9 @@ public class RunningGameInstance {
     @Column(name = "code")
     private String code;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private GameStatus status;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "running_game_instance_id")
@@ -40,9 +41,6 @@ public class RunningGameInstance {
     @Transient
     private static Logger LOG = getLogger(RunningGameInstance.class.toString());
 
-    @Transient
-    @PersistenceContext
-    private EntityManager entityManager;
 
     //    @Transient
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -185,7 +183,7 @@ public class RunningGameInstance {
         }
     }
 
-    public String getStatus() {
+    public GameStatus getStatus() {
         return this.status;
     }
 
@@ -193,7 +191,7 @@ public class RunningGameInstance {
         return gameInstance.getName();
     }
 
-    public void setStatus(String status) {
+    public void setStatus(GameStatus status) {
         this.status = status;
     }
     public GameInstance getGameInstance() {
@@ -204,11 +202,11 @@ public class RunningGameInstance {
         this.gameInstance = gameInstance;
     }
 
-    public java.util.Map<String, String> toJsonMap() {
-        java.util.Map<String, String>  jsonMap = gameInstance.toJsonMap();
-        jsonMap.put("code", code);
-        jsonMap.put("runningId", this.runningId.toString());
-        jsonMap.put("status", this.status);
-        return jsonMap;
-    }
+//    public java.util.Map<String, String> toJsonMap() {
+//        java.util.Map<String, String>  jsonMap = gameInstance.toJsonMap();
+//        jsonMap.put("code", code);
+//        jsonMap.put("runningId", this.runningId.toString());
+//        jsonMap.put("status", this.status);
+//        return jsonMap;
+//    }
 }

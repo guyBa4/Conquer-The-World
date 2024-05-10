@@ -25,10 +25,16 @@ public class AssignedQuestion {
     @Column(name = "difficulty_level")
     private int difficultyLevel;
 
-    public AssignedQuestion(Question question) {
+    public AssignedQuestion(Question question, int difficultyLevel) {
         this.question = question;
+        this.difficultyLevel = difficultyLevel;
     }
     public AssignedQuestion() {
+    }
+
+    public AssignedQuestion(Question question) {
+        this.question = question;
+        this.difficultyLevel = question.getDifficulty();
     }
 
     public UUID getId() {

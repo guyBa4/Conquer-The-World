@@ -1,5 +1,6 @@
 package Application.ServiceLayer;
 import Application.APILayer.JsonToInstance;
+import Application.DataAccessLayer.DALController;
 import Application.Entities.*;
 import Application.Entities.Map;
 import Application.Enums.GameStatus;
@@ -29,6 +30,7 @@ public class GameService {
     private MapRepository mapRepository;
     private GameRunningService gameRunningService;
     private AnswerRepository answerRepository;
+    private DALController dalController;
 
     private GameService(){}
 
@@ -49,7 +51,7 @@ public class GameService {
         List<Question> questions = initQuestionsObjects();
         List<AssignedQuestion> assignedQuestions = new LinkedList<>();
         for (Question question : questions){
-            AssignedQuestion assignedQuestion = new AssignedQuestion(question);
+            AssignedQuestion assignedQuestion = new AssignedQuestion(question, question.getDifficulty());
             assignedQuestions.add(assignedQuestion);
         }
         Questionnaire questionnaire = new Questionnaire("common knowledge questionnaire", assignedQuestions, guyUser);
@@ -62,8 +64,8 @@ public class GameService {
         startingPossitions.add("NM");
         startingPossitions.add("ID");
         startingPossitions.add("SD");
-        GameInstance gameInstance = new GameInstance (nitzanUser, questionnaire, map, GameStatus.CREATED.toString(), 3, "for fun",
-                "the first game instance", GroupAssignmentProtocol.RANDOM.toString(), 1000 , true, 30, startingPossitions);
+        GameInstance gameInstance = new GameInstance (nitzanUser, questionnaire, map, GameStatus.CREATED, 3, "for fun",
+                "the first game instance", GroupAssignmentProtocol.RANDOM, 1000 , true, 30, startingPossitions);
         gameInstanceRepository.save(gameInstance);
         RunningGameInstance runningGameInstance = new RunningGameInstance(gameInstance);
         runningGameInstanceRepository.save(runningGameInstance);
@@ -81,6 +83,7 @@ public class GameService {
         this.gameRunningService = GameRunningService.getInstance();
         if (!gameRunningService.isInit())
             gameRunningService.init(repositoryFactory);
+        this.dalController = DALController.getInstance();
 //        initObjects();
 //        Questionnaire questionnaire = questionnaireRepository.findById(UUID.fromString("d4120482-93e3-4972-8525-60f420b514aa")).get();
 //        List<Question> questions = initQuestionsObjects();
@@ -125,24 +128,13 @@ public class GameService {
 //    public Response<FlatGameInstance> getGameInstance(UUID id){
 //        return Response.ok(new FlatGameInstance(gameInstanceMap.get(id)));
 //    }
-    public Response<java.util.Map<String, String>> getGameInstance(UUID id){
-
-        Optional<GameInstance> optionalGameInstance = gameInstanceRepository.findById(id);
-        if (!optionalGameInstance.isEmpty()) {
-//            FlatGameInstance flatGameInstance = new FlatGameInstance(optionalGameInstance.get());
-            return Response.ok(optionalGameInstance.get().toJsonMap());
-        }
-        return Response.fail("game instance id not exist");
+    public Response<GameInstance> getGameInstance(UUID uuid){
+        GameInstance gameInstance = dalController.getGameInstance(uuid);
+        return Response.ok(gameInstance);
     }
-    public Response<List<java.util.Map<String, String>>> getAllGameInstance(){
+    public Response<List<GameInstance>> getAllGameInstance(){
         List<GameInstance> gameInstances = gameInstanceRepository.findAll();
-//        return gameInstances.stream().map()
-        List<java.util.Map<String, String>> flatGameInstances = new LinkedList<>();
-
-        for(GameInstance gameInstance : gameInstances){
-            flatGameInstances.add(gameInstance.toJsonMap());
-        }
-        return Response.ok(flatGameInstances);
+        return Response.ok(gameInstances);
     }
 
     private List<Question> initQuestionsObjects(){

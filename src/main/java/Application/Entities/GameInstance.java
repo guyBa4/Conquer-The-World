@@ -1,4 +1,6 @@
 package Application.Entities;
+import Application.Enums.GameStatus;
+import Application.Enums.GroupAssignmentProtocol;
 import Application.Response;
 import jakarta.persistence.*;
 import org.json.JSONObject;
@@ -38,8 +40,9 @@ public class GameInstance {
     @Column(name = "starting_position")
     private List<String> startingPositions;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private GameStatus status;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "time_created")
@@ -55,9 +58,9 @@ public class GameInstance {
     @Column(name = "description")
     private String description;
 
-//    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     @Column(name = "group_assignment_protocol")
-    private String groupAssignmentProtocol;
+    private GroupAssignmentProtocol groupAssignmentProtocol;
 
     @Column(name = "game_time")
     private int gameTime;
@@ -73,7 +76,7 @@ public class GameInstance {
     public GameInstance(){
     }
 
-    public GameInstance(User host, Questionnaire questionnaire, Map map, String status, int numberOfGroups, String name, String description, String groupAssignmentProtocol, int gameTime, boolean shared, int questionTimeLimit, List<String> startingPositions) {
+    public GameInstance(User host, Questionnaire questionnaire, Map map, GameStatus status, int numberOfGroups, String name, String description, GroupAssignmentProtocol groupAssignmentProtocol, int gameTime, boolean shared, int questionTimeLimit, List<String> startingPositions) {
         this.host = host;
         this.questionnaire = questionnaire;
         this.map = map;
@@ -112,13 +115,13 @@ public class GameInstance {
         gameInstance.host = new User().setId(UUID.fromString(jsonObject.getString("host")));
 //        this.questionnaire = questionnaire;
 //        this.map = map;
-        gameInstance.status = jsonObject.getString("status");
+        gameInstance.status = GameStatus.valueOf(jsonObject.getString("status"));
 //        this.timeCreated = timeCreated;
 //        this.timeLastUpdated = timeLastUpdated;
         gameInstance.numberOfGroups = jsonObject.getInt("numberOfGroups");
         gameInstance.name = jsonObject.getString("name");
         gameInstance.description = jsonObject.getString("description");
-        gameInstance.groupAssignmentProtocol = jsonObject.getString("groupAssignmentProtocol");
+        gameInstance.groupAssignmentProtocol = GroupAssignmentProtocol.valueOf(jsonObject.getString("groupAssignmentProtocol"));
         gameInstance.gameTime = jsonObject.getInt("gameTime");
         gameInstance.shared = jsonObject.getBoolean("shared");
         gameInstance.questionTimeLimit = jsonObject.getInt("questionTimeLimit");
@@ -157,11 +160,11 @@ public class GameInstance {
         this.map = map;
     }
 
-    public String getStatus() {
+    public GameStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(GameStatus status) {
         this.status = status;
     }
 
@@ -190,11 +193,11 @@ public class GameInstance {
         this.description = description;
     }
 
-    public String getGroupAssignmentProtocol() {
+    public GroupAssignmentProtocol getGroupAssignmentProtocol() {
         return groupAssignmentProtocol;
     }
 
-    public void setGroupAssignmentProtocol(String groupAssignmentProtocol) {
+    public void setGroupAssignmentProtocol(GroupAssignmentProtocol groupAssignmentProtocol) {
         this.groupAssignmentProtocol = groupAssignmentProtocol;
     }
 
@@ -246,24 +249,24 @@ public class GameInstance {
         this.timeLastUpdated = timeLastUpdated;
     }
 
-    public java.util.Map<String, String> toJsonMap() {
-        java.util.Map<String, String>  jsonMap = new HashMap<>();
-        jsonMap.put("id", id.toString());
-        jsonMap.put("name", name);
-        jsonMap.put("host", host.getId().toString());
-        jsonMap.put("status", status);
-        jsonMap.put("timeCreated", timeCreated.toString());
-        jsonMap.put("timeLastUpdated", timeLastUpdated.toString());
-        jsonMap.put("numberOfGroups", String.valueOf(numberOfGroups));
-        jsonMap.put("description", description);
-        jsonMap.put("groupAssignmentProtocol", groupAssignmentProtocol);
-        jsonMap.put("gameTime", String.valueOf(gameTime));
-        jsonMap.put("shared", String.valueOf(shared));
-        jsonMap.put("questionTimeLimit", String.valueOf(questionTimeLimit));
-        jsonMap.put("mapId", map.getId().toString());
-        jsonMap.put("mapName", map.getName());
-        jsonMap.put("questionnaireId", questionnaire.getId().toString());
-        jsonMap.put("questionnaireName", questionnaire.getName());
-        return jsonMap;
-    }
+//    public java.util.Map<String, String> toJsonMap() {
+//        java.util.Map<String, String>  jsonMap = new HashMap<>();
+//        jsonMap.put("id", id.toString());
+//        jsonMap.put("name", name);
+//        jsonMap.put("host", host.getId().toString());
+//        jsonMap.put("status", status);
+//        jsonMap.put("timeCreated", timeCreated.toString());
+//        jsonMap.put("timeLastUpdated", timeLastUpdated.toString());
+//        jsonMap.put("numberOfGroups", String.valueOf(numberOfGroups));
+//        jsonMap.put("description", description);
+//        jsonMap.put("groupAssignmentProtocol", groupAssignmentProtocol);
+//        jsonMap.put("gameTime", String.valueOf(gameTime));
+//        jsonMap.put("shared", String.valueOf(shared));
+//        jsonMap.put("questionTimeLimit", String.valueOf(questionTimeLimit));
+//        jsonMap.put("mapId", map.getId().toString());
+//        jsonMap.put("mapName", map.getName());
+//        jsonMap.put("questionnaireId", questionnaire.getId().toString());
+//        jsonMap.put("questionnaireName", questionnaire.getName());
+//        return jsonMap;
+//    }
 }

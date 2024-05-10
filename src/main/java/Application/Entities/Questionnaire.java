@@ -35,12 +35,18 @@ public class Questionnaire {
 
 
     public Questionnaire(){
-
+        questions = new LinkedList<>();
     }
 
     public Questionnaire(String name, List<AssignedQuestion> questionList, User creator) {
         this.name = name;
         this.questions = questionList;
+        this.timeCreated = new Time(new Date().getTime());
+        this.lastUpdated = new Time(new Date().getTime());
+        this.creator = creator;
+    }
+    public Questionnaire(String name, User creator) {
+        this.name = name;
         this.timeCreated = new Time(new Date().getTime());
         this.lastUpdated = new Time(new Date().getTime());
         this.creator = creator;
@@ -68,6 +74,13 @@ public class Questionnaire {
 
     public void setQuestions(List<AssignedQuestion> questions) {
         this.questions = questions;
+    }
+    public void addAssignedQuestion(AssignedQuestion assignedQuestion) {
+        this.questions.add(assignedQuestion);
+    }
+    public void addAssignedQuestion(Question question, int difficultyLevel) {
+        AssignedQuestion assignedQuestion = new AssignedQuestion(question, difficultyLevel);
+        this.questions.add(assignedQuestion);
     }
 
 }

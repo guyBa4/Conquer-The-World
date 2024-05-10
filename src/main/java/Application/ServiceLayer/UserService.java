@@ -1,5 +1,6 @@
 package Application.ServiceLayer;
 import Application.APILayer.JsonToInstance;
+import Application.DataAccessLayer.DALController;
 import Application.Entities.*;
 import Application.Repositories.QuestionRepository;
 import Application.Repositories.RepositoryFactory;
@@ -18,6 +19,7 @@ public class UserService {
     private static final Object instanceLock = new Object();
     private RepositoryFactory repositoryFactory;
     private UserRepository userRepository;
+    private DALController dalController;
 
     private UserService() {
     }
@@ -33,6 +35,8 @@ public class UserService {
     public void init(RepositoryFactory repositoryFactory) {
         this.repositoryFactory = repositoryFactory;
         jsonToInstance = JsonToInstance.getInstance();
+        this.dalController = DALController.getInstance();
+        dalController.init(repositoryFactory);
         setRepositories(repositoryFactory);
     }
 
