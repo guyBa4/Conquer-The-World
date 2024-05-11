@@ -38,7 +38,7 @@ public class RunningGameController {
 
     @PostMapping(path = "/open_waiting_room")
     @ResponseBody
-    public Response<RunningGameInstance> OpenWaitingRoom(@RequestBody String inputJson) {
+    public Response<RunningGameInstance> openWaitingRoom(@RequestBody String inputJson) {
         try {
             JSONObject jsonObj = new JSONObject(inputJson);
             LOG.info("Request received by /open_waiting_room endpoint:\n" + jsonObj);
