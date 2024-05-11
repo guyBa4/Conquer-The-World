@@ -88,7 +88,7 @@ public class GameRunningService {
             MobilePlayer mobilePlayer = new MobilePlayer();
             runningGameInstance.addMobilePlayer(mobilePlayer);
             runningGameInstanceRepository.save(runningGameInstance);
-            LOG.info("mobile enter code : " + mobilePlayer.getUuid());
+            LOG.info("mobile enter code : " + mobilePlayer.getId());
             LOG.info("for running game instance with id : " + runningGameInstance.getRunningId() + " : " + runningGameInstance.getName());
             return Response.ok(mobilePlayer);
         } catch (IllegalArgumentException e) {
@@ -131,13 +131,22 @@ public class GameRunningService {
             return Response.fail(500, "Internal Server Error : \n" + e.toString());
         }
     }
-    public Response<RunningGameInstance> startGame(UUID runningGameid) {
+    public Response<RunningGameInstance> startGame(UUID runningGameId) {
         try {
-            RunningGameInstance runningGameInstance =dalController.getRunningGameInstance(runningGameid);
-            updateGameStatus(runningGameInstance, GameStatus.STARTED);
-            runningGameInstance.assignGroups();
-            runningGameInstanceRepository.save(runningGameInstance);
-            return Response.ok(runningGameInstance);
+            RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
+            if (runningGameInstance != null) {
+                updateGameStatus(runningGameInstance, GameStatus.STARTED);
+                runningGameInstance.assignGroups();
+                List<String> startingPositions = runningGameInstance.getGameInstance().getStartingPositions();
+                runningGameInstance.initStartingPositions(startingPositions);
+                runningGameInstanceRepository.save(runningGameInstance);
+                LOG.info("Game with ID " + runningGameId.toString() + " started successfully");
+                return Response.ok(runningGameInstance);
+            }
+            else {
+                LOG.warning("Game with ID " + runningGameId.toString() + " not found.");
+                return Response.fail(400, "Game not found");
+            }
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.fail(403, e.toString());

@@ -161,7 +161,7 @@ public class RunningGameInstance {
     
     public MobilePlayer getPlayer(UUID userId) {
         for (MobilePlayer mobilePlayer : mobilePlayers){
-            if (mobilePlayer.getUuid().equals(userId)){
+            if (mobilePlayer.getId().equals(userId)){
                 return mobilePlayer;
             }
         }
@@ -200,6 +200,21 @@ public class RunningGameInstance {
 
     public void setGameInstance(GameInstance gameInstance) {
         this.gameInstance = gameInstance;
+    }
+    
+    public void initStartingPositions(List<String> startingPositions) {
+        if (startingPositions == null || startingPositions.isEmpty() || startingPositions.size() < gameInstance.getNumberOfGroups())
+            throw new RuntimeException("Starting position initialization failed - starting positions either null or do not match number of groups");
+        List<RunningTile> startingTiles = tiles.stream().filter((tile) -> startingPositions.contains(tile.getTile().getId())).toList();
+        int groupNumber = 1;
+        int numberOfGroups = gameInstance.getNumberOfGroups();
+        for (RunningTile tile : startingTiles) {
+            if (groupNumber <= numberOfGroups) {
+                tile.setControllingGroup(groupNumber);
+                groupNumber++;
+            }
+            else break;
+        }
     }
 
 //    public java.util.Map<String, String> toJsonMap() {

@@ -17,9 +17,6 @@ public class Tile {
     @Column(name = "tile_type")
     private TileType tileType;
 
-    @Column(name = "controlling_group")
-    private int controllingGroup;
-
     @Column(name = "difficulty_level")
     private int difficultyLevel;
 
@@ -33,7 +30,6 @@ public class Tile {
     public Tile(String id, TileType tileType, int controllingGroup, int difficultyLevel, String dimensions) {
         this.id = id;
         this.tileType = tileType;
-        this.controllingGroup = controllingGroup;
         this.difficultyLevel = difficultyLevel;
         this.dimensions = dimensions;
     }
@@ -41,7 +37,6 @@ public class Tile {
     public Tile(Tile other) {
         this.id = other.id;
         this.tileType = other.tileType;
-        this.controllingGroup = other.controllingGroup;
         this.difficultyLevel = other.difficultyLevel;
         this.dimensions = other.dimensions;
     }
@@ -61,15 +56,6 @@ public class Tile {
 
     public Tile setTileType(TileType tileType) {
         this.tileType = tileType;
-        return this;
-    }
-
-    public int getControllingGroup() {
-        return controllingGroup;
-    }
-
-    public Tile setControllingGroup(int controllingGroup) {
-        this.controllingGroup = controllingGroup;
         return this;
     }
 

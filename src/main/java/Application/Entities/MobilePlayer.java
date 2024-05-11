@@ -38,14 +38,6 @@ public class MobilePlayer {
         this.runningGameInstance = runningGameInstance;
     }
 
-    public UUID getUuid() {
-        return id;
-    }
-
-    public void setUuid(UUID uuid) {
-        this.id = uuid;
-    }
-
     public String getName() {
         return name;
     }
@@ -69,6 +61,7 @@ public class MobilePlayer {
     public void setReady(boolean ready) {
         this.ready = ready;
     }
+    
     public UUID getId() {
         return id;
     }
