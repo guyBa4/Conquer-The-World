@@ -54,7 +54,7 @@ public class RunningGameController {
 
     @PostMapping(path = "/enter_game_code")
     @ResponseBody
-    public Response<UUID> enterGame(@RequestBody String inputJson) {
+    public Response<MobilePlayer> enterGame(@RequestBody String inputJson) {
         try {
             JSONObject jsonObj = new JSONObject(inputJson);
             LOG.info("Request received by /enter_game_code endpoint:\n" + jsonObj);

@@ -78,7 +78,7 @@ public class GameRunningService {
         }
     }
 
-    public Response<UUID> enterGameWithCode(String gameCode) {
+    public Response<MobilePlayer> enterGameWithCode(String gameCode) {
         try {
             List<RunningGameInstance> runningGameInstanceList = runningGameInstanceRepository.findByCode(gameCode);
             RunningGameInstance runningGameInstance;
@@ -90,7 +90,7 @@ public class GameRunningService {
             runningGameInstanceRepository.save(runningGameInstance);
             LOG.info("mobile enter code : " + mobilePlayer.getUuid());
             LOG.info("for running game instance with id : " + runningGameInstance.getRunningId() + " : " + runningGameInstance.getName());
-            return Response.ok(mobilePlayer.getUuid());
+            return Response.ok(mobilePlayer);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.fail(403, e.toString());
