@@ -103,7 +103,7 @@ public class RunningGameInstance {
     }
 
     public void addMobilePlayer(MobilePlayer mobilePlayer){
-        if (status.equals(GameStatus.STARTED.toString())) {
+        if (status.toString().equals(GameStatus.STARTED.toString())) {
             int group = getSmallestGroup();
             mobilePlayer.setGroup(group);
             LOG.info("Added new mobile player to group " + group);
