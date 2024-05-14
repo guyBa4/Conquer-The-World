@@ -211,6 +211,7 @@ public class RunningGameInstance {
         for (RunningTile tile : startingTiles) {
             if (groupNumber <= numberOfGroups) {
                 tile.setControllingGroup(groupNumber);
+                tile.getTile().setDifficultyLevel(0); // Resets starting tiles difficulty to 0 so they do not count in the score
                 groupNumber++;
             }
             else break;
