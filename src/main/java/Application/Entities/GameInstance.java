@@ -30,7 +30,7 @@ public class GameInstance {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "map_id")
-    private Map map;
+    private GameMap gameMap;
 
     @ElementCollection
     @CollectionTable(name = "map_starting_positions", joinColumns = @JoinColumn(name = "map_id"))
@@ -73,10 +73,10 @@ public class GameInstance {
     public GameInstance(){
     }
 
-    public GameInstance(User host, Questionnaire questionnaire, Map map, GameStatus status, int numberOfGroups, String name, String description, GroupAssignmentProtocol groupAssignmentProtocol, int gameTime, boolean shared, int questionTimeLimit, List<String> startingPositions) {
+    public GameInstance(User host, Questionnaire questionnaire, GameMap gameMap, GameStatus status, int numberOfGroups, String name, String description, GroupAssignmentProtocol groupAssignmentProtocol, int gameTime, boolean shared, int questionTimeLimit, List<String> startingPositions) {
         this.host = host;
         this.questionnaire = questionnaire;
-        this.map = map;
+        this.gameMap = gameMap;
         this.startingPositions =startingPositions;
         this.status = status;
         this.timeCreated = new Time(new Date().getTime());
@@ -94,7 +94,7 @@ public class GameInstance {
 //        this.id = original.id;
         this.host = original.host;
         this.questionnaire = original.questionnaire;
-        this.map = original.map;
+        this.gameMap = original.gameMap;
         this.status = original.status;
         this.timeCreated = original.timeCreated;
         this.timeLastUpdated = original.timeLastUpdated;
@@ -107,10 +107,10 @@ public class GameInstance {
         this.questionTimeLimit = original.questionTimeLimit;
     }
 
-    public GameInstance(User creator, Questionnaire questionnaire, Map map, GameStatus created, int numberOfGroups, String title, String description, GroupAssignmentProtocol groupAssignmentProtocol, int gameTime, boolean shared, int questionTimeLimit) {
+    public GameInstance(User creator, Questionnaire questionnaire, GameMap gameMap, GameStatus created, int numberOfGroups, String title, String description, GroupAssignmentProtocol groupAssignmentProtocol, int gameTime, boolean shared, int questionTimeLimit) {
         this.host = creator;
         this.questionnaire = questionnaire;
-        this.map = map;
+        this.gameMap = gameMap;
         this.startingPositions =new LinkedList<>();
         this.status = created;
         this.timeCreated = new Time(new Date().getTime());
@@ -167,12 +167,12 @@ public class GameInstance {
         this.questionnaire = questionnaire;
     }
 
-    public Map getMap() {
-        return map;
+    public GameMap getMap() {
+        return gameMap;
     }
 
-    public void setMap(Map map) {
-        this.map = map;
+    public void setMap(GameMap gameMap) {
+        this.gameMap = gameMap;
     }
 
     public GameStatus getStatus() {

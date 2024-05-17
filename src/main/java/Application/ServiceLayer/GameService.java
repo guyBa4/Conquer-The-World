@@ -2,13 +2,12 @@ package Application.ServiceLayer;
 import Application.APILayer.JsonToInstance;
 import Application.DataAccessLayer.DALController;
 import Application.Entities.*;
-import Application.Entities.Map;
+import Application.Entities.GameMap;
 import Application.Enums.GameStatus;
 import Application.Enums.GroupAssignmentProtocol;
 import Application.Enums.TileType;
 import Application.Repositories.*;
 import Application.Response;
-import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -57,14 +56,14 @@ public class GameService {
         Questionnaire questionnaire = new Questionnaire("common knowledge questionnaire", assignedQuestions, guyUser);
         this.questionnaireRepository.save(questionnaire);
         List<Tile> tiles = init_tiles();
-        Map map = new Map("USA", tiles, true);
-        mapRepository.save(map);
+        GameMap gameMap = new GameMap("USA", tiles, true);
+        mapRepository.save(gameMap);
         List<String> startingPossitions = new LinkedList<>();
         startingPossitions.add("TX");
         startingPossitions.add("NM");
         startingPossitions.add("ID");
         startingPossitions.add("SD");
-        GameInstance gameInstance = new GameInstance (nitzanUser, questionnaire, map, GameStatus.CREATED, 3, "for fun",
+        GameInstance gameInstance = new GameInstance (nitzanUser, questionnaire, gameMap, GameStatus.CREATED, 3, "for fun",
                 "the first game instance", GroupAssignmentProtocol.RANDOM, 1000 , true, 30, startingPossitions);
         gameInstanceRepository.save(gameInstance);
         RunningGameInstance runningGameInstance = new RunningGameInstance(gameInstance);
@@ -114,9 +113,9 @@ public class GameService {
     public Response<GameInstance> addGameInstance(String title, String description, UUID questionnaireUuid, UUID mapUuid, UUID creatorUuid, int numberOfGroups, int gameTime, boolean isShared, int questionTimeLimit) {
         try {
             Questionnaire questionnaire = dalController.getQuestionnaire(questionnaireUuid);
-            Map map = dalController.getMap(mapUuid);
+            GameMap gameMap = dalController.getMap(mapUuid);
             User creator = dalController.getUser(creatorUuid);
-            GameInstance gameInstance = new GameInstance(creator, questionnaire, map, GameStatus.CREATED, numberOfGroups, title, description, GroupAssignmentProtocol.RANDOM,  gameTime, isShared, questionTimeLimit);
+            GameInstance gameInstance = new GameInstance(creator, questionnaire, gameMap, GameStatus.CREATED, numberOfGroups, title, description, GroupAssignmentProtocol.RANDOM,  gameTime, isShared, questionTimeLimit);
             gameInstanceRepository.save(gameInstance);
 //                GameInstance gameInstance = new GameInstance(creator,  questionnaire, map, GameStatus.CREATED, numberOfGroups, title, description, gameTime, isShared);
         return Response.ok(gameInstance);

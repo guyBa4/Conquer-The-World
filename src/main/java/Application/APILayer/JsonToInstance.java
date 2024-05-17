@@ -48,11 +48,11 @@ public class JsonToInstance {
         return Response.ok(newUser);
     }
 
-    public Response<Map> buildMap(JSONObject json) {
-        Map newMap = new Map();
+    public Response<GameMap> buildMap(JSONObject json) {
+        GameMap newGameMap = new GameMap();
         for (String key : json.keySet()) {
             try {
-                injectFieldFromJson(newMap, json, key);
+                injectFieldFromJson(newGameMap, json, key);
             } catch (NoSuchFieldException e) {
                 e.printStackTrace(); // Handle the exception as needed
                 return Response.fail("Invalid field: " + key);
@@ -62,7 +62,7 @@ public class JsonToInstance {
             }
         }
 //        System.out.println("New User: " + newMap());
-        return Response.ok(newMap);
+        return Response.ok(newGameMap);
     }
 
     public Response<Question> buildQuestion(JSONObject json) {

@@ -2,13 +2,8 @@ package Application.DataAccessLayer;
 
 import Application.APILayer.JsonToInstance;
 import Application.Entities.*;
-import Application.Repositories.QuestionRepository;
-import Application.Repositories.QuestionnaireRepository;
 import Application.Repositories.RepositoryFactory;
-import Application.Response;
-import Application.ServiceLayer.QuestionService;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -82,11 +77,11 @@ public class DALController {
         return object;
     }
 
-    public Map getMap(UUID uuid){
-        Optional<Map> optional = repositoryFactory.mapRepository.findById(uuid);
+    public GameMap getMap(UUID uuid){
+        Optional<GameMap> optional = repositoryFactory.mapRepository.findById(uuid);
         if (optional.isEmpty())
             throw new IllegalArgumentException("there is no Map with this UUID : " + uuid);
-        Map object = optional.get();
+        GameMap object = optional.get();
         return object;
     }
 

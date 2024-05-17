@@ -6,7 +6,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "maps")
-public class Map {
+public class GameMap {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -24,11 +24,11 @@ public class Map {
     @JoinColumn(name = "map_id")
     private List<Tile> tiles;
 
-    public Map(){
+    public GameMap(){
 
     }
 
-    public Map(String name, List<Tile> tiles, boolean shared) {
+    public GameMap(String name, List<Tile> tiles, boolean shared) {
         this.name = name;
         this.tiles = tiles;
         this.shared = shared;

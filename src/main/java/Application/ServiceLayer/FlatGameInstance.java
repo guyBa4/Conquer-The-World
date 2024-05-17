@@ -1,10 +1,6 @@
 package Application.ServiceLayer;
 
 import Application.Entities.GameInstance;
-import Application.Entities.Map;
-import Application.Entities.Questionnaire;
-import Application.Entities.User;
-import jakarta.persistence.*;
 
 import java.util.UUID;
 

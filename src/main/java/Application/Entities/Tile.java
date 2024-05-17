@@ -1,8 +1,12 @@
 package Application.Entities;
 
 import Application.Enums.TileType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -23,6 +27,23 @@ public class Tile {
     @Column(name = "dimensions", columnDefinition = "TEXT")
     private String dimensions;
 
+    public List<Tile> getNeighbors() {
+        return neighbors;
+    }
+
+    public void setNeighbors(List<Tile> neighbors) {
+        this.neighbors = neighbors;
+    }
+
+    @ManyToMany
+    @JoinTable(
+            name = "tile_neighbors",
+            joinColumns = @JoinColumn(name = "tile_id"),
+            inverseJoinColumns = @JoinColumn(name = "neighbor_id")
+    )
+    @JsonManagedReference
+    @JsonIgnoreProperties({"neighbors"})
+    private List<Tile> neighbors;
     public Tile(){
 
     }
