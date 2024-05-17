@@ -1,7 +1,6 @@
 package Application.Entities;
 
 import Application.Enums.TileType;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -15,7 +14,11 @@ public class Tile {
 
     @Id
     @Column(name = "id", nullable = false, unique = true)
-    private String id;
+    private UUID id;
+
+
+    @Column(name = "name")
+    private String name;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "tile_type")
@@ -27,13 +30,6 @@ public class Tile {
     @Column(name = "dimensions", columnDefinition = "TEXT")
     private String dimensions;
 
-    public List<Tile> getNeighbors() {
-        return neighbors;
-    }
-
-    public void setNeighbors(List<Tile> neighbors) {
-        this.neighbors = neighbors;
-    }
 
     @ManyToMany
     @JoinTable(
@@ -48,7 +44,7 @@ public class Tile {
 
     }
 
-    public Tile(String id, TileType tileType, int controllingGroup, int difficultyLevel, String dimensions) {
+    public Tile(UUID id, TileType tileType, int controllingGroup, int difficultyLevel, String dimensions) {
         this.id = id;
         this.tileType = tileType;
         this.difficultyLevel = difficultyLevel;
@@ -60,13 +56,15 @@ public class Tile {
         this.tileType = other.tileType;
         this.difficultyLevel = other.difficultyLevel;
         this.dimensions = other.dimensions;
+        this.name = other.name;
+        this.neighbors = other.neighbors;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public Tile setId(String id) {
+    public Tile setId(UUID id) {
         this.id = id;
         return this;
     }
@@ -93,7 +91,26 @@ public class Tile {
         return dimensions;
     }
     
-    public void setDimensions(String dimensions) {
+    public Tile setDimensions(String dimensions) {
         this.dimensions = dimensions;
+        return this;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public Tile setName(String name) {
+        this.name = name;
+        return this;
+    }
+    public List<Tile> getNeighbors() {
+        return neighbors;
+    }
+
+    public Tile setNeighbors(List<Tile> neighbors) {
+        this.neighbors = neighbors;
+        return this;
+    }
+
 }

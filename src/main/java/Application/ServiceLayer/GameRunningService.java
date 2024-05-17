@@ -137,7 +137,7 @@ public class GameRunningService {
             if (runningGameInstance != null) {
                 updateGameStatus(runningGameInstance, GameStatus.STARTED);
                 runningGameInstance.assignGroups();
-                List<String> startingPositions = runningGameInstance.getGameInstance().getStartingPositions();
+                List<Tile> startingPositions = runningGameInstance.getGameInstance().getStartingPositions();
                 runningGameInstance.initStartingPositions(startingPositions);
                 runningGameInstanceRepository.save(runningGameInstance);
                 LOG.info("Game with ID " + runningGameId.toString() + " started successfully");

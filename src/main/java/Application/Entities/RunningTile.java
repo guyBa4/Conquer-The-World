@@ -32,7 +32,6 @@ public class RunningTile {
     public RunningTile(Tile tile) {
         this.tile = tile;
         this.tileType = tile.getTileType();
-        this.controllingGroup = controllingGroup;
     }
 
     public UUID getId() {

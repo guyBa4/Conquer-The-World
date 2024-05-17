@@ -2,6 +2,8 @@ package Application.Entities;
 import Application.Enums.GameStatus;
 import Application.Enums.GroupAssignmentProtocol;
 import Application.Response;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.json.JSONObject;
 
@@ -32,10 +34,13 @@ public class GameInstance {
     @JoinColumn(name = "map_id")
     private GameMap gameMap;
 
-    @ElementCollection
-    @CollectionTable(name = "map_starting_positions", joinColumns = @JoinColumn(name = "map_id"))
-    @Column(name = "starting_position")
-    private List<String> startingPositions;
+    @ManyToMany
+    @JoinTable(
+            name = "starting_positions",
+            joinColumns = @JoinColumn(name = "game_instance_id"),
+            inverseJoinColumns = @JoinColumn(name = "tile_id")
+    )
+    private List<Tile> startingPositions;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -73,7 +78,7 @@ public class GameInstance {
     public GameInstance(){
     }
 
-    public GameInstance(User host, Questionnaire questionnaire, GameMap gameMap, GameStatus status, int numberOfGroups, String name, String description, GroupAssignmentProtocol groupAssignmentProtocol, int gameTime, boolean shared, int questionTimeLimit, List<String> startingPositions) {
+    public GameInstance(User host, Questionnaire questionnaire, GameMap gameMap, GameStatus status, int numberOfGroups, String name, String description, GroupAssignmentProtocol groupAssignmentProtocol, int gameTime, boolean shared, int questionTimeLimit, List<Tile> startingPositions) {
         this.host = host;
         this.questionnaire = questionnaire;
         this.gameMap = gameMap;
@@ -240,11 +245,11 @@ public class GameInstance {
         this.questionTimeLimit = questionTimeLimit;
     }
 
-    public List<String> getStartingPositions() {
+    public List<Tile> getStartingPositions() {
         return startingPositions;
     }
 
-    public void setStartingPositions(List<String> startingPositions) {
+    public void setStartingPositions(List<Tile> startingPositions) {
         this.startingPositions = startingPositions;
     }
 

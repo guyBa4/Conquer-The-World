@@ -52,7 +52,7 @@ public class RunningGameInstance {
     public RunningGameInstance(GameInstance gameInstance) {//copy contractor
         this.gameInstance = gameInstance;
         runningId = UUID.randomUUID();
-        this.code = code;
+//        this.code = code;
         this.mobilePlayers = new LinkedList<>();
         this.tiles = new LinkedList<>();
         for(Tile tile : gameInstance.getMap().getTiles())
@@ -202,7 +202,7 @@ public class RunningGameInstance {
         this.gameInstance = gameInstance;
     }
     
-    public void initStartingPositions(List<String> startingPositions) {
+    public void initStartingPositions(List<Tile> startingPositions) {
         if (startingPositions == null || startingPositions.isEmpty() || startingPositions.size() < gameInstance.getNumberOfGroups())
             throw new RuntimeException("Starting position initialization failed - starting positions either null or do not match number of groups");
         List<RunningTile> startingTiles = tiles.stream().filter((tile) -> startingPositions.contains(tile.getTile().getId())).toList();
