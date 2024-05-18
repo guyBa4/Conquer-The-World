@@ -73,6 +73,7 @@ public class RunningGameController {
             JSONObject jsonObj = new JSONObject(inputJson);
             String name = jsonObj.getString("name");
             String mobileId = jsonObj.getString("mobileId");
+//            int group = jsonObj.getInt("group");
             UUID mobileUUid = UUID.fromString(mobileId);
             return gameRunningService.addMobileDetails(mobileUUid, name);
         } catch (Exception e) {

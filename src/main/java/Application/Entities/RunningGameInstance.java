@@ -169,7 +169,7 @@ public class RunningGameInstance {
     }
     
     public void assignGroups() {
-        if (gameInstance.getGroupAssignmentProtocol().equals(GroupAssignmentProtocol.RANDOM.toString())) {
+        if (gameInstance.getGroupAssignmentProtocol().equals(GroupAssignmentProtocol.RANDOM)) {
             assignGroupsRandom();
         }
     }

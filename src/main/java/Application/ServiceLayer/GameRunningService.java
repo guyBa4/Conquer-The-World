@@ -105,6 +105,7 @@ public class GameRunningService {
             MobilePlayer mobilePlayer = dalController.getMobilePlayer(mobileId);
             mobilePlayer.setName(name);
             mobilePlayer.setReady(true);
+//            mobilePlayer.setGroup(group);
             RunningGameInstance runningGameInstance = mobilePlayer.getRunningGameInstance();
             runningGameInstanceRepository.save(runningGameInstance);
             LOG.info("mobile enter name : " + mobilePlayer.getName());
