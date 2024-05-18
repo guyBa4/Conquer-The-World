@@ -5,6 +5,8 @@ import Application.Entities.*;
 import Application.Repositories.*;
 import Application.Response;
 import org.json.JSONObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -114,5 +116,11 @@ public class QuestionService {
                 assignedQuestions.add(new AssignedQuestion(question, difficulity));
         }
         return assignedQuestions;
+    }
+
+    public Response<Page<Question>> filterQuestions(int page, int size, String content, List<String> tags, int difficulty) {
+        Page<Question> questionPage = questionRepository.findByFilters(content, difficulty, PageRequest.of(page, size));
+        return Response.ok(questionPage);
+
     }
 }

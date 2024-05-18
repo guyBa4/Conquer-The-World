@@ -9,12 +9,14 @@ import com.fasterxml.jackson.databind.deser.CreatorProperty;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -70,6 +72,22 @@ public class QuestionController {
     public Response<List<AssignedQuestion>> getQuestionsByQuestionnaireId(@PathVariable (name= "questionnaireId") UUID questionnaireId) {
         try {
             Response<List<AssignedQuestion>> response = questionService.getQuestionsByQuestionnaireId(questionnaireId);
+            return response;
+        } catch (JSONException e) {
+            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+        }
+    }
+
+    @GetMapping(path = "/filter_questions/page={page}&size={size}&content={content}&difficulty={difficulty}")
+    public Response<Page<Question>> getQuestions(@PathVariable(name = "page") int page,
+                                                 @PathVariable(name = "size") int size,
+                                                 @PathVariable(name = "difficulty") Integer difficulty,
+                                                 @PathVariable(name = "content") String content){
+//            ,                                                 @RequestParam(name = "tags", required = false) List<String> tags) {
+
+        try {
+            List<String> tags = new LinkedList<>();
+            Response<Page<Question>> response = questionService.filterQuestions(page, size, content, tags, difficulty);
             return response;
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
