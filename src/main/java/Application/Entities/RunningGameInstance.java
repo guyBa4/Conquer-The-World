@@ -42,17 +42,15 @@ public class RunningGameInstance {
     private static Logger LOG = getLogger(RunningGameInstance.class.toString());
 
 
-    //    @Transient
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "game_instance_id")
     private GameInstance gameInstance;
 
     public RunningGameInstance(){}
 
-    public RunningGameInstance(GameInstance gameInstance) {//copy contractor
+    public RunningGameInstance(GameInstance gameInstance) {     // Copy Constructor
         this.gameInstance = gameInstance;
         runningId = UUID.randomUUID();
-//        this.code = code;
         this.mobilePlayers = new LinkedList<>();
         this.tiles = new LinkedList<>();
         for(Tile tile : gameInstance.getMap().getTiles())
@@ -205,24 +203,15 @@ public class RunningGameInstance {
     public void initStartingPositions(List<Tile> startingPositions) {
         if (startingPositions == null || startingPositions.isEmpty() || startingPositions.size() < gameInstance.getNumberOfGroups())
             throw new RuntimeException("Starting position initialization failed - starting positions either null or do not match number of groups");
-        List<RunningTile> startingTiles = tiles.stream().filter((tile) -> startingPositions.contains(tile.getTile().getId())).toList();
+        List<RunningTile> startingTiles = tiles.stream().filter((tile) -> tile.getId().equals(tile.getTile().getId())).toList();
         int groupNumber = 1;
         int numberOfGroups = gameInstance.getNumberOfGroups();
         for (RunningTile tile : startingTiles) {
             if (groupNumber <= numberOfGroups) {
                 tile.setControllingGroup(groupNumber);
-//                tile.getTile().setDifficultyLevel(0); // Resets starting tiles difficulty to 0 so they do not count in the score
                 groupNumber++;
             }
             else break;
         }
     }
-
-//    public java.util.Map<String, String> toJsonMap() {
-//        java.util.Map<String, String>  jsonMap = gameInstance.toJsonMap();
-//        jsonMap.put("code", code);
-//        jsonMap.put("runningId", this.runningId.toString());
-//        jsonMap.put("status", this.status);
-//        return jsonMap;
-//    }
 }
