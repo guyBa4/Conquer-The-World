@@ -44,7 +44,7 @@ public class Tile {
 
     }
 
-    public Tile(UUID id, TileType tileType, int controllingGroup, int difficultyLevel, String dimensions) {
+    public Tile(UUID id, TileType tileType, int difficultyLevel, String dimensions) {
         this.id = id;
         this.tileType = tileType;
         this.difficultyLevel = difficultyLevel;
@@ -111,6 +111,14 @@ public class Tile {
     public Tile setNeighbors(List<Tile> neighbors) {
         this.neighbors = neighbors;
         return this;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tile tile = (Tile) o;
+        return id == tile.id;
     }
 
 }

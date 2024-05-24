@@ -99,6 +99,13 @@ public class RunningGameInstance {
     public void setTiles(List<RunningTile> tiles) {
         this.tiles = tiles;
     }
+    
+    public RunningTile getTileById(UUID runningTileId) {
+        List<RunningTile> candidates = tiles.stream().filter((tile) -> tile.getId().equals(runningTileId)).toList();
+        if (candidates.isEmpty())
+            return null;
+        return candidates.get(0);
+    }
 
     public void addMobilePlayer(MobilePlayer mobilePlayer){
         if (status.toString().equals(GameStatus.STARTED.toString())) {
@@ -129,12 +136,31 @@ public class RunningGameInstance {
         return smallestGroup;
     }
     
-    public AssignedQuestion getQuestion(int difficulty) {
-        List<AssignedQuestion> questionList = gameInstance.getQuestionnaire().getQuestions().stream().filter((question) -> (question.getQuestion().getDifficulty() == difficulty)).toList();
-        int i = (int) (Math.random()*questionList.size());
-        return questionList.get(i);
+    public AssignedQuestion getQuestion(UUID runningTileId, int group) {
+        RunningTile runningTile = getTileById(runningTileId);
+        if (runningTile != null) {
+            boolean isNeighbour = checkTileIsNeighbor(runningTile, group);
+            if (isNeighbour) {
+                int difficulty = runningTile.getTile().getDifficultyLevel();
+                List<AssignedQuestion> questionList = gameInstance.getQuestionnaire().getQuestions().stream().filter((question) -> (question.getQuestion().getDifficulty() == difficulty)).toList();
+                int i = (int) (Math.random() * questionList.size());
+                return questionList.get(i);
+            }
+            else {
+                LOG.warning("Selected tile is not a neighbor for the group.");
+                throw new IllegalArgumentException("Selected tile is not a neighbor for the group.");
+            }
+        } else {
+            LOG.warning("Could not find passed running tile.");
+            throw new IllegalArgumentException("Could not find passed running tile.");
+        }
     }
-
+    
+    private boolean checkTileIsNeighbor(RunningTile target, int group) {
+        List<RunningTile> groupTiles = tiles.stream().filter((tile) -> tile.getControllingGroup() == group).toList();
+        return groupTiles.stream().anyMatch((tile) -> target.getTile().getNeighbors().contains(tile.getTile()));
+    }
+    
     public boolean checkAnswer(String tileId, int group, UUID questionId, String answer, AnswerRepository answerRepository) {
         List<Answer> answers = answerRepository.findByQuestionId(questionId);
         if (answers == null || answers.isEmpty()) {
@@ -203,7 +229,7 @@ public class RunningGameInstance {
     public void initStartingPositions(List<Tile> startingPositions) {
         if (startingPositions == null || startingPositions.isEmpty() || startingPositions.size() < gameInstance.getNumberOfGroups())
             throw new RuntimeException("Starting position initialization failed - starting positions either null or do not match number of groups");
-        List<RunningTile> startingTiles = tiles.stream().filter((tile) -> tile.getId().equals(tile.getTile().getId())).toList();
+        List<RunningTile> startingTiles = tiles.stream().filter((tile) -> startingPositions.contains(tile.getTile())).toList();
         int groupNumber = 1;
         int numberOfGroups = gameInstance.getNumberOfGroups();
         for (RunningTile tile : startingTiles) {
