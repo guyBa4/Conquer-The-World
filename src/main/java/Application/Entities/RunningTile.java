@@ -22,8 +22,9 @@ public class RunningTile {
     @JoinColumn(name = "permanent_tile_id")
     private Tile tile;
 
-    @Column(name = "controlling_group")
-    private int controllingGroup;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "controlling_group_id")
+    private Group controllingGroup;
 
 
     public RunningTile() {
@@ -59,11 +60,11 @@ public class RunningTile {
     }
 
 
-    public int getControllingGroup() {
+    public Group getControllingGroup() {
         return controllingGroup;
     }
 
-    public void setControllingGroup(int controllingGroup) {
+    public void setControllingGroup(Group controllingGroup) {
         this.controllingGroup = controllingGroup;
     }
 }

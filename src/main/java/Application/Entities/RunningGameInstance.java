@@ -27,6 +27,12 @@ public class RunningGameInstance {
     @JsonIgnore
     private List<MobilePlayer> mobilePlayers;
 
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "running_game_instance_id")
+    @JsonIgnore
+    private List<Group> groups;
+
     @Column(name = "code")
     private String code;
 
@@ -76,10 +82,10 @@ public class RunningGameInstance {
     public void setRunningId(UUID runningId) {
         this.runningId = runningId;
     }
+
     public List<MobilePlayer> getMobilePlayers() {
         return mobilePlayers;
     }
-
     public void setMobilePlayers(List<MobilePlayer> mobilePlayers) {
         this.mobilePlayers = mobilePlayers;
     }
@@ -99,7 +105,7 @@ public class RunningGameInstance {
     public void setTiles(List<RunningTile> tiles) {
         this.tiles = tiles;
     }
-    
+
     public RunningTile getTileById(UUID runningTileId) {
         List<RunningTile> candidates = tiles.stream().filter((tile) -> tile.getId().equals(runningTileId)).toList();
         if (candidates.isEmpty())
@@ -109,33 +115,25 @@ public class RunningGameInstance {
 
     public void addMobilePlayer(MobilePlayer mobilePlayer){
         if (status.toString().equals(GameStatus.STARTED.toString())) {
-            int group = getSmallestGroup();
+            Group group = getSmallestGroup();
             mobilePlayer.setGroup(group);
-            LOG.info("Added new mobile player to group " + group);
+            group.addMobilePlayer(mobilePlayer);
+            LOG.info("Added new mobile player to group " + group.getNumber());
         }
         mobilePlayers.add(mobilePlayer);
     }
-    
-    private int getSmallestGroup() {
-        Map<Integer, Integer> groupSizes = new HashMap<>();
-        for (int i = 1; i <= gameInstance.getNumberOfGroups(); i++)
-            groupSizes.put(i, 0);
-        for (MobilePlayer player : getMobilePlayers()) {
-            int playerGroup = player.getGroup();
-            int groupSize = groupSizes.get(playerGroup);
-            groupSizes.put(playerGroup, groupSize + 1);
-        }
-        int smallestGroupSize = Integer.MAX_VALUE;
-        int smallestGroup = 1;
-        for (Map.Entry<Integer, Integer> group : groupSizes.entrySet()) {
-            if (group.getValue() < smallestGroupSize) {
-                smallestGroupSize = group.getValue();
-                smallestGroup = group.getKey();
-            }
+
+    private Group getSmallestGroup() {
+        Group smallestGroup = groups.get(0);
+        for ( Group group : groups){
+            if (group.getSize() < smallestGroup.getSize())
+                smallestGroup = group;
         }
         return smallestGroup;
+
     }
-    
+
+
     public AssignedQuestion getQuestion(UUID runningTileId, int group) {
         RunningTile runningTile = getTileById(runningTileId);
         if (runningTile != null) {
@@ -155,13 +153,13 @@ public class RunningGameInstance {
             throw new IllegalArgumentException("Could not find passed running tile.");
         }
     }
-    
+
     private boolean checkTileIsNeighbor(RunningTile target, int group) {
-        List<RunningTile> groupTiles = tiles.stream().filter((tile) -> tile.getControllingGroup() == group).toList();
+        List<RunningTile> groupTiles = tiles.stream().filter((tile) -> tile.getControllingGroup().getNumber() == group).toList();
         return groupTiles.stream().anyMatch((tile) -> target.getTile().getNeighbors().contains(tile.getTile()));
     }
-    
-    public boolean checkAnswer(String tileId, int group, UUID questionId, String answer, AnswerRepository answerRepository) {
+
+    public boolean checkAnswer(String tileId, Group group, UUID questionId, String answer, AnswerRepository answerRepository) {
         List<Answer> answers = answerRepository.findByQuestionId(questionId);
         if (answers == null || answers.isEmpty()) {
             throw new IllegalArgumentException("Failed to find answers for question " + questionId);
@@ -178,11 +176,12 @@ public class RunningGameInstance {
             if (tile == null)
                 throw new IllegalArgumentException("Failed to find tile by tileId.");
             tile.setControllingGroup(group);
+            group.addScore(tile.getTile().getDifficultyLevel());
             return true;
         }
         return false;
     }
-    
+
     public MobilePlayer getPlayer(UUID userId) {
         for (MobilePlayer mobilePlayer : mobilePlayers){
             if (mobilePlayer.getId().equals(userId)){
@@ -191,18 +190,20 @@ public class RunningGameInstance {
         }
         return null;
     }
-    
+
     public void assignGroups() {
         if (gameInstance.getGroupAssignmentProtocol().equals(GroupAssignmentProtocol.RANDOM)) {
             assignGroupsRandom();
         }
     }
-    
+
     private void assignGroupsRandom() {
         int numberOfGroups = gameInstance.getNumberOfGroups();
         int groupToAssign = 1;
         for (MobilePlayer player : getMobilePlayers()) {
-            player.setGroup(groupToAssign);
+            Group group = groups.get(groupToAssign);
+            player.setGroup(group);
+            group.addMobilePlayer(player);
             groupToAssign = groupToAssign == numberOfGroups ? 1 : groupToAssign + 1;
         }
     }
@@ -218,27 +219,32 @@ public class RunningGameInstance {
     public void setStatus(GameStatus status) {
         this.status = status;
     }
+
     public GameInstance getGameInstance() {
         return gameInstance;
     }
-
     public void setGameInstance(GameInstance gameInstance) {
         this.gameInstance = gameInstance;
     }
-    
+
+    public List<Group> getGroups() {
+        return groups;
+    }
+
+    public RunningGameInstance setGroups(List<Group> groups) {
+        this.groups = groups;
+        return this;
+    }
+
     public void initStartingPositions() {
         List<Tile> startingPositions = gameInstance.getStartingPositions();
         if (startingPositions == null || startingPositions.isEmpty() || startingPositions.size() < gameInstance.getNumberOfGroups())
             throw new RuntimeException("Starting position initialization failed - starting positions either null or do not match number of groups");
         List<RunningTile> startingTiles = tiles.stream().filter((tile) -> startingPositions.contains(tile.getTile())).toList();
-        int groupNumber = 1;
-        int numberOfGroups = gameInstance.getNumberOfGroups();
-        for (RunningTile tile : startingTiles) {
-            if (groupNumber <= numberOfGroups) {
-                tile.setControllingGroup(groupNumber);
-                groupNumber++;
-            }
-            else break;
+        int tilePointer = 0;
+        for (Group group: groups){
+            startingTiles.get(tilePointer).setControllingGroup(group);
+            tilePointer++;
         }
     }
 }

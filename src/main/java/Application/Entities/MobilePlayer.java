@@ -2,6 +2,9 @@ package Application.Entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 import java.util.UUID;
 
 @Entity
@@ -16,8 +19,10 @@ public class MobilePlayer {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "group_number")
-    private int group;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "group_id")
+    @JsonIgnore
+    private Group group;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "running_game_instance_id")
@@ -29,13 +34,12 @@ public class MobilePlayer {
 
     public MobilePlayer(){
         ready = false;
-        group = 0;
     }
     public MobilePlayer(String name, RunningGameInstance runningGameInstance) {
         this.name = name;
         ready = false;
-        group = 0;
         this.runningGameInstance = runningGameInstance;
+
     }
 
     public String getName() {
@@ -46,11 +50,11 @@ public class MobilePlayer {
         this.name = name;
     }
     
-    public int getGroup() {
+    public Group getGroup() {
         return group;
     }
     
-    public void setGroup(int group) {
+    public void setGroup(Group group) {
         this.group = group;
     }
 
