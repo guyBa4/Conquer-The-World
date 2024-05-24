@@ -207,10 +207,22 @@ public class GameRunningService {
     }
 
 
-    public Response<AssignedQuestion> getQuestion(int difficulty, UUID runningGameId) {
+    public Response<AssignedQuestion> getQuestion(UUID runningTileId, int group, UUID runningGameId) {
         try {
+            if (runningTileId == null) {
+                LOG.warning("Received null running tile ID");
+                return Response.fail("Received null running tile ID");
+            }
+            else if (group < 1) {
+                LOG.warning("Received invalid group number");
+                return Response.fail("Received invalid group number");
+            }
+            else if (runningGameId == null) {
+                LOG.warning("Received null running game ID");
+                return Response.fail("Received null running game ID");
+            }
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
-            AssignedQuestion question = runningGameInstance.getQuestion(difficulty);
+            AssignedQuestion question = runningGameInstance.getQuestion(runningTileId, group);
             return Response.ok(question);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();

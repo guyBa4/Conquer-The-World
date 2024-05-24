@@ -126,12 +126,12 @@ public class RunningGameController {
         }
     }
 
-    @GetMapping(path = "/generate_question/{difficulty}&{runningGameid}")
-    public Response<AssignedQuestion> getQuestion(@PathVariable (name= "difficulty") int difficulty, @PathVariable (name= "runningGameid") String runningGameId,
-                                                  @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    @GetMapping(path = "/generate_question/game_id/{runningGameId}/group/{group}/tile/{runningTileId}")
+    public Response<AssignedQuestion> getQuestion(@PathVariable(name= "group") int group, @PathVariable(name= "runningGameId") String runningGameId,
+                                                  @PathVariable(name= "runningTileId") String runningTileId, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
-            LOG.info(String.format("Request received by /generate_question endpoint:\n {'difficulty': %s, 'runningGameId': %s}", difficulty, runningGameId));
-            return gameRunningService.getQuestion(difficulty, UUID.fromString(runningGameId));
+            LOG.info(String.format("Request received by /generate_question endpoint:\n {'group': %s, 'runningGameId': %s, 'runningTileId': %s}", group, runningGameId, runningTileId));
+            return gameRunningService.getQuestion(UUID.fromString(runningTileId), group, UUID.fromString(runningGameId));
         } catch (IllegalArgumentException e) {
             return Response.fail(403, e.toString());
         } catch (JSONException e) {
