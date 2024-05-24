@@ -226,7 +226,8 @@ public class RunningGameInstance {
         this.gameInstance = gameInstance;
     }
     
-    public void initStartingPositions(List<Tile> startingPositions) {
+    public void initStartingPositions() {
+        List<Tile> startingPositions = gameInstance.getStartingPositions();
         if (startingPositions == null || startingPositions.isEmpty() || startingPositions.size() < gameInstance.getNumberOfGroups())
             throw new RuntimeException("Starting position initialization failed - starting positions either null or do not match number of groups");
         List<RunningTile> startingTiles = tiles.stream().filter((tile) -> startingPositions.contains(tile.getTile())).toList();

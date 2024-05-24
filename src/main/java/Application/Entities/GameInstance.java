@@ -133,11 +133,7 @@ public class GameInstance {
     public static Response<GameInstance> fromJson(JSONObject jsonObject){
         GameInstance gameInstance = new GameInstance();
         gameInstance.host = new User().setId(UUID.fromString(jsonObject.getString("host")));
-//        this.questionnaire = questionnaire;
-//        this.map = map;
         gameInstance.status = GameStatus.valueOf(jsonObject.getString("status"));
-//        this.timeCreated = timeCreated;
-//        this.timeLastUpdated = timeLastUpdated;
         gameInstance.numberOfGroups = jsonObject.getInt("numberOfGroups");
         gameInstance.name = jsonObject.getString("name");
         gameInstance.description = jsonObject.getString("description");
@@ -269,24 +265,4 @@ public class GameInstance {
         this.timeLastUpdated = timeLastUpdated;
     }
 
-//    public java.util.Map<String, String> toJsonMap() {
-//        java.util.Map<String, String>  jsonMap = new HashMap<>();
-//        jsonMap.put("id", id.toString());
-//        jsonMap.put("name", name);
-//        jsonMap.put("host", host.getId().toString());
-//        jsonMap.put("status", status);
-//        jsonMap.put("timeCreated", timeCreated.toString());
-//        jsonMap.put("timeLastUpdated", timeLastUpdated.toString());
-//        jsonMap.put("numberOfGroups", String.valueOf(numberOfGroups));
-//        jsonMap.put("description", description);
-//        jsonMap.put("groupAssignmentProtocol", groupAssignmentProtocol);
-//        jsonMap.put("gameTime", String.valueOf(gameTime));
-//        jsonMap.put("shared", String.valueOf(shared));
-//        jsonMap.put("questionTimeLimit", String.valueOf(questionTimeLimit));
-//        jsonMap.put("mapId", map.getId().toString());
-//        jsonMap.put("mapName", map.getName());
-//        jsonMap.put("questionnaireId", questionnaire.getId().toString());
-//        jsonMap.put("questionnaireName", questionnaire.getName());
-//        return jsonMap;
-//    }
 }
