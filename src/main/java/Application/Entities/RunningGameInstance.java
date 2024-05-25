@@ -251,7 +251,8 @@ public class RunningGameInstance {
             throw new RuntimeException("Starting position initialization failed - starting positions either null or do not match number of groups");
         List<RunningTile> startingTiles = tiles.stream().filter((tile) -> startingPositions.contains(tile.getTile())).toList();
         int tilePointer = 0;
-        for (Group group: groups){
+        List<Group> groupsToAssign = groups.stream().filter((group)-> group.getNumber()!=0).toList();
+        for (Group group: groupsToAssign){
             startingTiles.get(tilePointer).setControllingGroup(group);
             tilePointer++;
         }
