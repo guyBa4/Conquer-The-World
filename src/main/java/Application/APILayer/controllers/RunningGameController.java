@@ -126,6 +126,7 @@ public class RunningGameController {
         }
     }
 
+
     @GetMapping(path = "/generate_question/game_id/{runningGameId}/group/{group}/tile/{runningTileId}")
     public Response<AssignedQuestion> getQuestion(@PathVariable(name= "group") int group, @PathVariable(name= "runningGameId") String runningGameId,
                                                   @PathVariable(name= "runningTileId") String runningTileId, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {

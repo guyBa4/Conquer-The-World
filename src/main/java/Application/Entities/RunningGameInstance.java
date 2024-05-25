@@ -63,6 +63,14 @@ public class RunningGameInstance {
             tiles.add(new RunningTile(tile));
         this.status = gameInstance.getStatus();
         this.code = generateGameCode(6);
+        this.initGroups();
+    }
+
+    private void initGroups() {
+        this.groups = new LinkedList<>();
+        for (int i = 1; i<=this.gameInstance.getNumberOfGroups(); i++){
+            this.groups.add(new Group(i, this));
+        }
     }
 
     private String generateGameCode(int length){
@@ -114,13 +122,13 @@ public class RunningGameInstance {
     }
 
     public void addMobilePlayer(MobilePlayer mobilePlayer){
-        if (status.toString().equals(GameStatus.STARTED.toString())) {
+        mobilePlayers.add(mobilePlayer);
+        if (status.equals(GameStatus.STARTED)) {
             Group group = getSmallestGroup();
             mobilePlayer.setGroup(group);
             group.addMobilePlayer(mobilePlayer);
             LOG.info("Added new mobile player to group " + group.getNumber());
         }
-        mobilePlayers.add(mobilePlayer);
     }
 
     private Group getSmallestGroup() {
@@ -134,15 +142,14 @@ public class RunningGameInstance {
     }
 
 
-    public AssignedQuestion getQuestion(UUID runningTileId, int group) {
+    public AssignedQuestion getQuestion(UUID runningTileId, int groupNumber) {
+        Group group = getGroupByNumber(groupNumber);
         RunningTile runningTile = getTileById(runningTileId);
         if (runningTile != null) {
-            boolean isNeighbour = checkTileIsNeighbor(runningTile, group);
+            boolean isNeighbour = checkTileIsNeighbor(runningTile, groupNumber);
             if (isNeighbour) {
                 int difficulty = runningTile.getTile().getDifficultyLevel();
-                List<AssignedQuestion> questionList = gameInstance.getQuestionnaire().getQuestions().stream().filter((question) -> (question.getQuestion().getDifficulty() == difficulty)).toList();
-                int i = (int) (Math.random() * questionList.size());
-                return questionList.get(i);
+                return group.generateQuestionFromQueue(runningTile.getTile().getDifficultyLevel());
             }
             else {
                 LOG.warning("Selected tile is not a neighbor for the group.");
@@ -199,12 +206,12 @@ public class RunningGameInstance {
 
     private void assignGroupsRandom() {
         int numberOfGroups = gameInstance.getNumberOfGroups();
-        int groupToAssign = 1;
+        int groupToAssign = 0;
         for (MobilePlayer player : getMobilePlayers()) {
             Group group = groups.get(groupToAssign);
             player.setGroup(group);
             group.addMobilePlayer(player);
-            groupToAssign = groupToAssign == numberOfGroups ? 1 : groupToAssign + 1;
+            groupToAssign = groupToAssign == numberOfGroups-1 ? 0 : groupToAssign + 1;
         }
     }
 
@@ -246,5 +253,16 @@ public class RunningGameInstance {
             startingTiles.get(tilePointer).setControllingGroup(group);
             tilePointer++;
         }
+    }
+    public Questionnaire getQuestionnaire(){
+        return this.gameInstance.getQuestionnaire();
+    }
+
+    public Group getGroupByNumber(int groupNumber){
+        for (Group group : groups){
+            if (group.getNumber() == groupNumber)
+                return group;
+        }
+        return null;
     }
 }

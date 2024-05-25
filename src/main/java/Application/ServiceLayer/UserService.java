@@ -36,7 +36,7 @@ public class UserService {
         this.repositoryFactory = repositoryFactory;
         jsonToInstance = JsonToInstance.getInstance();
         this.dalController = DALController.getInstance();
-        dalController.init(repositoryFactory);
+//        dalController.init(repositoryFactory);
         setRepositories(repositoryFactory);
     }
 

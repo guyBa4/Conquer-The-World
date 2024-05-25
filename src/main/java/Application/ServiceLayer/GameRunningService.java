@@ -63,8 +63,6 @@ public class GameRunningService {
     public Response<RunningGameInstance> OpenWaitingRoom(UUID gameId, UUID hostId){ // in this function RunningGameInstance is created
         try{
             GameInstance gameInstance = dalController.getGameInstance(gameId);
-//            if (!gameInstance.getHost().getId().equals(hostId))
-//                return Response.fail("wrong host UUID");
             RunningGameInstance runningGameInstance = new RunningGameInstance(gameInstance);
             updateGameStatus(runningGameInstance, GameStatus.WAITING_ROOM);
             runningGameInstanceRepository.save(runningGameInstance);
@@ -105,7 +103,6 @@ public class GameRunningService {
             MobilePlayer mobilePlayer = dalController.getMobilePlayer(mobileId);
             mobilePlayer.setName(name);
             mobilePlayer.setReady(true);
-//            mobilePlayer.setGroup(group);
             RunningGameInstance runningGameInstance = mobilePlayer.getRunningGameInstance();
             runningGameInstanceRepository.save(runningGameInstance);
             LOG.info("mobile enter name : " + mobilePlayer.getName());
@@ -139,6 +136,7 @@ public class GameRunningService {
                 updateGameStatus(runningGameInstance, GameStatus.STARTED);
                 runningGameInstance.assignGroups();
                 runningGameInstance.initStartingPositions();
+                initQuestionQueues(runningGameInstance);
                 runningGameInstanceRepository.save(runningGameInstance);
                 LOG.info("Game with ID " + runningGameId.toString() + " started successfully");
                 return Response.ok(runningGameInstance);
@@ -153,6 +151,18 @@ public class GameRunningService {
         } catch (Exception e) {
             e.printStackTrace();
             return Response.fail(500, "Internal Server Error : \n" + e.toString());
+        }
+    }
+
+    private void initQuestionQueues(RunningGameInstance runningGameInstance) {
+        Questionnaire questionnaire = runningGameInstance.getQuestionnaire();
+        UUID id = questionnaire.getId();
+        List<Group> groups = runningGameInstance.getGroups();
+        for(int difficulity = 1; difficulity <=5; difficulity++){
+            List<AssignedQuestion> questionList = this.repositoryFactory.assignedQuestionRepository.findByQuestionnaireIdAndDifficultyLevel(id, difficulity);
+            for (Group group : groups){
+                group.addQuestionQueue(difficulity, questionList);
+            }
         }
     }
 
@@ -222,6 +232,7 @@ public class GameRunningService {
             }
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
             AssignedQuestion question = runningGameInstance.getQuestion(runningTileId, group);
+            runningGameInstanceRepository.save(runningGameInstance);
             return Response.ok(question);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();

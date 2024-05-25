@@ -39,7 +39,6 @@ public class MobilePlayer {
         this.name = name;
         ready = false;
         this.runningGameInstance = runningGameInstance;
-
     }
 
     public String getName() {

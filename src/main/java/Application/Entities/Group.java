@@ -3,6 +3,7 @@ package Application.Entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,12 +34,15 @@ public class Group {
     private List<QuestionsQueue> questionsQueues;
 
     public Group(){
-
-//    questionsQueues = new LinkedList<>();
-//        for(int i = 0 ; i< GET_MAX_DEFICULITY){
-//
     }
 
+    public Group(int number, RunningGameInstance runningGameInstance){
+        this.number = number;
+        this.score = 0;
+        this.mobilePlayers = new LinkedList<>();
+        this.runningGameInstance = runningGameInstance;
+        this.questionsQueues = new LinkedList<>();
+    }
 
     public UUID getId() {
         return id;
@@ -89,6 +93,9 @@ public class Group {
     public List<QuestionsQueue> getQuestionsQueues() {
         return questionsQueues;
     }
+    public void addQuestionQueue(int difficulty, List<AssignedQuestion> assignedQuestions){
+        questionsQueues.add(new QuestionsQueue(difficulty, assignedQuestions));
+    }
 
     public void setQuestionsQueues(List<QuestionsQueue> questionsQueues) {
         this.questionsQueues = questionsQueues;
@@ -96,5 +103,15 @@ public class Group {
 
     public int getSize(){
         return mobilePlayers.size();
+    }
+
+    public AssignedQuestion generateQuestionFromQueue(int difficultyLevel) {
+        for(QuestionsQueue queue : this.questionsQueues){
+            if (queue.getDifficulty() == difficultyLevel){
+                AssignedQuestion assignedQuestion = queue.generateQuestionFromQueue();
+                return assignedQuestion;
+            }
+        }
+        return null;
     }
 }

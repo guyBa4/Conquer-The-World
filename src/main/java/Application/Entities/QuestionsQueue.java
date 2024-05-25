@@ -1,13 +1,9 @@
 package Application.Entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @Entity
 @Table(name = "questions_queue")
@@ -24,25 +20,56 @@ public class QuestionsQueue {
             inverseJoinColumns = @JoinColumn(name = "queue_id")
     )
     @JsonIgnore
-    private List<AssignedQuestion> questionsQueues;
+    private List<AssignedQuestion> questionsQueue;
 
     private int difficulty;
 
     public QuestionsQueue(){
-        questionsQueues = new LinkedList<>();
+        questionsQueue = new LinkedList<>();
     }
 
     public QuestionsQueue(int difficulty, List<AssignedQuestion> assignedQuestions) {
         this.difficulty = difficulty;
-        this.questionsQueues = this.RandomOrder(assignedQuestions);
+        this.questionsQueue = assignedQuestions;
     }
 
-    private List<AssignedQuestion> RandomOrder(List<AssignedQuestion> assignedQuestions) {
-        return shuffleList(assignedQuestions);
-    }
+//    private List<AssignedQuestion> RandomOrder(List<AssignedQuestion> assignedQuestions) {
+//        return shuffleList(assignedQuestions);
+//    }
     public static <T> List<T> shuffleList(List<T> inputList) {
         Collections.shuffle(inputList);
         return inputList;
     }
 
+    public UUID getId() {
+        return id;
+    }
+
+    public QuestionsQueue setId(UUID id) {
+        this.id = id;
+        return this;
+    }
+
+    public List<AssignedQuestion> getQuestionsQueue() {
+        return questionsQueue;
+    }
+
+    public QuestionsQueue setQuestionsQueue(List<AssignedQuestion> questionsQueue) {
+        this.questionsQueue = questionsQueue;
+        return this;
+    }
+
+    public int getDifficulty() {
+        return difficulty;
+    }
+
+    public QuestionsQueue setDifficulty(int difficulty) {
+        this.difficulty = difficulty;
+        return this;
+    }
+
+    public AssignedQuestion generateQuestionFromQueue() {
+        int i = (int) (Math.random()*(this.questionsQueue.size()));
+        return questionsQueue.remove(i);
+    }
 }
