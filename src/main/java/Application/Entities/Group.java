@@ -1,6 +1,8 @@
 package Application.Entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.LinkedList;
@@ -17,6 +19,8 @@ public class Group {
 
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id")
+    @JsonManagedReference
+    @JsonIgnoreProperties({"groups"})
     private List<MobilePlayer> mobilePlayers;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -31,6 +35,7 @@ public class Group {
 
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "questionsQueues_id")
+    @JsonIgnore
     private List<QuestionsQueue> questionsQueues;
 
     public Group(){
@@ -68,6 +73,8 @@ public class Group {
         this.mobilePlayers = mobilePlayers;
     }
     public void addMobilePlayer(MobilePlayer mobilePlayer) {
+        if (this.getNumber() == 0)
+            throw new RuntimeException("group number 0 cabbot conatain mobile users!");
         this.mobilePlayers.add(mobilePlayer);
     }
 

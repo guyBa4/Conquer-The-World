@@ -14,9 +14,6 @@ public class RunningTile {
     @Column(name = "id", nullable = false, unique = true)
     private UUID id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "tile_type")
-    private TileType tileType;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "permanent_tile_id")
@@ -32,7 +29,6 @@ public class RunningTile {
 
     public RunningTile(Tile tile) {
         this.tile = tile;
-        this.tileType = tile.getTileType();
     }
 
     public UUID getId() {
@@ -43,13 +39,7 @@ public class RunningTile {
         this.id = id;
     }
 
-    public TileType getTileType() {
-        return tileType;
-    }
 
-    public void setTileType(TileType tileType) {
-        this.tileType = tileType;
-    }
 
     public Tile getTile() {
         return tile;

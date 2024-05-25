@@ -158,9 +158,10 @@ public class GameRunningService {
         Questionnaire questionnaire = runningGameInstance.getQuestionnaire();
         UUID id = questionnaire.getId();
         List<Group> groups = runningGameInstance.getGroups();
+        List<Group> groupsToAssign = groups.stream().filter((group)-> group.getNumber()!=0).toList();
         for(int difficulity = 1; difficulity <=5; difficulity++){
             List<AssignedQuestion> questionList = this.repositoryFactory.assignedQuestionRepository.findByQuestionnaireIdAndDifficultyLevel(id, difficulity);
-            for (Group group : groups){
+            for (Group group : groupsToAssign){
                 group.addQuestionQueue(difficulity, questionList);
             }
         }

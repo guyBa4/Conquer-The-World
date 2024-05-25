@@ -24,13 +24,11 @@ public class RunningGameInstance {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "running_game_instance_id")
-    @JsonIgnore
     private List<MobilePlayer> mobilePlayers;
 
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "running_game_instance_id")
-    @JsonIgnore
     private List<Group> groups;
 
     @Column(name = "code")
@@ -68,7 +66,7 @@ public class RunningGameInstance {
 
     private void initGroups() {
         this.groups = new LinkedList<>();
-        for (int i = 1; i<=this.gameInstance.getNumberOfGroups(); i++){
+        for (int i = 0; i<=this.gameInstance.getNumberOfGroups(); i++){
             this.groups.add(new Group(i, this));
         }
     }
@@ -133,9 +131,12 @@ public class RunningGameInstance {
 
     private Group getSmallestGroup() {
         Group smallestGroup = groups.get(0);
+        if(smallestGroup.getNumber() == 0)
+            smallestGroup = groups.get(1);
         for ( Group group : groups){
             if (group.getSize() < smallestGroup.getSize())
-                smallestGroup = group;
+                if(group.getNumber() != 0)
+                    smallestGroup = group;
         }
         return smallestGroup;
 
@@ -207,8 +208,9 @@ public class RunningGameInstance {
     private void assignGroupsRandom() {
         int numberOfGroups = gameInstance.getNumberOfGroups();
         int groupToAssign = 0;
+        List<Group> groupsToAssign = groups.stream().filter((group)-> group.getNumber()!=0).toList();
         for (MobilePlayer player : getMobilePlayers()) {
-            Group group = groups.get(groupToAssign);
+            Group group = groupsToAssign.get(groupToAssign);
             player.setGroup(group);
             group.addMobilePlayer(player);
             groupToAssign = groupToAssign == numberOfGroups-1 ? 0 : groupToAssign + 1;

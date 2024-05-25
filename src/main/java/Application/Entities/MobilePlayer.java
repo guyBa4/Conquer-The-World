@@ -1,5 +1,7 @@
 package Application.Entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.LinkedList;
@@ -21,7 +23,8 @@ public class MobilePlayer {
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id")
-    @JsonIgnore
+    @JsonManagedReference
+    @JsonIgnoreProperties({"mobilePlayers"})
     private Group group;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
