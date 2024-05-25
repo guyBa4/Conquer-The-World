@@ -249,12 +249,26 @@ public class RunningGameInstance {
         List<Tile> startingPositions = gameInstance.getStartingPositions();
         if (startingPositions == null || startingPositions.isEmpty() || startingPositions.size() < gameInstance.getNumberOfGroups())
             throw new RuntimeException("Starting position initialization failed - starting positions either null or do not match number of groups");
-        List<RunningTile> startingTiles = tiles.stream().filter((tile) -> startingPositions.contains(tile.getTile())).toList();
+        List<RunningTile> startingTiles = new ArrayList<>();
+        List<RunningTile> nonstartingTiles = new ArrayList<>();
+        for (RunningTile rt : tiles) {
+            if (startingPositions.contains(rt.getTile()))
+                startingTiles.add(rt);
+            else
+                nonstartingTiles.add(rt);
+        }
         int tilePointer = 0;
         List<Group> groupsToAssign = groups.stream().filter((group)-> group.getNumber()!=0).toList();
         for (Group group: groupsToAssign){
             startingTiles.get(tilePointer).setControllingGroup(group);
             tilePointer++;
+        }
+        Group zeroGroup = groups.stream()
+                .filter((group) -> group.getNumber() == 0)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("No group 0 found."));
+        for (RunningTile rt : nonstartingTiles) {
+            rt.setControllingGroup(zeroGroup);
         }
     }
     public Questionnaire getQuestionnaire(){
