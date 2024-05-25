@@ -108,6 +108,7 @@ public class Group {
         this.questionsQueues = questionsQueues;
     }
 
+    @JsonIgnore
     public int getSize(){
         return mobilePlayers.size();
     }
