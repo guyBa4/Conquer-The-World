@@ -34,7 +34,7 @@ public class Group {
     private int score;
 
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @JoinColumn(name = "questionsQueues_id")
+    @JoinColumn(name = "group_id")
     @JsonIgnore
     private List<QuestionsQueue> questionsQueues;
 
