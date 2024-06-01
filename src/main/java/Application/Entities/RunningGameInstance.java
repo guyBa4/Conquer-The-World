@@ -149,10 +149,17 @@ public class RunningGameInstance {
         if (runningTile != null) {
             boolean isNeighbour = checkTileIsNeighbor(runningTile, groupNumber);
             if (isNeighbour) {
-                int difficulty = runningTile.getTile().getDifficultyLevel();
-                runningTile.setAnsweringPlayer(player);
-                runningTile.setControllingGroup(group);
-                return group.generateQuestionFromQueue(difficulty);
+                if(runningTile.getAnsweringGroup() == null) {
+                    int difficulty = runningTile.getTile().getDifficultyLevel();
+                    runningTile.setAnsweringPlayer(player).setAnsweringGroup(group);
+                    return group.generateQuestionFromQueue(difficulty);
+                }
+                else if (runningTile.getAnsweringGroup().equals(group))
+                    return runningTile.getActiveQuestion();
+                else {
+                    LOG.warning("Tile is being attempted by other group");
+                    throw new IllegalArgumentException("Tile is being attempted by other group");
+                }
             }
             else {
                 LOG.warning("Selected tile is not a neighbor for the group.");
@@ -179,7 +186,7 @@ public class RunningGameInstance {
         if (foundTile.getAnsweringPlayer() == null || !foundTile.getAnsweringPlayer().equals(player)) {
             LOG.warning("Player " + player.getName() + " with ID " + player.getId() +
                     " can not answer question for running tile with ID " + tileId);
-            throw new IllegalArgumentException("Player is not the answering player anc can not answer this tile's question.");
+            throw new IllegalArgumentException("Player is not the answering player and can not answer this tile's question.");
         }
         if (answers == null || answers.isEmpty()) {
             LOG.warning("Failed to find answers for question " + questionId);
@@ -187,12 +194,12 @@ public class RunningGameInstance {
         }
         answers = answers.stream().filter(Answer::getCorrect).toList();
         if (!answers.isEmpty() && answers.get(0) != null && answers.get(0).getAnswerText().equals(answer)) {
-            foundTile.setAnsweringPlayer(null);
-            player.getGroup().addScore(foundTile.getTile().getDifficultyLevel());
+            Group playerGroup = player.getGroup();
+            foundTile.setAnsweringPlayer(null).setAnsweringGroup(null).setControllingGroup(playerGroup);
+            playerGroup.addScore(foundTile.getTile().getDifficultyLevel());
             return true;
         }
-        foundTile.setAnsweringPlayer(null);
-        foundTile.setControllingGroup(getGroupByNumber(0));
+        foundTile.setAnsweringPlayer(null).setAnsweringGroup(null);
         return false;
     }
 

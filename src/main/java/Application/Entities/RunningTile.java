@@ -26,6 +26,14 @@ public class RunningTile {
     @OneToOne
     @JoinColumn(name = "answering_player_id", referencedColumnName = "id")
     private MobilePlayer answeringPlayer;
+    
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "active_question")
+    private AssignedQuestion activeQuestion;
+    
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "answering_group_id")
+    private Group answeringGroup;
 
 
     public RunningTile() {
@@ -70,4 +78,23 @@ public class RunningTile {
         this.answeringPlayer = answeringPlayer;
         return this;
     }
+    
+    public AssignedQuestion getActiveQuestion() {
+        return activeQuestion;
+    }
+    
+    public RunningTile setActiveQuestion(AssignedQuestion activeQuestion) {
+        this.activeQuestion = activeQuestion;
+        return this;
+    }
+    
+    public Group getAnsweringGroup() {
+        return answeringGroup;
+    }
+    
+    public RunningTile setAnsweringGroup(Group answeringGroup) {
+        this.answeringGroup = answeringGroup;
+        return this;
+    }
+    
 }
