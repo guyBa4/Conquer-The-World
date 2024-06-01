@@ -192,7 +192,7 @@ public class RunningGameInstance {
             return true;
         }
         foundTile.setAnsweringPlayer(null);
-        foundTile.setControllingGroup(null);
+        foundTile.setControllingGroup(getGroupByNumber(0));
         return false;
     }
 
