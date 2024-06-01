@@ -8,6 +8,7 @@ import static java.util.logging.Logger.getLogger;
 import Application.Repositories.AnswerRepository;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 
 import java.util.*;
 import java.util.Map;

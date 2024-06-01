@@ -8,6 +8,8 @@ import Application.Enums.GroupAssignmentProtocol;
 import Application.Enums.TileType;
 import Application.Repositories.*;
 import Application.Response;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -457,5 +459,13 @@ public class GameService {
 //        tiles.add(new Tile("SD", TileType.FREE, 0, 3, "M566.895 135.58l-16.404.485-39.505.291-42.805-1.165-3.785-.194-.097 2.233-.388 8.832-.292 6.698-.097 1.359h-.29l-.098 2.523-.97 20.383-.777 15.142-.097 2.621 2.912.097 32.904 1.068 27.857.291 19.122-.194 6.115 3.882 5.144-1.456 3.397.098 10.58 3.106 3.009 3.009 1.844.194v-.68L572.04 201l1.359-5.144-1.65-10.774 2.038-.097-.194-4.465-4.853-34.166-2.524-4.271 3.882-6.406.098-.292-3.3.195z"));
         return tiles;
     }
-
+    
+    public Response<Page<GameMap>> getMaps(int page, int size, String name) {
+        Page<GameMap> maps;
+        if (name != null)
+            maps = mapRepository.findByName(name, PageRequest.of(page, size));
+        else
+            maps = mapRepository.findBy(PageRequest.of(page, size));
+        return Response.ok(maps);
+    }
 }

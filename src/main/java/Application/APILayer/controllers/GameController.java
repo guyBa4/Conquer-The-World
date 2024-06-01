@@ -2,6 +2,7 @@ package Application.APILayer.controllers;
 
 import Application.APILayer.TokenHandler;
 import Application.Entities.GameInstance;
+import Application.Entities.GameMap;
 import Application.Entities.Question;
 import Application.Entities.User;
 import Application.Repositories.RepositoryFactory;
@@ -11,6 +12,7 @@ import Application.ServiceLayer.GameService;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,8 +56,7 @@ public class GameController {
             boolean isShared = jsonObj.getBoolean("isShared");
             int questionTimeLimit = jsonObj.getInt("questionTimeLimit");
 //            List<Object> startingPositions = jsonObj.getJSONArray("startingPositions").toList();
-            Response<GameInstance> response = gameService.addGameInstance(title, description, questionnaireUuid, mapUuid,creatorUuid, groups, gameTime, isShared, questionTimeLimit);
-            return response;
+            return gameService.addGameInstance(title, description, questionnaireUuid, mapUuid,creatorUuid, groups, gameTime, isShared, questionTimeLimit);
         } catch (IllegalArgumentException e) {
             return Response.fail(403, e.toString());
         } catch (JSONException e) {
@@ -68,8 +69,7 @@ public class GameController {
     @ResponseBody
     public Response<List<GameInstance>> GetGamesInstances() {
         try {
-            Response<List<GameInstance>> response = gameService.getAllGameInstance();
-            return response;
+            return gameService.getAllGameInstance();
         } catch (IllegalArgumentException e) {
             return Response.fail(403, e.toString());
         } catch (JSONException e) {
@@ -77,9 +77,9 @@ public class GameController {
         }
     }
 
-    @GetMapping(path = "/get_game/id={id}")
+    @GetMapping(path = "/get_game")
     @ResponseBody
-    public Response<GameInstance> GetGamesInstances(@PathVariable (name= "id") UUID id) {
+    public Response<GameInstance> getGamesInstance(@RequestParam UUID id) {
         try {
             return gameService.getGameInstance(id);
         } catch (IllegalArgumentException e) {
@@ -89,5 +89,17 @@ public class GameController {
         }
     }
 
-
+    @GetMapping(path = "/get_maps")
+    @ResponseBody
+    public Response<Page<GameMap>> getMaps(@RequestParam int page,
+                                           @RequestParam int size,
+                                           @RequestParam(required = false) String name){
+        try {
+            return gameService.getMaps(page, size, name);
+        } catch (IllegalArgumentException e) {
+            return Response.fail(403, e.toString());
+        } catch (JSONException e) {
+            return Response.fail(500, "Internal Server Error");
+        }
+    }
 }

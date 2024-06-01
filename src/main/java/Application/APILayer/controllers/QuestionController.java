@@ -4,22 +4,14 @@ import Application.Entities.*;
 import Application.Repositories.RepositoryFactory;
 import Application.Response;
 import Application.ServiceLayer.QuestionService;
-import Application.ServiceLayer.UserService;
-import com.fasterxml.jackson.databind.deser.CreatorProperty;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
-import javax.script.Invocable;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -44,8 +36,7 @@ public class QuestionController {
             List<Object> incorrectAnswers = jsonObj.getJSONArray("incorrectAnswers").toList();
             List<Object> tags = jsonObj.getJSONArray("tags").toList();
             int difficulty = jsonObj.getInt("difficulty");
-            Response<Question> response = questionService.addQuestion(question, isMultipleChoice,  correctAnswer,  incorrectAnswers, tags, difficulty);
-            return response;
+            return questionService.addQuestion(question, isMultipleChoice,  correctAnswer,  incorrectAnswers, tags, difficulty);
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }
@@ -59,9 +50,8 @@ public class QuestionController {
             String title = jsonObj.getString("title");
             String creatorId = jsonObj.getString("creatorId");
             JSONObject questionsIdsObject = jsonObj.getJSONObject("questionsIds");
-            java.util.Map questionsIdsToDifficulty = questionsIdsObject.toMap();
-            Response<Questionnaire> response = questionService.addQuestionnaire(title, creatorId, questionsIdsToDifficulty);
-            return response;
+            Map<String, Object> questionsIdsToDifficulty = questionsIdsObject.toMap();
+            return questionService.addQuestionnaire(title, creatorId, questionsIdsToDifficulty);
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }
@@ -71,24 +61,35 @@ public class QuestionController {
     @ResponseBody
     public Response<List<AssignedQuestion>> getQuestionsByQuestionnaireId(@PathVariable (name= "questionnaireId") UUID questionnaireId) {
         try {
-            Response<List<AssignedQuestion>> response = questionService.getQuestionsByQuestionnaireId(questionnaireId);
-            return response;
+            return questionService.getQuestionsByQuestionnaireId(questionnaireId);
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }
     }
 
-    @GetMapping(path = "/filter_questions/page={page}&size={size}&content={content}&difficulty={difficulty}")
-    public Response<Page<Question>> getQuestions(@PathVariable(name = "page") int page,
-                                                 @PathVariable(name = "size") int size,
-                                                 @PathVariable(name = "difficulty") Integer difficulty,
-                                                 @PathVariable(name = "content") String content){
+    @GetMapping(path = "/filter_questions")
+    public Response<Page<Question>> getQuestions(@RequestParam int page,
+                                                 @RequestParam int size,
+                                                 @RequestParam(required = false) int difficulty,
+                                                 @RequestParam(required = false) String content){
 //            ,                                                 @RequestParam(name = "tags", required = false) List<String> tags) {
 
         try {
             List<String> tags = new LinkedList<>();
-            Response<Page<Question>> response = questionService.filterQuestions(page, size, content, tags, difficulty);
-            return response;
+            return questionService.filterQuestions(page, size, content, tags, difficulty);
+        } catch (JSONException e) {
+            return Response.fail(500, "Internal Server Error"); // Internal Server Error
+        }
+    }
+    
+    @GetMapping(path = "/filter_questionnaires")
+    public Response<Page<Questionnaire>> getQuestionnaires(@RequestParam int page,
+                                                           @RequestParam int size,
+                                                           @RequestParam(required = false) String name,
+                                                           @RequestParam(name = "creator_id", required = false) UUID creatorId) {
+        try {
+            List<String> tags = new ArrayList<>();
+            return questionService.filterQuestionnaires(page, size, name, tags, creatorId);
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }

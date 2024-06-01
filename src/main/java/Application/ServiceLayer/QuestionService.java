@@ -4,9 +4,9 @@ import Application.DataAccessLayer.DALController;
 import Application.Entities.*;
 import Application.Repositories.*;
 import Application.Response;
-import org.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -89,7 +89,7 @@ public class QuestionService {
 
     public Response<Questionnaire> addQuestionnaire(String title, String creatorId, Map questionsIdsToDifficulty) {
         try {
-            List<AssignedQuestion> assignedQuestions = AssignQuestionListBuilder(questionsIdsToDifficulty);
+            List<AssignedQuestion> assignedQuestions = assignQuestionListBuilder(questionsIdsToDifficulty);
             UUID creatorUuid = UUID.fromString(creatorId);
             User creator = dalController.getUser(creatorUuid);
             Questionnaire questionnaire = new Questionnaire(title, assignedQuestions, creator);
@@ -104,7 +104,7 @@ public class QuestionService {
         }
     }
 
-    private List<AssignedQuestion> AssignQuestionListBuilder(Map questionsIdsToDifficulty){
+    private List<AssignedQuestion> assignQuestionListBuilder(Map questionsIdsToDifficulty){
         List<AssignedQuestion> assignedQuestions = new LinkedList<>();
         for (Object questionId: questionsIdsToDifficulty.keySet() ){
             Integer difficulity = (Integer) questionsIdsToDifficulty.get(questionId);
@@ -123,4 +123,20 @@ public class QuestionService {
         return Response.ok(questionPage);
 
     }
+    
+    
+    public Response<Page<Questionnaire>> filterQuestionnaires(int page, int size, String name, List<String> tags, UUID creatorId) {
+        Page<Questionnaire> questionnairesPage;
+        if (name != null && creatorId != null)
+            questionnairesPage = questionnaireRepository.findByNameLikeAndUserId(name, creatorId, PageRequest.of(page, size));
+        else if (name != null)
+            questionnairesPage = questionnaireRepository.findByNameLike(name, PageRequest.of(page, size));
+        else if (creatorId != null)
+            questionnairesPage = questionnaireRepository.findByUserId(creatorId, PageRequest.of(page, size));
+        else
+            questionnairesPage = questionnaireRepository.findBy(PageRequest.of(page, size));
+        System.out.println(questionnairesPage);
+        return Response.ok(questionnairesPage);
+    }
+    
 }
