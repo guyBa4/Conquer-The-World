@@ -17,7 +17,7 @@ public interface QuestionRepository  extends JpaRepository<Question, UUID> {
             "(:difficulty IS NULL OR q.difficulty = :difficulty)")// AND " +
 //            "(:tags IS NULL OR q.tags IN :tags)")
     Page<Question> findByFilters(@Param("content") String content,
-                                 @Param("difficulty") int difficulty,
+                                 @Param("difficulty") Integer difficulty,
 //                                 @Param("tags") List<String> tags,
                                  Pageable pageable);
 }

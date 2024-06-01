@@ -70,7 +70,7 @@ public class QuestionController {
     @GetMapping(path = "/filter_questions")
     public Response<Page<Question>> getQuestions(@RequestParam int page,
                                                  @RequestParam int size,
-                                                 @RequestParam(required = false) int difficulty,
+                                                 @RequestParam(required = false) Integer difficulty,
                                                  @RequestParam(required = false) String content){
 //            ,                                                 @RequestParam(name = "tags", required = false) List<String> tags) {
 
