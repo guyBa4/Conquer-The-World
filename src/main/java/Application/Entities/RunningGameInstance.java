@@ -143,15 +143,16 @@ public class RunningGameInstance {
 
     }
 
-
-    public AssignedQuestion getQuestion(UUID runningTileId, int groupNumber) {
+    public AssignedQuestion getQuestion(UUID runningTileId, int groupNumber, MobilePlayer player) {
         Group group = getGroupByNumber(groupNumber);
         RunningTile runningTile = getTileById(runningTileId);
         if (runningTile != null) {
             boolean isNeighbour = checkTileIsNeighbor(runningTile, groupNumber);
             if (isNeighbour) {
                 int difficulty = runningTile.getTile().getDifficultyLevel();
-                return group.generateQuestionFromQueue(runningTile.getTile().getDifficultyLevel());
+                runningTile.setAnsweringPlayer(player);
+                runningTile.setControllingGroup(group);
+                return group.generateQuestionFromQueue(difficulty);
             }
             else {
                 LOG.warning("Selected tile is not a neighbor for the group.");
@@ -168,26 +169,30 @@ public class RunningGameInstance {
         return groupTiles.stream().anyMatch((tile) -> target.getTile().getNeighbors().contains(tile.getTile()));
     }
 
-    public boolean checkAnswer(String tileId, Group group, UUID questionId, String answer, AnswerRepository answerRepository) {
+    public boolean checkAnswer(UUID tileId, MobilePlayer player, UUID questionId, String answer, AnswerRepository answerRepository) {
         List<Answer> answers = answerRepository.findByQuestionId(questionId);
+        RunningTile foundTile = getTileById(tileId);
+        if (foundTile == null) {
+            LOG.warning("Failed to find tile by tileId.");
+            throw new IllegalArgumentException("Failed to find tile by tileId.");
+        }
+        if (foundTile.getAnsweringPlayer() == null || !foundTile.getAnsweringPlayer().equals(player)) {
+            LOG.warning("Player " + player.getName() + " with ID " + player.getId() +
+                    " can not answer question for running tile with ID " + tileId);
+            throw new IllegalArgumentException("Player is not the answering player anc can not answer this tile's question.");
+        }
         if (answers == null || answers.isEmpty()) {
+            LOG.warning("Failed to find answers for question " + questionId);
             throw new IllegalArgumentException("Failed to find answers for question " + questionId);
         }
         answers = answers.stream().filter(Answer::getCorrect).toList();
         if (!answers.isEmpty() && answers.get(0) != null && answers.get(0).getAnswerText().equals(answer)) {
-            RunningTile tile = null;
-            for(RunningTile runningTile : tiles){
-                if (runningTile.getId().equals(UUID.fromString(tileId))) {
-                    tile = runningTile;
-                    break;
-                }
-            }
-            if (tile == null)
-                throw new IllegalArgumentException("Failed to find tile by tileId.");
-            tile.setControllingGroup(group);
-            group.addScore(tile.getTile().getDifficultyLevel());
+            foundTile.setAnsweringPlayer(null);
+            player.getGroup().addScore(foundTile.getTile().getDifficultyLevel());
             return true;
         }
+        foundTile.setAnsweringPlayer(null);
+        foundTile.setControllingGroup(null);
         return false;
     }
 

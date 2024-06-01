@@ -83,5 +83,12 @@ public class MobilePlayer {
     public void setRunningGameInstance(RunningGameInstance runningGameInstance) {
         this.runningGameInstance = runningGameInstance;
     }
-
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MobilePlayer that = (MobilePlayer) o;
+        return id.equals(that.id);
+    }
 }

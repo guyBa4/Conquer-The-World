@@ -22,6 +22,10 @@ public class RunningTile {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "controlling_group_id")
     private Group controllingGroup;
+    
+    @OneToOne
+    @JoinColumn(name = "answering_player_id", referencedColumnName = "id")
+    private MobilePlayer answeringPlayer;
 
 
     public RunningTile() {
@@ -56,5 +60,14 @@ public class RunningTile {
 
     public void setControllingGroup(Group controllingGroup) {
         this.controllingGroup = controllingGroup;
+    }
+    
+    public MobilePlayer getAnsweringPlayer() {
+        return answeringPlayer;
+    }
+    
+    public RunningTile setAnsweringPlayer(MobilePlayer answeringPlayer) {
+        this.answeringPlayer = answeringPlayer;
+        return this;
     }
 }

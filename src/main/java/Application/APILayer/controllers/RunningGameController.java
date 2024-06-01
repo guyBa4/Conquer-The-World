@@ -132,7 +132,7 @@ public class RunningGameController {
                                                   @PathVariable(name= "runningTileId") String runningTileId, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             LOG.info(String.format("Request received by /generate_question endpoint:\n {'group': %s, 'runningGameId': %s, 'runningTileId': %s}", group, runningGameId, runningTileId));
-            return gameRunningService.getQuestion(UUID.fromString(runningTileId), group, UUID.fromString(runningGameId));
+            return gameRunningService.getQuestion(UUID.fromString(runningTileId), group, UUID.fromString(runningGameId), UUID.fromString(authorizationHeader));
         } catch (IllegalArgumentException e) {
             return Response.fail(403, e.toString());
         } catch (JSONException e) {
@@ -149,11 +149,12 @@ public class RunningGameController {
             UUID runningGameId = UUID.fromString(jsonObj.getString("gameId"));
             UUID questionUuid = UUID.fromString(jsonObj.getString("questionId"));
             String tileId = jsonObj.getString("tileId");
+            UUID tileUUID = UUID.fromString(tileId);
             String mobileId = jsonObj.getString("mobileId");
             UUID mobileUuid = UUID.fromString(mobileId);
 //            UUID userId = UUID.fromString(authorizationHeader);
             String answer = jsonObj.getString("answer");
-            return gameRunningService.checkAnswer(runningGameId, tileId, mobileUuid, questionUuid, answer);
+            return gameRunningService.checkAnswer(runningGameId, tileUUID, mobileUuid, questionUuid, answer);
         } catch (IllegalArgumentException e) {
             return Response.fail(403, e.toString());
         } catch (JSONException e) {

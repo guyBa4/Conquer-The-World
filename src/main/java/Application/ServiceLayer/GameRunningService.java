@@ -217,7 +217,7 @@ public class GameRunningService {
     }
 
 
-    public Response<AssignedQuestion> getQuestion(UUID runningTileId, int group, UUID runningGameId) {
+    public Response<AssignedQuestion> getQuestion(UUID runningTileId, int group, UUID runningGameId, UUID authorizationToken) {
         try {
             if (runningTileId == null) {
                 LOG.warning("Received null running tile ID");
@@ -231,8 +231,26 @@ public class GameRunningService {
                 LOG.warning("Received null running game ID");
                 return Response.fail("Received null running game ID");
             }
+            else if (authorizationToken == null) {
+                LOG.warning("Received null auth token");
+                return Response.fail("Received null auth token");
+    
+            }
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
-            AssignedQuestion question = runningGameInstance.getQuestion(runningTileId, group);
+            MobilePlayer player = getMobilePlayerByAuthToken(runningGameInstance, authorizationToken);
+            Group playerGroup = player.getGroup();
+            if (playerGroup == null) {
+                LOG.warning("Failed to validate player group");
+                return Response.fail("Failed to validate player group");
+            }
+            else if (group != playerGroup.getNumber() ||
+                    playerGroup.getId() == null ||
+                    runningGameInstance.getGroupByNumber(group) == null ||
+                    !playerGroup.getId().equals(runningGameInstance.getGroupByNumber(group).getId())){
+                LOG.warning("Requesting player group does not match passed group number.");
+                return Response.fail("Requesting player group does not match passed group number.");
+            }
+            AssignedQuestion question = runningGameInstance.getQuestion(runningTileId, group, player);
             runningGameInstanceRepository.save(runningGameInstance);
             return Response.ok(question);
         } catch (IllegalArgumentException e) {
@@ -243,7 +261,14 @@ public class GameRunningService {
             return Response.fail(500, "Internal Server Error : \n" + e.toString());
         }
     }
-    public Response<Boolean> checkAnswer(UUID runningGameId, String tileId, UUID userId, UUID questionId, String answer) {
+    
+    private MobilePlayer getMobilePlayerByAuthToken(RunningGameInstance game, UUID authorizationToken) {    // TODO: Change implementation to use actual tokens
+        if (game != null && authorizationToken != null)
+            return game.getPlayer(authorizationToken);
+        return null;
+    }
+    
+    public Response<Boolean> checkAnswer(UUID runningGameId, UUID tileId, UUID userId, UUID questionId, String answer) {
         try {
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
             MobilePlayer player = runningGameInstance.getPlayer(userId);
@@ -251,7 +276,7 @@ public class GameRunningService {
                 LOG.severe("Did not find user with ID: " + userId.toString());
                 return Response.fail("Did not find user by ID");
             }
-            boolean isCorrect = runningGameInstance.checkAnswer(tileId, player.getGroup(), questionId, answer, repositoryFactory.answerRepository);
+            boolean isCorrect = runningGameInstance.checkAnswer(tileId, player, questionId, answer, repositoryFactory.answerRepository);
             runningGameInstanceRepository.save(runningGameInstance);
             return Response.ok(isCorrect);
         } catch (IllegalArgumentException e) {
