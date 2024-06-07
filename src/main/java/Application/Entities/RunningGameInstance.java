@@ -151,8 +151,9 @@ public class RunningGameInstance {
             if (isNeighbour) {
                 if(runningTile.getAnsweringGroup() == null) {
                     int difficulty = runningTile.getTile().getDifficultyLevel();
-                    runningTile.setAnsweringPlayer(player).setAnsweringGroup(group);
-                    return group.generateQuestionFromQueue(difficulty);
+                    AssignedQuestion question = group.generateQuestionFromQueue(difficulty);
+                    runningTile.setAnsweringPlayer(player).setAnsweringGroup(group).setActiveQuestion(question);
+                    return question;
                 }
                 else if (runningTile.getAnsweringGroup().equals(group))
                     return runningTile.getActiveQuestion();
@@ -195,11 +196,14 @@ public class RunningGameInstance {
         answers = answers.stream().filter(Answer::getCorrect).toList();
         if (!answers.isEmpty() && answers.get(0) != null && answers.get(0).getAnswerText().equals(answer)) {
             Group playerGroup = player.getGroup();
-            foundTile.setAnsweringPlayer(null).setAnsweringGroup(null).setControllingGroup(playerGroup);
+            foundTile.setAnsweringPlayer(null)
+                    .setAnsweringGroup(null)
+                    .setControllingGroup(playerGroup)
+                    .setActiveQuestion(null);
             playerGroup.addScore(foundTile.getTile().getDifficultyLevel());
             return true;
         }
-        foundTile.setAnsweringPlayer(null).setAnsweringGroup(null);
+        foundTile.setAnsweringPlayer(null).setAnsweringGroup(null).setActiveQuestion(null);
         return false;
     }
 

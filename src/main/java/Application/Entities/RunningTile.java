@@ -66,8 +66,9 @@ public class RunningTile {
         return controllingGroup;
     }
 
-    public void setControllingGroup(Group controllingGroup) {
+    public RunningTile setControllingGroup(Group controllingGroup) {
         this.controllingGroup = controllingGroup;
+        return this;
     }
     
     public MobilePlayer getAnsweringPlayer() {
