@@ -100,13 +100,16 @@ public class GameRunningService {
 
     public Response<RunningGameInstance> addMobileDetails(UUID mobileId, String name) {
         try {
+            if (name == null || name.length() < 2) {
+                LOG.warning("Mobile player name must be longer than 2 characters.");
+                throw new IllegalArgumentException("Mobile player name must be longer than 2 characters.");
+            }
             MobilePlayer mobilePlayer = dalController.getMobilePlayer(mobileId);
             mobilePlayer.setName(name);
             mobilePlayer.setReady(true);
             RunningGameInstance runningGameInstance = mobilePlayer.getRunningGameInstance();
             runningGameInstanceRepository.save(runningGameInstance);
-            LOG.info("mobile enter name : " + mobilePlayer.getName());
-            LOG.info("for running game instance with id : " + runningGameInstance.getRunningId() + " : " + runningGameInstance.getName());
+            LOG.info("New mobile player name: " + mobilePlayer.getName() + "for running game instance with id: " + runningGameInstance.getRunningId() + " : " + runningGameInstance.getName());
             return Response.ok(runningGameInstance);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -117,9 +120,9 @@ public class GameRunningService {
         }
     }
 
-    public Response<RunningGameInstance> getWaitingRoomDetails(UUID runningGameid) {
+    public Response<RunningGameInstance> getWaitingRoomDetails(UUID runningGameId) {
         try {
-            RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameid);
+            RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
             return Response.ok(runningGameInstance);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -158,8 +161,8 @@ public class GameRunningService {
         Questionnaire questionnaire = runningGameInstance.getQuestionnaire();
         UUID id = questionnaire.getId();
         List<Group> groups = runningGameInstance.getGroups();
-        List<Group> groupsToAssign = groups.stream().filter((group)-> group.getNumber()!=0).toList();
-        for(int difficulity = 1; difficulity <=5; difficulity++){
+        List<Group> groupsToAssign = groups.stream().filter((group) -> group.getNumber() != 0).toList();
+        for(int difficulity = 1; difficulity <= 5; difficulity++){
             List<AssignedQuestion> questionList = this.repositoryFactory.assignedQuestionRepository.findByQuestionnaireIdAndDifficultyLevel(id, difficulity);
             for (Group group : groupsToAssign){
                 group.addQuestionQueue(difficulity, questionList);
