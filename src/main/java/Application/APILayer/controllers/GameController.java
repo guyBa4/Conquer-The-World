@@ -23,18 +23,24 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Logger;
+
+import static java.util.logging.Logger.getLogger;
 
 @RestController
 @RequestMapping(path = "game")
 public class GameController {
     GameService gameService;
     TokenHandler tokenHandler;
+    private static Logger LOG;
+    
     @Autowired
     public GameController(RepositoryFactory repositoryFactory)
     {
         this.gameService = GameService.getInstance();
         gameService.init(repositoryFactory);
         tokenHandler = TokenHandler.getInstance();
+        LOG = getLogger(this.getClass().toString());
     }
 
     @PostMapping(path = "/add_game_instance")
@@ -58,8 +64,10 @@ public class GameController {
 //            List<Object> startingPositions = jsonObj.getJSONArray("startingPositions").toList();
             return gameService.addGameInstance(title, description, questionnaireUuid, mapUuid,creatorUuid, groups, gameTime, isShared, questionTimeLimit);
         } catch (IllegalArgumentException e) {
+            LOG.warning(e.toString());
             return Response.fail(403, e.toString());
         } catch (JSONException e) {
+            LOG.warning(e.toString());
             return Response.fail(500, "Internal Server Error");
         }
     }
