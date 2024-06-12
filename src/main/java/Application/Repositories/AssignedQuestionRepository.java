@@ -1,5 +1,6 @@
 package Application.Repositories;
 
+import Application.Entities.Answer;
 import Application.Entities.AssignedQuestion;
 import Application.Entities.MobilePlayer;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,4 +17,6 @@ public interface AssignedQuestionRepository  extends JpaRepository<AssignedQuest
     @Query("SELECT aq FROM AssignedQuestion aq WHERE aq.questionnaire.id = :questionnaireId AND aq.difficultyLevel = :difficultyLevel")
     List<AssignedQuestion> findByQuestionnaireIdAndDifficultyLevel(@Param("questionnaireId") UUID questionnaireId, @Param("difficultyLevel") int difficultyLevel);
 
+    public List<AssignedQuestion> findByQuestionId(UUID questionId);
+    public List<AssignedQuestion> findByQuestionnaireId(UUID questionnaireId);
 }

@@ -5,9 +5,9 @@ import Application.Entities.*;
 import Application.Entities.GameMap;
 import Application.Enums.GameStatus;
 import Application.Enums.GroupAssignmentProtocol;
-import Application.Enums.TileType;
 import Application.Repositories.*;
 import Application.Response;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class GameService {
     private AnswerRepository answerRepository;
     private DALController dalController;
 
-    private GameService(){}
+    public GameService(){}
 
     public static GameService getInstance() {
         synchronized (instanceLock) {
@@ -117,7 +117,6 @@ public class GameService {
         }
     }
 
-
     public Response<GameInstance> getGameInstance(UUID uuid){
         GameInstance gameInstance = dalController.getGameInstance(uuid);
         return Response.ok(gameInstance);
@@ -127,6 +126,7 @@ public class GameService {
         List<GameInstance> gameInstances = gameInstanceRepository.findAll();
         return Response.ok(gameInstances);
     }
+
     private List<Question> initQuestionsObjects(){
         List<Question> questionList = new LinkedList<>();
         List<Answer> answerList1 = new LinkedList<>();
@@ -467,5 +467,22 @@ public class GameService {
         else
             maps = mapRepository.findBy(PageRequest.of(page, size));
         return Response.ok(maps);
+    }
+
+    @Transactional
+    public Response<Boolean> deleteGame(UUID id)
+    {
+        try {
+            List<RunningGameInstance> runningGameInstances = this.runningGameInstanceRepository.findByGameInstance_Id(id);
+            this.runningGameInstanceRepository.deleteAll(runningGameInstances);
+            this.gameInstanceRepository.deleteById(id);
+            return Response.ok(true);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.fail(403, e.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+        }
     }
 }

@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Repository
 public interface RunningGameInstanceRepository extends JpaRepository<RunningGameInstance, UUID> {
-
+    List<RunningGameInstance> findByGameInstance_Id(UUID gameInstanceId);
     List<RunningGameInstance> findByRunningIdAndMobilePlayers_id(UUID gameId, UUID userId);
     List<RunningGameInstance> findByCode(String code);
 }

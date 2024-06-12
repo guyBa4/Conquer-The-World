@@ -19,9 +19,9 @@ public class Answer {
     
     @Column(name = "correct")
     private boolean correct;
-    
-    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id")
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_id", nullable = false)
     @JsonIgnore
     private Question question;
 

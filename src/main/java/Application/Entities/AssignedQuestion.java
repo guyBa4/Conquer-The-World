@@ -18,7 +18,7 @@ public class AssignedQuestion {
     private Question question;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "questionnaire_id")
+    @JoinColumn(name = "questionnaire_id", nullable = true)
     @JsonIgnore
     private Questionnaire questionnaire;
     

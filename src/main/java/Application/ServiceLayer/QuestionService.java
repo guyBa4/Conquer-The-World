@@ -4,6 +4,7 @@ import Application.DataAccessLayer.DALController;
 import Application.Entities.*;
 import Application.Repositories.*;
 import Application.Response;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -20,9 +21,12 @@ public class QuestionService {
     private RepositoryFactory repositoryFactory;
     private QuestionRepository questionRepository;
     private QuestionnaireRepository questionnaireRepository;
+    private AnswerRepository answerRepository;
+    private AssignedQuestionRepository assignedQuestionRepository;
+    private GameInstanceRepository gameInstanceRepository;
     private DALController dalController;
 
-    private QuestionService() {
+    public QuestionService() {
     }
 
     public static QuestionService getInstance() {
@@ -44,6 +48,9 @@ public class QuestionService {
         this.repositoryFactory = repositoryFactory;
         this.questionRepository = repositoryFactory.questionRepository;
         this.questionnaireRepository = repositoryFactory.questionnaireRepository;
+        this.answerRepository = repositoryFactory.answerRepository;
+        this.assignedQuestionRepository = repositoryFactory.assignedQuestionRepository;
+        this.gameInstanceRepository = repositoryFactory.gameInstanceRepository;
     }
 
 
@@ -138,5 +145,45 @@ public class QuestionService {
         System.out.println(questionnairesPage);
         return Response.ok(questionnairesPage);
     }
-    
+
+
+    @Transactional
+    public Response<Boolean> deleteQuestion(UUID id)
+    {
+        try {
+            List<AssignedQuestion> assignedQuestions = assignedQuestionRepository.findByQuestionId(id);
+            this.assignedQuestionRepository.deleteAll(assignedQuestions);
+            this.questionRepository.deleteById(id);
+            return Response.ok(true);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.fail(403, e.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+        }
+    }
+
+    @Transactional
+    public Response<Boolean> deleteQuestionnaire(UUID id)
+    {
+        try {
+            List<AssignedQuestion> assignedQuestions = assignedQuestionRepository.findByQuestionnaireId(id);
+            List<GameInstance> gameInstances = gameInstanceRepository.findByQuestionnaireId(id);
+            this.assignedQuestionRepository.deleteAll(assignedQuestions);
+            for (GameInstance gameInstance : gameInstances){
+                gameInstance.setQuestionnaire(null);
+            }
+            this.gameInstanceRepository.saveAll(gameInstances);
+            this.questionnaireRepository.deleteById(id);
+            return Response.ok(true);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.fail(403, e.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+        }
+    }
+
 }

@@ -27,7 +27,7 @@ public class GameInstance {
     private User host;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "questionnaire_id") // Assuming a many-to-one relationship with Questionnaire
+    @JoinColumn(name = "questionnaire_id", nullable = true) // Allowing null values
     private Questionnaire questionnaire;
 
     @ManyToOne(fetch = FetchType.EAGER)

@@ -28,11 +28,7 @@ public class GameRunningService {
     public boolean isInit() {
         return isInit;
     }
-
     private boolean isInit;
-
-
-
     private GameRunningService(){}
 
     public static GameRunningService getInstance() {
@@ -132,6 +128,7 @@ public class GameRunningService {
             return Response.fail(500, "Internal Server Error : \n" + e.toString());
         }
     }
+
     public Response<RunningGameInstance> startGame(UUID runningGameId) {
         try {
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
