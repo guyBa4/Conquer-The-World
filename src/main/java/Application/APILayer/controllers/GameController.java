@@ -33,6 +33,7 @@ public class GameController {
     GameService gameService;
     TokenHandler tokenHandler;
     private static Logger LOG;
+
     @Autowired
     public GameController(RepositoryFactory repositoryFactory)
     {
@@ -63,8 +64,10 @@ public class GameController {
 //            List<Object> startingPositions = jsonObj.getJSONArray("startingPositions").toList();
             return gameService.addGameInstance(title, description, questionnaireUuid, mapUuid,creatorUuid, groups, gameTime, isShared, questionTimeLimit);
         } catch (IllegalArgumentException e) {
+            LOG.warning(e.toString());
             return Response.fail(403, e.toString());
         } catch (JSONException e) {
+            LOG.warning(e.toString());
             return Response.fail(500, "Internal Server Error");
         }
     }
