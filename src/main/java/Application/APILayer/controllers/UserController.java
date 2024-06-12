@@ -45,8 +45,7 @@ public class UserController {
             JSONObject jsonObj = new JSONObject(inputJson);
             String username = jsonObj.getString("username");
             String password = jsonObj.getString("password");
-            Response<User> response = userService.Login(username, password);
-            return response;
+            return userService.login(username, password);
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }

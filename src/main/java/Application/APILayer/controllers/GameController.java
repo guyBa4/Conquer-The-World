@@ -8,6 +8,7 @@ import Application.Entities.User;
 import Application.Repositories.RepositoryFactory;
 import Application.Response;
 import Application.ServiceLayer.FlatGameInstance;
+import Application.ServiceLayer.GameRunningService;
 import Application.ServiceLayer.GameService;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,10 +36,10 @@ public class GameController {
     private static Logger LOG;
 
     @Autowired
-    public GameController(RepositoryFactory repositoryFactory)
+    public GameController(RepositoryFactory repositoryFactory, GameRunningService gameRunningService)
     {
         this.gameService = GameService.getInstance();
-        gameService.init(repositoryFactory);
+        gameService.init(repositoryFactory, gameRunningService);
         tokenHandler = TokenHandler.getInstance();
         LOG = getLogger(this.getClass().toString());
     }

@@ -74,13 +74,11 @@ public class GameService {
 
 
     }
-    public void init(RepositoryFactory repositoryFactory) {
+    public void init(RepositoryFactory repositoryFactory, GameRunningService gameRunningService) {
         this.repositoryFactory = repositoryFactory;
         jsonToInstance = JsonToInstance.getInstance();
         setRepositories(repositoryFactory);
-        this.gameRunningService = GameRunningService.getInstance();
-        if (!gameRunningService.isInit())
-            gameRunningService.init(repositoryFactory);
+        this.gameRunningService = gameRunningService;
         this.dalController = DALController.getInstance();
         dalController.init(repositoryFactory);
 //        initObjects();

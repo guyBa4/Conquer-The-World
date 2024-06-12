@@ -26,13 +26,10 @@ public class RunningGameController {
     private static Logger LOG;
     
     @Autowired
-    public RunningGameController(RepositoryFactory repositoryFactory)
+    public RunningGameController(RepositoryFactory repositoryFactory, GameRunningService gameRunningService)
     {
-        this.gameRunningService = GameRunningService.getInstance();
-        if (!gameRunningService.isInit())
-            gameRunningService.init(repositoryFactory);
+        this.gameRunningService = gameRunningService;
         tokenHandler = TokenHandler.getInstance();
-
         LOG = getLogger(this.getClass().toString());
     }
 

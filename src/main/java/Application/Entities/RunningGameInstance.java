@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -177,7 +178,7 @@ public class RunningGameInstance {
         return groupTiles.stream().anyMatch((tile) -> target.getTile().getNeighbors().contains(tile.getTile()));
     }
 
-    public boolean checkAnswer(UUID tileId, MobilePlayer player, UUID questionId, String answer, AnswerRepository answerRepository) {
+    public boolean checkAnswer(UUID tileId, MobilePlayer player, UUID questionId, String answer, AnswerRepository answerRepository) throws IOException {
         List<Answer> answers = answerRepository.findByQuestionId(questionId);
         RunningTile foundTile = getTileById(tileId);
         if (foundTile == null) {
