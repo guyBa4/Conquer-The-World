@@ -2,6 +2,7 @@ package Application.Events;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -56,6 +57,12 @@ public class Event {
     
     public Event setRecipients(List<EventRecipient> recipients) {
         this.recipients = recipients;
+        return this;
+    }
+    
+    public Event setRecipients(List<EventRecipient> players, EventRecipient host) {
+        this.recipients = new ArrayList<>(players);
+        this.recipients.add(host);
         return this;
     }
 }

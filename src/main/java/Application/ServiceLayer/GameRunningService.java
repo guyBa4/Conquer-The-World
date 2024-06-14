@@ -54,10 +54,10 @@ public class GameRunningService {
             return Response.ok(runningGameInstance);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
 
@@ -77,10 +77,10 @@ public class GameRunningService {
             return Response.ok(mobilePlayer);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
 
@@ -100,10 +100,10 @@ public class GameRunningService {
             return Response.ok(runningGameInstance);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
 
@@ -113,10 +113,10 @@ public class GameRunningService {
             return Response.ok(runningGameInstance);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
 
@@ -138,10 +138,10 @@ public class GameRunningService {
             }
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
 
@@ -188,10 +188,10 @@ public class GameRunningService {
 
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
     public Response<List<RunningTile>> getRunningTiles(UUID runningGameId) {
@@ -200,10 +200,10 @@ public class GameRunningService {
                 return Response.ok(runningGameInstance.getTiles());
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
 
@@ -246,10 +246,10 @@ public class GameRunningService {
             return Response.ok(question);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
     
@@ -272,10 +272,10 @@ public class GameRunningService {
             return Response.ok(isCorrect);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
 
@@ -286,10 +286,10 @@ public class GameRunningService {
             return Response.ok(true);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
 }

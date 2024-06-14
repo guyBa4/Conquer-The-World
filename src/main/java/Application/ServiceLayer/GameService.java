@@ -108,10 +108,10 @@ public class GameService {
         return Response.ok(gameInstance);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
 

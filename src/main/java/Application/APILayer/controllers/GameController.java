@@ -65,10 +65,10 @@ public class GameController {
 //            List<Object> startingPositions = jsonObj.getJSONArray("startingPositions").toList();
             return gameService.addGameInstance(title, description, questionnaireUuid, mapUuid,creatorUuid, groups, gameTime, isShared, questionTimeLimit);
         } catch (IllegalArgumentException e) {
-            LOG.warning(e.toString());
-            return Response.fail(403, e.toString());
+            LOG.warning(e.getMessage());
+            return Response.fail(403, e.getMessage());
         } catch (JSONException e) {
-            LOG.warning(e.toString());
+            LOG.warning(e.getMessage());
             return Response.fail(500, "Internal Server Error");
         }
     }
@@ -80,7 +80,7 @@ public class GameController {
         try {
             return gameService.getAllGameInstance();
         } catch (IllegalArgumentException e) {
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error");
         }
@@ -92,7 +92,7 @@ public class GameController {
         try {
             return gameService.getGameInstance(id);
         } catch (IllegalArgumentException e) {
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error");
         }
@@ -106,7 +106,7 @@ public class GameController {
         try {
             return gameService.getMaps(page, size, name);
         } catch (IllegalArgumentException e) {
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error");
         }
