@@ -10,6 +10,7 @@ import Application.Events.EventRecipient;
 import Application.Events.EventType;
 import Application.Repositories.*;
 import Application.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -25,8 +26,9 @@ public class GameRunningService {
     private DALController dalController;
     private EventService eventService;
     private static Logger LOG = getLogger(GameRunningService.class.toString());
-    
-    
+
+
+    @Autowired
     private GameRunningService(RepositoryFactory repositoryFactory, EventService eventService){
         this.dalController = DALController.getInstance();
         this.repositoryFactory = repositoryFactory;
