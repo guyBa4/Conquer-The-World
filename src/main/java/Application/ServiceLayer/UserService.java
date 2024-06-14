@@ -1,5 +1,6 @@
 package Application.ServiceLayer;
 import Application.APILayer.JsonToInstance;
+import Application.Configurations.Configuration;
 import Application.DataAccessLayer.DALController;
 import Application.Entities.*;
 import Application.Repositories.QuestionRepository;
@@ -9,6 +10,7 @@ import Application.Response;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 
@@ -36,7 +38,6 @@ public class UserService {
         this.repositoryFactory = repositoryFactory;
         jsonToInstance = JsonToInstance.getInstance();
         this.dalController = DALController.getInstance();
-//        dalController.init(repositoryFactory);
         setRepositories(repositoryFactory);
     }
 
@@ -55,29 +56,31 @@ public class UserService {
             return response;
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
 
 
-    public Response<User> Login(String username, String password) {
+    public Response<User> login(String username, String password) {
         try {
             List<User> users = userRepository.findByNameContaining(username);
             if(users.isEmpty())
                 return Response.fail("user not exist");
             User user = users.get(0);
-            if (user.getPassword().equals(password))
+            if (user.getPassword().equals(password)) {
+                user.setEventEmitter(new SseEmitter(Configuration.defaultSseEmitterTimeout));
                 return Response.ok(user);
+            }
             return Response.fail("password incorrect");
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
 }

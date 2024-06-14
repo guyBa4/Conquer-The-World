@@ -1,59 +1,50 @@
 package Application.ServiceLayer;
 
 import Application.APILayer.JsonToInstance;
+import Application.Configurations.Configuration;
 import Application.DataAccessLayer.DALController;
 import Application.Entities.*;
 import Application.Enums.GameStatus;
+import Application.Events.Event;
+import Application.Events.EventRecipient;
+import Application.Events.EventType;
 import Application.Repositories.*;
 import Application.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.time.Instant;
 import java.util.logging.*;
 import static java.util.logging.Logger.getLogger;
 import java.util.*;
 
 @Service
 public class GameRunningService {
-    private static GameRunningService instance = null;
-    private static JsonToInstance jsonToInstance;
-    private static final Object instanceLock = new Object();
     private RepositoryFactory repositoryFactory;
-    private GameInstanceRepository gameInstanceRepository;
     private RunningGameInstanceRepository runningGameInstanceRepository;
-    private MobilePlayerRepository mobilePlayerRepository;
-    private UserRepository userRepository;
     private DALController dalController;
-    private static Logger LOG;
+    private EventService eventService;
+    private static Logger LOG = getLogger(GameRunningService.class.toString());
 
-    public boolean isInit() {
-        return isInit;
-    }
-    private boolean isInit;
-    private GameRunningService(){}
 
-    public static GameRunningService getInstance() {
-        synchronized (instanceLock) {
-            if (instance == null)
-                instance = new GameRunningService();
-        }
-        return instance;
-    }
-
-    public void init(RepositoryFactory repositoryFactory) {
-        this.repositoryFactory = repositoryFactory;
-        jsonToInstance = JsonToInstance.getInstance();
-        setRepositories(repositoryFactory);
+    @Autowired
+    private GameRunningService(RepositoryFactory repositoryFactory, EventService eventService){
         this.dalController = DALController.getInstance();
-        LOG = getLogger(this.getClass().toString());
-
-        isInit = true;
-    }
-
-    private void setRepositories(RepositoryFactory repositoryFactory) {
-        this.gameInstanceRepository = repositoryFactory.gameInstanceRepository;
-        this.userRepository = repositoryFactory.userRepository;
+        this.repositoryFactory = repositoryFactory;
         this.runningGameInstanceRepository = repositoryFactory.runningGameInstanceRepository;
-        this.mobilePlayerRepository = repositoryFactory.mobilePlayerRepository;
+        this.eventService = eventService;
+    }
+    
+    public void publishEvent(EventType eventType, Object eventBody, RunningGameInstance gameToUpdate) {
+        List<EventRecipient> eventRecipients = new ArrayList<>(gameToUpdate.getMobilePlayers());
+        eventRecipients.add(gameToUpdate.getGameInstance().getHost());
+        Event event = new Event()
+                .setEventType(eventType)
+                .setBody(eventBody)
+                .setRecipients(eventRecipients)
+                .setTimestamp(Date.from(Instant.now()));
+        eventService.addEvent(event);
     }
 
     public Response<RunningGameInstance> OpenWaitingRoom(UUID gameId, UUID hostId){ // in this function RunningGameInstance is created
@@ -65,10 +56,10 @@ public class GameRunningService {
             return Response.ok(runningGameInstance);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
 
@@ -84,13 +75,14 @@ public class GameRunningService {
             runningGameInstanceRepository.save(runningGameInstance);
             LOG.info("mobile enter code : " + mobilePlayer.getId());
             LOG.info("for running game instance with id : " + runningGameInstance.getRunningId() + " : " + runningGameInstance.getName());
+            mobilePlayer.setEventEmitter(new SseEmitter(Configuration.defaultSseEmitterTimeout));
             return Response.ok(mobilePlayer);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
 
@@ -106,13 +98,14 @@ public class GameRunningService {
             RunningGameInstance runningGameInstance = mobilePlayer.getRunningGameInstance();
             runningGameInstanceRepository.save(runningGameInstance);
             LOG.info("New mobile player name: " + mobilePlayer.getName() + "for running game instance with id: " + runningGameInstance.getRunningId() + " : " + runningGameInstance.getName());
+            publishEvent(EventType.WAITING_ROOM_UPDATE, mobilePlayer, runningGameInstance);
             return Response.ok(runningGameInstance);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
 
@@ -122,10 +115,10 @@ public class GameRunningService {
             return Response.ok(runningGameInstance);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
 
@@ -147,10 +140,10 @@ public class GameRunningService {
             }
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
 
@@ -197,10 +190,10 @@ public class GameRunningService {
 
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
     public Response<List<RunningTile>> getRunningTiles(UUID runningGameId) {
@@ -209,10 +202,10 @@ public class GameRunningService {
                 return Response.ok(runningGameInstance.getTiles());
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
 
@@ -255,10 +248,10 @@ public class GameRunningService {
             return Response.ok(question);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
     
@@ -281,10 +274,10 @@ public class GameRunningService {
             return Response.ok(isCorrect);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
 
@@ -295,10 +288,10 @@ public class GameRunningService {
             return Response.ok(true);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
 }

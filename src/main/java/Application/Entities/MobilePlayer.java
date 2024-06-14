@@ -1,8 +1,10 @@
 package Application.Entities;
+import Application.Events.EventRecipient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -11,7 +13,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "mobile_players")
-public class MobilePlayer {
+public class MobilePlayer implements EventRecipient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,13 +36,16 @@ public class MobilePlayer {
 
     @Column(name = "ready")
     private boolean ready;
-
+    
+    @Transient
+    private SseEmitter eventEmitter;
+    
     public MobilePlayer(){
-        ready = false;
+        this.ready = false;
     }
     public MobilePlayer(String name, RunningGameInstance runningGameInstance) {
         this.name = name;
-        ready = false;
+        this.ready = false;
         this.runningGameInstance = runningGameInstance;
     }
 
@@ -82,6 +87,15 @@ public class MobilePlayer {
 
     public void setRunningGameInstance(RunningGameInstance runningGameInstance) {
         this.runningGameInstance = runningGameInstance;
+    }
+    
+    public SseEmitter getEventEmitter() {
+        return eventEmitter;
+    }
+    
+    public MobilePlayer setEventEmitter(SseEmitter eventEmitter) {
+        this.eventEmitter = eventEmitter;
+        return this;
     }
     
     @Override

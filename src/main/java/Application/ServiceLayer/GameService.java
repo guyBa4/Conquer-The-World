@@ -74,13 +74,11 @@ public class GameService {
 
 
     }
-    public void init(RepositoryFactory repositoryFactory) {
+    public void init(RepositoryFactory repositoryFactory, GameRunningService gameRunningService) {
         this.repositoryFactory = repositoryFactory;
         jsonToInstance = JsonToInstance.getInstance();
         setRepositories(repositoryFactory);
-        this.gameRunningService = GameRunningService.getInstance();
-        if (!gameRunningService.isInit())
-            gameRunningService.init(repositoryFactory);
+        this.gameRunningService = gameRunningService;
         this.dalController = DALController.getInstance();
         dalController.init(repositoryFactory);
 //        initObjects();
@@ -110,10 +108,10 @@ public class GameService {
         return Response.ok(gameInstance);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.toString());
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
 

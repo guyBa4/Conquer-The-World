@@ -26,13 +26,10 @@ public class RunningGameController {
     private static Logger LOG;
     
     @Autowired
-    public RunningGameController(RepositoryFactory repositoryFactory)
+    public RunningGameController(RepositoryFactory repositoryFactory, GameRunningService gameRunningService)
     {
-        this.gameRunningService = GameRunningService.getInstance();
-        if (!gameRunningService.isInit())
-            gameRunningService.init(repositoryFactory);
+        this.gameRunningService = gameRunningService;
         tokenHandler = TokenHandler.getInstance();
-
         LOG = getLogger(this.getClass().toString());
     }
 
@@ -46,7 +43,7 @@ public class RunningGameController {
             UUID userId = UUID.fromString(jsonObj.getString("userId"));
             return gameRunningService.OpenWaitingRoom(gameId, userId);
         } catch (IllegalArgumentException e) {
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error");
         }
@@ -89,7 +86,7 @@ public class RunningGameController {
             UUID gameUuid = UUID.fromString(gameId);
             return gameRunningService.getWaitingRoomDetails(gameUuid);
         } catch (IllegalArgumentException e) {
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error");
         }
@@ -104,7 +101,7 @@ public class RunningGameController {
             UUID gameId = UUID.fromString(jsonObj.getString("gameId"));
             return gameRunningService.startGame(gameId);
         } catch (IllegalArgumentException e) {
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
@@ -134,7 +131,7 @@ public class RunningGameController {
             LOG.info(String.format("Request received by /generate_question endpoint:\n {'group': %s, 'runningGameId': %s, 'runningTileId': %s}", group, runningGameId, runningTileId));
             return gameRunningService.getQuestion(UUID.fromString(runningTileId), group, UUID.fromString(runningGameId), UUID.fromString(authorizationHeader));
         } catch (IllegalArgumentException e) {
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error");
         }
@@ -156,7 +153,7 @@ public class RunningGameController {
             String answer = jsonObj.getString("answer");
             return gameRunningService.checkAnswer(runningGameId, tileUUID, mobileUuid, questionUuid, answer);
         } catch (IllegalArgumentException e) {
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error");
         }
@@ -170,7 +167,7 @@ public class RunningGameController {
 //            UUID mobileUuid = UUID.fromString(mobileId);
             return gameRunningService.getRunningTiles(runningGameId);
         } catch (IllegalArgumentException e) {
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error");
         }
@@ -186,7 +183,7 @@ public class RunningGameController {
 //            UUID hostId = UUID.fromString(authorizationHeader);
             return gameRunningService.endRunningGame(runningGameId);
         } catch (IllegalArgumentException e) {
-            return Response.fail(403, e.toString());
+            return Response.fail(403, e.getMessage());
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error");
         }

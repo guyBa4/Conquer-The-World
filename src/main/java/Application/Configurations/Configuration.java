@@ -17,4 +17,6 @@ public class Configuration implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**").allowedMethods("*");
     }
+    
+    public static final Long defaultSseEmitterTimeout = 120000L;
 }

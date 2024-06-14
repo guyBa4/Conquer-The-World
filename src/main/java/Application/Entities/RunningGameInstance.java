@@ -5,11 +5,15 @@ import Application.Enums.GroupAssignmentProtocol;
 
 import static java.util.logging.Logger.getLogger;
 
+import Application.Events.Event;
+import Application.Events.EventRecipient;
+import Application.Events.EventType;
 import Application.Repositories.AnswerRepository;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -177,7 +181,7 @@ public class RunningGameInstance {
         return groupTiles.stream().anyMatch((tile) -> target.getTile().getNeighbors().contains(tile.getTile()));
     }
 
-    public boolean checkAnswer(UUID tileId, MobilePlayer player, UUID questionId, String answer, AnswerRepository answerRepository) {
+    public boolean checkAnswer(UUID tileId, MobilePlayer player, UUID questionId, String answer, AnswerRepository answerRepository) throws IOException {
         List<Answer> answers = answerRepository.findByQuestionId(questionId);
         RunningTile foundTile = getTileById(tileId);
         if (foundTile == null) {
@@ -201,6 +205,10 @@ public class RunningGameInstance {
                     .setControllingGroup(playerGroup)
                     .setActiveQuestion(null);
             playerGroup.addScore(foundTile.getTile().getDifficultyLevel());
+            player.getEventEmitter().send(new Event()
+                    .setEventType(EventType.TILES_UPDATE)
+                    .setBody(foundTile)
+                    .setRecipients(new ArrayList<>(mobilePlayers), gameInstance.getHost()));
             return true;
         }
         foundTile.setAnsweringPlayer(null).setAnsweringGroup(null).setActiveQuestion(null);
