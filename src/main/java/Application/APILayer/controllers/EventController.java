@@ -28,7 +28,7 @@ public class EventController {
             return null;
         }
         SseEmitter emitter = eventService.getOrCreateEmitter(authorizationHeader);
-        if  (emitter == null) {
+        if (emitter == null) {
             LOG.warn("No event emitters found for ID " + authorizationHeader);
             return null;
         }

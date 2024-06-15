@@ -56,7 +56,9 @@ public class EventService {
     
     public SseEmitter addEmitter(UUID recipientId) {
         if (recipientId != null) {
-            return this.emitters.put(recipientId, new SseEmitter(Configuration.defaultSseEmitterTimeout));
+            SseEmitter emitter = new SseEmitter(Configuration.defaultSseEmitterTimeout);
+            this.emitters.put(recipientId, emitter);
+            return emitter;
         }
         return null;
     }
