@@ -2,13 +2,14 @@ package Application.ServiceLayer;
 
 import Application.Configurations.Configuration;
 import Application.Events.Event;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Logger;
 
 import static java.util.logging.Logger.getLogger;
 
@@ -16,14 +17,14 @@ import static java.util.logging.Logger.getLogger;
 @Service
 public class EventService {
     
-    private final static Logger LOG = getLogger(EventService.class.toString());
+    private final static Logger LOG = LoggerFactory.getLogger(EventService.class);
     
     private final List<Event> awaitingEvents;
     private final Map<UUID, SseEmitter> emitters;
     
     public void addEvent(Event event) {
         if (event.getRecipients() == null || event.getRecipients().isEmpty())
-            LOG.warning("Failed to add event");
+            LOG.warn("Failed to add event");
         else awaitingEvents.add(event);
     }
     
@@ -43,7 +44,7 @@ public class EventService {
                                         emitter.send(event);
                                 } catch (IOException e) {
                                     e.printStackTrace();
-                                    LOG.warning("Failed to send event to recipient");
+                                    LOG.warn("Failed to send event to recipient");
                                 }
                             }));
                     awaitingEvents.clear();
@@ -69,6 +70,7 @@ public class EventService {
         UUID userId = UUID.fromString(emitterRefId);
         SseEmitter emitter = emitters.get(userId);
         if (emitter == null)
+            LOG.debug("Emitter not found");
             emitter = addEmitter(userId);
         return emitter;
     }

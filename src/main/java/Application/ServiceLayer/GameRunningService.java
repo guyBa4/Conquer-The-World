@@ -1,23 +1,22 @@
 package Application.ServiceLayer;
 
-import Application.APILayer.JsonToInstance;
-import Application.Configurations.Configuration;
 import Application.DataAccessLayer.DALController;
 import Application.Entities.*;
 import Application.Enums.GameStatus;
 import Application.Events.Event;
 import Application.Events.EventRecipient;
 import Application.Events.EventType;
-import Application.Repositories.*;
+import Application.Repositories.RepositoryFactory;
+import Application.Repositories.RunningGameInstanceRepository;
 import Application.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.time.Instant;
-import java.util.logging.*;
-import static java.util.logging.Logger.getLogger;
 import java.util.*;
+import java.util.logging.Logger;
+
+import static java.util.logging.Logger.getLogger;
 
 @Service
 public class GameRunningService {
@@ -76,7 +75,6 @@ public class GameRunningService {
             runningGameInstanceRepository.save(runningGameInstance);
             LOG.info("mobile enter code : " + mobilePlayer.getId());
             LOG.info("for running game instance with id : " + runningGameInstance.getRunningId() + " : " + runningGameInstance.getName());
-            eventService.addEmitter(mobilePlayer.getId());
             return Response.ok(mobilePlayer);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();

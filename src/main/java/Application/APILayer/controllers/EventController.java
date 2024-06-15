@@ -22,6 +22,7 @@ public class EventController {
     
     @GetMapping(path = "/get_emitter")
     public SseEmitter getEmitter(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        LOG.debug("Get emitter called");
         if (authorizationHeader == null || authorizationHeader.isBlank()) {
             LOG.warn("Missing authorization header");
             return null;
@@ -31,6 +32,7 @@ public class EventController {
             LOG.warn("No event emitters found for ID " + authorizationHeader);
             return null;
         }
+        LOG.debug("Emitter" + emitter);
         return emitter;
     }
     
