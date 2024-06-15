@@ -1,6 +1,7 @@
 package Application;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 public class Response<T> {
 
@@ -75,6 +76,7 @@ public class Response<T> {
     private void setStatus(int status) {
         this.status = status;
     }
+    
 
     public String toString() {
         return "Response{" +

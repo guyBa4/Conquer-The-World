@@ -53,6 +53,7 @@ public class GameRunningService {
             RunningGameInstance runningGameInstance = new RunningGameInstance(gameInstance);
             updateGameStatus(runningGameInstance, GameStatus.WAITING_ROOM);
             runningGameInstanceRepository.save(runningGameInstance);
+            eventService.addEmitter(hostId);
             return Response.ok(runningGameInstance);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -75,7 +76,7 @@ public class GameRunningService {
             runningGameInstanceRepository.save(runningGameInstance);
             LOG.info("mobile enter code : " + mobilePlayer.getId());
             LOG.info("for running game instance with id : " + runningGameInstance.getRunningId() + " : " + runningGameInstance.getName());
-            mobilePlayer.setEventEmitter(new SseEmitter(Configuration.defaultSseEmitterTimeout));
+            eventService.addEmitter(mobilePlayer.getId());
             return Response.ok(mobilePlayer);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -245,6 +246,10 @@ public class GameRunningService {
             }
             AssignedQuestion question = runningGameInstance.getQuestion(runningTileId, group, player);
             runningGameInstanceRepository.save(runningGameInstance);
+            if (question != null) {
+                RunningTile tileToUpdate = runningGameInstance.getTileById(runningTileId);
+                publishEvent(EventType.TILES_UPDATE, tileToUpdate, runningGameInstance);
+            }
             return Response.ok(question);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -269,8 +274,14 @@ public class GameRunningService {
                 LOG.severe("Did not find user with ID: " + userId.toString());
                 return Response.fail("Did not find user by ID");
             }
+           
             boolean isCorrect = runningGameInstance.checkAnswer(tileId, player, questionId, answer, repositoryFactory.answerRepository);
             runningGameInstanceRepository.save(runningGameInstance);
+            if (isCorrect) {
+                RunningTile tile = runningGameInstance.getTileById(tileId);
+                publishEvent(EventType.TILES_UPDATE, tile, runningGameInstance);
+                publishEvent(EventType.SCORE_UPDATE, runningGameInstance.getGroupByNumber(player.getGroup().getNumber()), runningGameInstance);
+            }
             return Response.ok(isCorrect);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -285,6 +296,7 @@ public class GameRunningService {
         try {
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
             runningGameInstanceRepository.delete(runningGameInstance);
+            publishEvent(EventType.END_GAME_UPDATE, null, runningGameInstance);
             return Response.ok(true);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();

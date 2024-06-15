@@ -205,10 +205,6 @@ public class RunningGameInstance {
                     .setControllingGroup(playerGroup)
                     .setActiveQuestion(null);
             playerGroup.addScore(foundTile.getTile().getDifficultyLevel());
-            player.getEventEmitter().send(new Event()
-                    .setEventType(EventType.TILES_UPDATE)
-                    .setBody(foundTile)
-                    .setRecipients(new ArrayList<>(mobilePlayers), gameInstance.getHost()));
             return true;
         }
         foundTile.setAnsweringPlayer(null).setAnsweringGroup(null).setActiveQuestion(null);

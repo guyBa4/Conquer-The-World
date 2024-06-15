@@ -22,6 +22,7 @@ public class UserService {
     private RepositoryFactory repositoryFactory;
     private UserRepository userRepository;
     private DALController dalController;
+    private EventService eventService;
 
     private UserService() {
     }
@@ -71,7 +72,7 @@ public class UserService {
                 return Response.fail("user not exist");
             User user = users.get(0);
             if (user.getPassword().equals(password)) {
-                user.setEventEmitter(new SseEmitter(Configuration.defaultSseEmitterTimeout));
+                eventService.addEmitter(user.getId());
                 return Response.ok(user);
             }
             return Response.fail("password incorrect");

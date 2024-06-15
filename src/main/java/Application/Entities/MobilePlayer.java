@@ -37,9 +37,6 @@ public class MobilePlayer implements EventRecipient {
     @Column(name = "ready")
     private boolean ready;
     
-    @Transient
-    private SseEmitter eventEmitter;
-    
     public MobilePlayer(){
         this.ready = false;
     }
@@ -87,15 +84,6 @@ public class MobilePlayer implements EventRecipient {
 
     public void setRunningGameInstance(RunningGameInstance runningGameInstance) {
         this.runningGameInstance = runningGameInstance;
-    }
-    
-    public SseEmitter getEventEmitter() {
-        return eventEmitter;
-    }
-    
-    public MobilePlayer setEventEmitter(SseEmitter eventEmitter) {
-        this.eventEmitter = eventEmitter;
-        return this;
     }
     
     @Override
