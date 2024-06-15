@@ -23,16 +23,16 @@ public class EventController {
         this.eventService = eventService;
     }
     
-    @GetMapping(path = "/get_emitter")
-    public SseEmitter getEmitter(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    @GetMapping(path = "/get_emitter/{id}")
+    public SseEmitter getEmitter(@PathVariable(name = "id") String userId) {
         LOG.info("Get emitter called");
-        if (authorizationHeader == null || authorizationHeader.isBlank()) {
+        if (userId == null || userId.isBlank()) {
             LOG.warn("Missing authorization header");
             return null;
         }
-        SseEmitter emitter = eventService.getOrCreateEmitter(authorizationHeader);
+        SseEmitter emitter = eventService.getOrCreateEmitter(userId);
         if (emitter == null) {
-            LOG.warn("No event emitters found for ID " + authorizationHeader);
+            LOG.warn("No event emitters found for ID " + userId);
             return null;
         }
         LOG.info("Emitter" + emitter);
