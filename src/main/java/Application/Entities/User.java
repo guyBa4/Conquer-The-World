@@ -18,9 +18,6 @@ public class User implements EventRecipient {
 
     @Column(name = "password")
     private String password;
-    
-    @Transient
-    private SseEmitter eventEmitter;
 
     public User() {
     }
@@ -55,16 +52,7 @@ public class User implements EventRecipient {
     public void setPassword(String password) {
         this.password = password;
     }
-    
-    public SseEmitter getEventEmitter() {
-        return eventEmitter;
-    }
-    
-    public User setEventEmitter(SseEmitter eventEmitter) {
-        this.eventEmitter = eventEmitter;
-        return this;
-    }
-    
+
     @Override
     public String toString() {
         return "User{" +

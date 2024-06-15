@@ -1,23 +1,25 @@
 package Application.ServiceLayer;
 
+import Application.Configurations.Configuration;
 import Application.Events.Event;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.logging.Logger;
 
 import static java.util.logging.Logger.getLogger;
 
+@Scope("singleton")
 @Service
 public class EventService {
     
     private final static Logger LOG = getLogger(EventService.class.toString());
     
     private final List<Event> awaitingEvents;
+    private final Map<UUID, SseEmitter> emitters;
     
     public void addEvent(Event event) {
         if (event.getRecipients() == null || event.getRecipients().isEmpty())
@@ -26,7 +28,8 @@ public class EventService {
     }
     
     public EventService() {
-        awaitingEvents = new ArrayList<>();
+        this.emitters = new HashMap<>();
+        this.awaitingEvents = new ArrayList<>();
         Timer timer = new Timer();
         TimerTask timerTask = new TimerTask() {
             @Override
@@ -35,7 +38,9 @@ public class EventService {
                     awaitingEvents.stream().peek((event) ->
                             event.getRecipients().stream().peek((recipient) -> {
                                 try {
-                                    recipient.getEventEmitter().send(event);
+                                    SseEmitter emitter = emitters.get(recipient.getId());
+                                    if (emitter != null)
+                                        emitter.send(event);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                     LOG.warning("Failed to send event to recipient");
@@ -46,5 +51,17 @@ public class EventService {
             }
         };
         timer.scheduleAtFixedRate(timerTask, 0L, 1000L);
+    }
+    
+    public SseEmitter addEmitter(UUID recipientId) {
+        if (recipientId != null) {
+            return this.emitters.put(recipientId, new SseEmitter(Configuration.defaultSseEmitterTimeout));
+        }
+        return null;
+    }
+    
+    public SseEmitter getEmitter(String authorizationHeader) {
+        UUID userId = UUID.fromString(authorizationHeader);
+        return emitters.get(userId);
     }
 }
