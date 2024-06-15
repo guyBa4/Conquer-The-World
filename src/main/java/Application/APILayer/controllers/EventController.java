@@ -1,5 +1,6 @@
 package Application.APILayer.controllers;
 
+import Application.Configurations.Configuration;
 import Application.Response;
 import Application.ServiceLayer.EventService;
 import org.slf4j.Logger;
@@ -9,11 +10,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping(path = "event")
 public class EventController {
     
-    private EventService eventService;
+    private final EventService eventService;
     private static final Logger LOG = LoggerFactory.getLogger(EventController.class);
     @Autowired
     public EventController(EventService eventService) {
@@ -22,7 +25,7 @@ public class EventController {
     
     @GetMapping(path = "/get_emitter")
     public SseEmitter getEmitter(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
-        LOG.debug("Get emitter called");
+        LOG.info("Get emitter called");
         if (authorizationHeader == null || authorizationHeader.isBlank()) {
             LOG.warn("Missing authorization header");
             return null;
@@ -32,7 +35,7 @@ public class EventController {
             LOG.warn("No event emitters found for ID " + authorizationHeader);
             return null;
         }
-        LOG.debug("Emitter" + emitter);
+        LOG.info("Emitter" + emitter);
         return emitter;
     }
     

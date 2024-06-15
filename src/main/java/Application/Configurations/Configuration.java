@@ -18,5 +18,5 @@ public class Configuration implements WebMvcConfigurer {
         registry.addMapping("/**").allowedMethods("*");
     }
     
-    public static final Long defaultSseEmitterTimeout = 120000L;
+    public static final Long defaultSseEmitterTimeout = 1200000L;
 }
