@@ -2,6 +2,7 @@ package Application.APILayer.controllers;
 
 import Application.Response;
 import Application.ServiceLayer.EventService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -11,6 +12,11 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class EventController {
     
     EventService eventService;
+    
+    @Autowired
+    public EventController(EventService eventService) {
+        this.eventService = eventService;
+    }
     
     @GetMapping(path = "")
     public Response<SseEmitter> getEmitter(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
