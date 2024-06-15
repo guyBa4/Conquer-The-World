@@ -20,7 +20,7 @@ public class EventController {
         this.eventService = eventService;
     }
     
-    @GetMapping(path = "")
+    @GetMapping(path = "/get_emitter")
     public SseEmitter getEmitter(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         if (authorizationHeader == null || authorizationHeader.isBlank()) {
             LOG.warn("Missing authorization header");
