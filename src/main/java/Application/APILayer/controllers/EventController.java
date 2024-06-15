@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -23,7 +24,7 @@ public class EventController {
         this.eventService = eventService;
     }
     
-    @GetMapping(path = "/get_emitter/{id}")
+    @GetMapping(path = "/get_emitter/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter getEmitter(@PathVariable(name = "id") String userId) {
         LOG.info("Get emitter called");
         if (userId == null || userId.isBlank()) {
