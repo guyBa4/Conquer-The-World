@@ -246,7 +246,7 @@ public class GameRunningService {
             runningGameInstanceRepository.save(runningGameInstance);
             if (question != null) {
                 RunningTile tileToUpdate = runningGameInstance.getTileById(runningTileId);
-                publishEvent(EventType.TILES_UPDATE, tileToUpdate, runningGameInstance);
+                publishEvent(EventType.TILES_UPDATE, FlatRunningTile.from(tileToUpdate), runningGameInstance);
             }
             return Response.ok(question);
         } catch (IllegalArgumentException e) {
@@ -277,7 +277,7 @@ public class GameRunningService {
             runningGameInstanceRepository.save(runningGameInstance);
             if (isCorrect) {
                 RunningTile tile = runningGameInstance.getTileById(tileId);
-                publishEvent(EventType.TILES_UPDATE, tile, runningGameInstance);
+                publishEvent(EventType.TILES_UPDATE, FlatRunningTile.from(tile), runningGameInstance);
                 publishEvent(EventType.SCORE_UPDATE, runningGameInstance.getGroupByNumber(player.getGroup().getNumber()), runningGameInstance);
             }
             return Response.ok(isCorrect);
