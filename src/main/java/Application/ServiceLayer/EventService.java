@@ -60,8 +60,16 @@ public class EventService {
         return null;
     }
     
-    public SseEmitter getEmitter(String authorizationHeader) {
-        UUID userId = UUID.fromString(authorizationHeader);
+    public SseEmitter getEmitter(String emitterRefId) {
+        UUID userId = UUID.fromString(emitterRefId);
         return emitters.get(userId);
+    }
+    
+    public SseEmitter getOrCreateEmitter(String emitterRefId) {
+        UUID userId = UUID.fromString(emitterRefId);
+        SseEmitter emitter = emitters.get(userId);
+        if (emitter == null)
+            emitter = addEmitter(userId);
+        return emitter;
     }
 }
