@@ -40,7 +40,7 @@ public class EventService {
                                     SseEmitter emitter = emitters.get(recipient.getId());
                                     if (emitter != null) {
                                         LOG.info("Sent event");
-                                        emitter.send(event);
+                                        emitter.send(SseEmitter.event().name("message").data(event));
                                     }
                                 } catch (IOException e) {
                                     e.printStackTrace();
