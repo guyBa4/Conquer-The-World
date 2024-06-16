@@ -25,10 +25,11 @@ public class EventController {
     }
     
     @GetMapping(path = "/get_emitter/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @ResponseBody
     public SseEmitter getEmitter(@PathVariable(name = "id") String userId) {
         LOG.info("Get emitter called");
         if (userId == null || userId.isBlank()) {
-            LOG.warn("Missing authorization header");
+            LOG.warn("Missing user ID");
             return null;
         }
         SseEmitter emitter = eventService.getOrCreateEmitter(userId);
