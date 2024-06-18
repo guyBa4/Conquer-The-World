@@ -268,7 +268,7 @@ public class GameRunningService {
     
     private void setQuestionTimeout(AssignedQuestion question, RunningGameInstance runningGameInstance, UUID runningTileId) {
         GameInstance gameInstance = runningGameInstance.getGameInstance();
-        long questionTimeout = gameInstance.getQuestionTimeLimit();
+        long questionTimeout = gameInstance.getQuestionTimeLimit() * 1000L; // Question timeout in milliseconds
         RunningTile tile = runningGameInstance.getTileById(runningTileId);
         if (questionTimeout > 0) {
             Timer timer = new Timer();
