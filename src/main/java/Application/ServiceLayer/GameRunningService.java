@@ -8,9 +8,10 @@ import Application.Repositories.*;
 import Application.Response;
 import org.springframework.stereotype.Service;
 
-import java.util.logging.*;
-import static java.util.logging.Logger.getLogger;
 import java.util.*;
+import java.util.logging.Logger;
+
+import static java.util.logging.Logger.getLogger;
 
 @Service
 public class GameRunningService {
@@ -60,7 +61,7 @@ public class GameRunningService {
         try{
             GameInstance gameInstance = dalController.getGameInstance(gameId);
             RunningGameInstance runningGameInstance = new RunningGameInstance(gameInstance);
-            updateGameStatus(runningGameInstance, GameStatus.WAITING_ROOM);
+            runningGameInstance.setStatus(GameStatus.WAITING_ROOM);
             runningGameInstanceRepository.save(runningGameInstance);
             return Response.ok(runningGameInstance);
         } catch (IllegalArgumentException e) {
@@ -133,10 +134,10 @@ public class GameRunningService {
         try {
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
             if (runningGameInstance != null) {
-                updateGameStatus(runningGameInstance, GameStatus.STARTED);
                 runningGameInstance.assignGroups();
                 runningGameInstance.initStartingPositions();
                 initQuestionQueues(runningGameInstance);
+                runningGameInstance.setStatus(GameStatus.STARTED);
                 runningGameInstanceRepository.save(runningGameInstance);
                 LOG.info("Game with ID " + runningGameId.toString() + " started successfully");
                 return Response.ok(runningGameInstance);
@@ -251,6 +252,9 @@ public class GameRunningService {
                 return Response.fail("Requesting player group does not match passed group number.");
             }
             AssignedQuestion question = runningGameInstance.getQuestion(runningTileId, group, player);
+            if (question != null) {
+                setQuestionTimeout(question, runningGameInstance, runningTileId);
+            }
             runningGameInstanceRepository.save(runningGameInstance);
             return Response.ok(question);
         } catch (IllegalArgumentException e) {
@@ -259,6 +263,28 @@ public class GameRunningService {
         } catch (Exception e) {
             e.printStackTrace();
             return Response.fail(500, "Internal Server Error : \n" + e.toString());
+        }
+    }
+    
+    private void setQuestionTimeout(AssignedQuestion question, RunningGameInstance runningGameInstance, UUID runningTileId) {
+        GameInstance gameInstance = runningGameInstance.getGameInstance();
+        long questionTimeout = gameInstance.getQuestionTimeLimit();
+        RunningTile tile = runningGameInstance.getTileById(runningTileId);
+        if (questionTimeout > 0) {
+            Timer timer = new Timer();
+            TimerTask timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    if (tile.getActiveQuestion() != null && tile.getActiveQuestion().getId().equals(question.getId())) {
+                        LOG.info("Timeout reached for question " + question.getId());
+                        tile.setActiveQuestion(null)
+                                .setAnsweringGroup(null)
+                                .setAnsweringPlayer(null);
+                    }
+                }
+            };
+            question.setTimeout(questionTimeout);
+            timer.schedule(timerTask, questionTimeout);
         }
     }
     
@@ -291,7 +317,8 @@ public class GameRunningService {
     public Response<Boolean> endRunningGame(UUID runningGameId) {
         try {
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
-            runningGameInstanceRepository.delete(runningGameInstance);
+            runningGameInstance.setStatus(GameStatus.ENDED);
+            runningGameInstanceRepository.save(runningGameInstance);
             return Response.ok(true);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
