@@ -107,7 +107,7 @@ public class GameService {
             List<UUID> startingPositionsUuid = new LinkedList<>();
             for (Object o : startingPositions){
                 String s = (String) o;
-                if (s.isEmpty() || s == null || s == "" || s.isBlank())
+                if (s == null || s.length() == 0)
                     continue;
                 UUID id = UUID.fromString(s);
                 startingPositionsUuid.add(id);
