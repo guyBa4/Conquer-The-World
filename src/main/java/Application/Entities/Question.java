@@ -29,7 +29,7 @@ public class Question {
     
     @Lob
     @Column(name = "image", columnDefinition = "BYTEA")
-    private Byte[] image; // Holds image data
+    private byte[] image; // Holds image data
 
 //    @Transient
 //    private List<String> tags;
@@ -47,7 +47,7 @@ public class Question {
         this.difficulty = difficulty;
     }
     
-    public Question(boolean multipleChoice, String question, Integer difficulty, Byte[] image) {
+    public Question(boolean multipleChoice, String question, Integer difficulty, byte[] image) {
         this.multipleChoice = multipleChoice;
         this.question = question;
         this.difficulty = difficulty;
@@ -108,11 +108,11 @@ public class Question {
         this.difficulty = difficulty;
     }
     
-    public Byte[] getImage() {
+    public byte[] getImage() {
         return image;
     }
     
-    public Question setImage(Byte[] image) {
+    public Question setImage(byte[] image) {
         this.image = image;
         return this;
     }

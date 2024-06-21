@@ -1,5 +1,6 @@
 package Application.ServiceLayer;
 import Application.APILayer.JsonToInstance;
+import Application.APILayer.controllers.Requests.NewQuestion;
 import Application.DataAccessLayer.DALController;
 import Application.Entities.*;
 import Application.Repositories.*;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.Map;
 
@@ -62,11 +64,12 @@ public class QuestionService {
     }
 
 
-    public Response<Question> addQuestion(String question, boolean isMultipleChoice, String correctAnswer,
-                                          List<Object> incorrectAnswers, List<Object> tags, int difficulty, Byte[] image) {
+    public Response<Question> addQuestion(NewQuestion newQuestion) {
         try {
-            Question questionObj = new Question(isMultipleChoice, question, difficulty, image);
-            List<Answer> answers = buildAnswers(correctAnswer, incorrectAnswers, questionObj);
+            byte[] image = newQuestion.getImage().getBytes(StandardCharsets.UTF_8);
+            Question questionObj = new Question(newQuestion.isMultipleChoice(), newQuestion.getQuestion(),
+                    newQuestion.getDifficulty(), image);
+            List<Answer> answers = buildAnswers(newQuestion.getCorrectAnswer(), newQuestion.getIncorrectAnswers(), questionObj);
             questionObj.setAnswers(answers);
             questionRepository.save(questionObj);
             return Response.ok(questionObj);
@@ -79,11 +82,11 @@ public class QuestionService {
         }
     }
 
-    private List<Answer> buildAnswers(String correctAnswer, List<Object> incorrectAnswers, Question questionObj) {
+    private List<Answer> buildAnswers(String correctAnswer, List<String> incorrectAnswers, Question questionObj) {
         List<Answer> answers = new LinkedList<>();
         answers.add(new Answer(correctAnswer, true, questionObj));
-        for (Object incorrectAnswer : incorrectAnswers){
-            answers.add(new Answer((String) incorrectAnswer, false, questionObj));
+        for (String incorrectAnswer : incorrectAnswers){
+            answers.add(new Answer(incorrectAnswer, false, questionObj));
         }
 
         return answers;

@@ -1,5 +1,6 @@
 package Application.APILayer.controllers;
 
+import Application.APILayer.controllers.Requests.NewQuestion;
 import Application.Entities.*;
 import Application.Repositories.RepositoryFactory;
 import Application.Response;
@@ -35,20 +36,11 @@ public class QuestionController {
 
     @PostMapping(path = "/add_question")
     @ResponseBody
-    public Response<Question> addQuestion(@RequestBody String inputJson) {
+    public Response<Question> addQuestion(@RequestBody() NewQuestion newQuestion) {
         try {
-            JSONObject jsonObj = new JSONObject(inputJson);
-            String question = jsonObj.getString("question");
-            boolean isMultipleChoice = jsonObj.getBoolean("isMultipleChoice");
-            String correctAnswer = jsonObj.getString("correctAnswer");
-            List<Object> incorrectAnswers = jsonObj.getJSONArray("incorrectAnswers").toList();
-            List<Object> tags = jsonObj.getJSONArray("tags").toList();
-            int difficulty = jsonObj.getInt("difficulty");
-            Byte[] image = null;
-            if (jsonObj.getJSONObject("image") != null) {
-                image = (Byte[]) jsonObj.getJSONObject("image").toMap().values().toArray();
-            }
-            return questionService.addQuestion(question, isMultipleChoice, correctAnswer, incorrectAnswers, tags, difficulty, image);
+            if (newQuestion != null)
+                return questionService.addQuestion(newQuestion);
+            return Response.fail(400, "Invalid request");
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }
