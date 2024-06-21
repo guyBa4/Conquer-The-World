@@ -62,9 +62,10 @@ public class QuestionService {
     }
 
 
-    public Response<Question> addQuestion(String question, boolean isMultipleChoice, String correctAnswer, List<Object> incorrectAnswers, List<Object> tags, int difficulty) {
+    public Response<Question> addQuestion(String question, boolean isMultipleChoice, String correctAnswer,
+                                          List<Object> incorrectAnswers, List<Object> tags, int difficulty, byte[] image) {
         try {
-            Question questionObj = new Question(isMultipleChoice, question, difficulty);
+            Question questionObj = new Question(isMultipleChoice, question, difficulty, image);
             List<Answer> answers = buildAnswers(correctAnswer, incorrectAnswers, questionObj);
             questionObj.setAnswers(answers);
             questionRepository.save(questionObj);

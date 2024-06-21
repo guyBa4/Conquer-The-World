@@ -12,6 +12,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 import javax.script.ScriptException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
@@ -42,7 +44,11 @@ public class QuestionController {
             List<Object> incorrectAnswers = jsonObj.getJSONArray("incorrectAnswers").toList();
             List<Object> tags = jsonObj.getJSONArray("tags").toList();
             int difficulty = jsonObj.getInt("difficulty");
-            return questionService.addQuestion(question, isMultipleChoice,  correctAnswer,  incorrectAnswers, tags, difficulty);
+            byte[] image = null;
+            if (jsonObj.getJSONArray("image") != null) {
+                image = jsonObj.getJSONArray("image").toString().getBytes(StandardCharsets.UTF_8);
+            }
+            return questionService.addQuestion(question, isMultipleChoice, correctAnswer, incorrectAnswers, tags, difficulty, image);
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }
