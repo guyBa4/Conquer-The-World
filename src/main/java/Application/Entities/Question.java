@@ -28,7 +28,7 @@ public class Question {
     private Integer difficulty;
     
     @Lob
-    @Column(name = "image", columnDefinition = "BLOB")
+    @Column(name = "image", columnDefinition = "BYTEA")
     private byte[] image; // Holds image data
 
 //    @Transient
