@@ -313,6 +313,7 @@ public class GameRunningService {
                 publishEvent(EventType.TILES_UPDATE, tile, runningGameInstance);
                 publishEvent(EventType.SCORE_UPDATE, runningGameInstance.getGroupByNumber(player.getGroup().getNumber()), runningGameInstance);
                 playerStatistic.addCorrectAnswers();
+                playerStatistic.addScore(tile.getTile().getDifficultyLevel());
             }
             runningGameInstanceRepository.save(runningGameInstance);
             return Response.ok(isCorrect);

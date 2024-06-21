@@ -78,6 +78,14 @@ public class DALController {
         return object;
     }
 
+    public AssignedQuestion getAssignedQuestion(UUID uuid){
+        Optional<AssignedQuestion> optional = repositoryFactory.assignedQuestionRepository.findById(uuid);
+        if (optional.isEmpty())
+            throw new IllegalArgumentException("there is no AssignedQuestion with this UUID : " + uuid);
+        AssignedQuestion object = optional.get();
+        return object;
+    }
+
     public GameMap getMap(UUID uuid){
         Optional<GameMap> optional = repositoryFactory.mapRepository.findById(uuid);
         if (optional.isEmpty())

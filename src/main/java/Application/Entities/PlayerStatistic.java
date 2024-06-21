@@ -78,4 +78,7 @@ public class PlayerStatistic {
     public void addCorrectAnswers(){
         this.correctAnswers++;
     }
+    public void addScore(int score){
+        this.score+=score;
+    }
 }
