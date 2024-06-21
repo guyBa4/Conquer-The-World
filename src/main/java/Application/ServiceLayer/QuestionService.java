@@ -66,7 +66,7 @@ public class QuestionService {
 
     public Response<Question> addQuestion(NewQuestion newQuestion) {
         try {
-            byte[] image = newQuestion.getImage().getBytes(StandardCharsets.UTF_8);
+            byte[] image = Base64.getDecoder().decode(newQuestion.getImage().getBytes(StandardCharsets.UTF_8));
             Question questionObj = new Question(newQuestion.isMultipleChoice(), newQuestion.getQuestion(),
                     newQuestion.getDifficulty(), image);
             List<Answer> answers = buildAnswers(newQuestion.getCorrectAnswer(), newQuestion.getIncorrectAnswers(), questionObj);
