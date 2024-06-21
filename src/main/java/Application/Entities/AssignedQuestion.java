@@ -24,6 +24,9 @@ public class AssignedQuestion {
     
     @Column(name = "difficulty_level")
     private int difficultyLevel;
+    
+    @Transient
+    private long timeout;
 
     public AssignedQuestion(Question question, int difficultyLevel) {
         this.question = question;
@@ -70,6 +73,15 @@ public class AssignedQuestion {
 
     public AssignedQuestion setDifficultyLevel(int difficultyLevel) {
         this.difficultyLevel = difficultyLevel;
+        return this;
+    }
+    
+    public long getTimeout() {
+        return timeout;
+    }
+    
+    public AssignedQuestion setTimeout(long timeout) {
+        this.timeout = timeout;
         return this;
     }
 }
