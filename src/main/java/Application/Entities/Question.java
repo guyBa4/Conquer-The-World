@@ -108,11 +108,11 @@ public class Question {
         this.difficulty = difficulty;
     }
     
-    public byte[] getImage() {
+    public Byte[] getImage() {
         return image;
     }
     
-    public Question setImage(byte[] image) {
+    public Question setImage(Byte[] image) {
         this.image = image;
         return this;
     }
