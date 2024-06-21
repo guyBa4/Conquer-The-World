@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface MobilePlayerRepository  extends JpaRepository<MobilePlayer, UUID> {
+public interface MobilePlayerRepository extends JpaRepository<MobilePlayer, UUID> {
 }

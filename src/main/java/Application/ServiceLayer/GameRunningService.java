@@ -27,7 +27,6 @@ public class GameRunningService {
     private EventService eventService;
     private static Logger LOG = getLogger(GameRunningService.class.toString());
 
-
     @Autowired
     private GameRunningService(RepositoryFactory repositoryFactory, EventService eventService){
         this.dalController = DALController.getInstance();
@@ -301,18 +300,21 @@ public class GameRunningService {
         try {
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
             MobilePlayer player = runningGameInstance.getPlayer(userId);
+            PlayerStatistic playerStatistic = repositoryFactory.playerStatisticRepository.findByRunningGameInstanceRunningIdAndMobilePlayerId(runningGameId, userId).get(0);
+            playerStatistic.addQuestionsAnswered();
             if (player == null) {
                 LOG.severe("Did not find user with ID: " + userId.toString());
                 return Response.fail("Did not find user by ID");
             }
-           
+
             boolean isCorrect = runningGameInstance.checkAnswer(tileId, player, questionId, answer, repositoryFactory.answerRepository);
-            runningGameInstanceRepository.save(runningGameInstance);
             if (isCorrect) {
                 RunningTile tile = runningGameInstance.getTileById(tileId);
                 publishEvent(EventType.TILES_UPDATE, tile, runningGameInstance);
                 publishEvent(EventType.SCORE_UPDATE, runningGameInstance.getGroupByNumber(player.getGroup().getNumber()), runningGameInstance);
+                playerStatistic.addCorrectAnswers();
             }
+            runningGameInstanceRepository.save(runningGameInstance);
             return Response.ok(isCorrect);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();

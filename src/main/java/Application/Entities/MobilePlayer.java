@@ -36,14 +36,19 @@ public class MobilePlayer implements EventRecipient {
 
     @Column(name = "ready")
     private boolean ready;
-    
+
+    @OneToMany(mappedBy = "mobilePlayer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PlayerStatistic> playerStatistics;
+
     public MobilePlayer(){
         this.ready = false;
+        this.playerStatistics = new LinkedList<>();
     }
     public MobilePlayer(String name, RunningGameInstance runningGameInstance) {
         this.name = name;
         this.ready = false;
         this.runningGameInstance = runningGameInstance;
+        this.playerStatistics = new LinkedList<>();
     }
 
     public String getName() {
@@ -84,6 +89,9 @@ public class MobilePlayer implements EventRecipient {
 
     public void setRunningGameInstance(RunningGameInstance runningGameInstance) {
         this.runningGameInstance = runningGameInstance;
+    }
+    public void addPlayerStatistic(PlayerStatistic playerStatistic){
+        this.playerStatistics.add(playerStatistic);
     }
     
     @Override

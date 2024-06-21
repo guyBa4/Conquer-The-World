@@ -31,7 +31,6 @@ public class RunningGameInstance {
     @JoinColumn(name = "running_game_instance_id")
     private List<MobilePlayer> mobilePlayers;
 
-
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "running_game_instance_id")
     private List<Group> groups;
@@ -46,6 +45,12 @@ public class RunningGameInstance {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "running_game_instance_id")
     private List<RunningTile> tiles;
+
+
+
+    @OneToMany(mappedBy = "runningGameInstance", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PlayerStatistic> playerStatistics;
+
 
     @Transient
     private static Logger LOG = getLogger(RunningGameInstance.class.toString());
@@ -117,6 +122,17 @@ public class RunningGameInstance {
         this.tiles = tiles;
     }
 
+    public List<PlayerStatistic> getPlayerStatistics() {
+        return playerStatistics;
+    }
+
+    public RunningGameInstance setPlayerStatistics(List<PlayerStatistic> playerStatistics) {
+        this.playerStatistics = playerStatistics;
+        return this;
+    }
+    public void addPlayerStatistic(PlayerStatistic playerStatistic){
+        this.playerStatistics.add(playerStatistic);
+    }
     public RunningTile getTileById(UUID runningTileId) {
         List<RunningTile> candidates = tiles.stream().filter((tile) -> tile.getId().equals(runningTileId)).toList();
         if (candidates.isEmpty())
@@ -126,6 +142,9 @@ public class RunningGameInstance {
 
     public void addMobilePlayer(MobilePlayer mobilePlayer){
         mobilePlayers.add(mobilePlayer);
+        PlayerStatistic playerStatistic = new PlayerStatistic(mobilePlayer, this);
+        mobilePlayer.addPlayerStatistic(playerStatistic);
+        this.playerStatistics.add(playerStatistic);
         if (status.equals(GameStatus.STARTED)) {
             Group group = getSmallestGroup();
             mobilePlayer.setGroup(group);
