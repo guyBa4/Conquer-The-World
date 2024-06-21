@@ -55,7 +55,7 @@ public class QuestionServiceTest {
     @Test
     public void testAddQuestion() {
         Response<Question> response = questionService.addQuestion("Sample question", true, "Correct Answer",
-                Arrays.asList("Wrong Answer 1", "Wrong Answer 2"), Arrays.asList("Tag1", "Tag2"), 5);
+                Arrays.asList("Wrong Answer 1", "Wrong Answer 2"), Arrays.asList("Tag1", "Tag2"), 5, null);
 
         assertTrue(response.isSuccessful(), "Expected response to be successful");
         assertNotNull(response.getValue(), "Expected response value to be non-null");
@@ -67,7 +67,7 @@ public class QuestionServiceTest {
         doThrow(new IllegalArgumentException("Invalid Argument")).when(repositoryFactory.questionRepository).save(any(Question.class));
 
         Response<Question> response = questionService.addQuestion("Sample question", true, "Correct Answer",
-                Arrays.asList("Wrong Answer 1", "Wrong Answer 2"), Arrays.asList("Tag1", "Tag2"), 5);
+                Arrays.asList("Wrong Answer 1", "Wrong Answer 2"), Arrays.asList("Tag1", "Tag2"), 5, null);
 
         assertFalse(response.isSuccessful(), "Expected response to be unsuccessful");
         assertEquals(403, response.getStatus(), "Expected status to be 403");
