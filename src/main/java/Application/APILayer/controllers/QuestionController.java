@@ -44,9 +44,9 @@ public class QuestionController {
             List<Object> incorrectAnswers = jsonObj.getJSONArray("incorrectAnswers").toList();
             List<Object> tags = jsonObj.getJSONArray("tags").toList();
             int difficulty = jsonObj.getInt("difficulty");
-            byte[] image = null;
-            if (jsonObj.getString("image") != null) {
-                image = jsonObj.getString("image").getBytes(StandardCharsets.UTF_8);
+            Byte[] image = null;
+            if (jsonObj.getJSONObject("image") != null) {
+                image = (Byte[]) jsonObj.getJSONObject("image").toMap().values().toArray();
             }
             return questionService.addQuestion(question, isMultipleChoice, correctAnswer, incorrectAnswers, tags, difficulty, image);
         } catch (JSONException e) {
