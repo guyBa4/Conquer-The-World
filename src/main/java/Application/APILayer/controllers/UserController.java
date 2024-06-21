@@ -21,7 +21,6 @@ public class UserController {
     @Autowired
     public UserController(UserService userService, RepositoryFactory repositoryFactory){
         this.userService = userService;
-        userService.init(repositoryFactory);
         tokenHandler = TokenHandler.getInstance();
         tokenHandler.init(repositoryFactory);
     }

@@ -24,28 +24,18 @@ public class UserService {
     private DALController dalController;
     private EventService eventService;
 
-    private UserService() {
+    @Autowired
+    private UserService(RepositoryFactory repositoryFactory,
+            UserRepository userRepository,
+            EventService eventService) {
+        this.repositoryFactory = repositoryFactory;
+        this.userRepository = userRepository;
+        this.dalController = DALController.getInstance();
+        this.eventService = eventService;
     }
     public UserService setDalController(DALController dalController) {
         this.dalController = dalController;
         return this;
-    }
-
-    public static UserService getInstance() {
-        synchronized (instanceLock) {
-            if (instance == null)
-                instance = new UserService();
-        }
-        return instance;
-    }
-
-    public void init(RepositoryFactory repositoryFactory) {
-        this.repositoryFactory = repositoryFactory;
-        jsonToInstance = JsonToInstance.getInstance();
-        this.dalController = DALController.getInstance();
-        if (dalController.needToInitiate())
-            dalController.init(repositoryFactory);
-        setRepositories(repositoryFactory);
     }
 
 

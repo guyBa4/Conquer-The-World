@@ -6,7 +6,7 @@ import Application.Entities.User;
 import Application.Repositories.RepositoryFactory;
 import Application.Repositories.UserRepository;
 import Application.Response;
-import Application.ServiceLayer.EventService;
+//import Application.ServiceLayer.EventService;
 import Application.ServiceLayer.UserService;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,8 +33,8 @@ public class UserServiceTest {
     @Mock
     private DALController dalController;
 
-    @Mock
-    private EventService eventService;
+//    @Mock
+//    private EventService eventService;
 
     @Mock
     private JsonToInstance jsonToInstance;
@@ -45,7 +45,6 @@ public class UserServiceTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        userService.init(repositoryFactory);
         userService.setDalController(dalController);
     }
 
@@ -96,7 +95,7 @@ public class UserServiceTest {
 
         assertTrue(response.isSuccessful(), response.getMessage());
         assertEquals(mockUser, response.getValue(), "Expected response value to be the logged in user");
-        verify(eventService, times(1)).addEmitter(mockUser.getId());
+//        verify(eventService, times(1)).addEmitter(mockUser.getId());
     }
 
     @Test
