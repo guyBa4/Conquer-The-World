@@ -105,8 +105,11 @@ public class GameService {
             User creator = dalController.getUser(creatorUuid);
             GameInstance gameInstance = new GameInstance(creator, questionnaire, gameMap, GameStatus.CREATED, numberOfGroups, title, description, GroupAssignmentProtocol.RANDOM,  gameTime, isShared, questionTimeLimit);
             List<UUID> startingPositionsUuid = new LinkedList<>();
-            for (Object s : startingPositions){
-                UUID id = UUID.fromString((String) s);
+            for (Object o : startingPositions){
+                String s = (String) o;
+                if (s.isEmpty())
+                    continue;
+                UUID id = UUID.fromString(s);
                 startingPositionsUuid.add(id);
             }
             for (Tile tile : gameMap.getTiles()){
