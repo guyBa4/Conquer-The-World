@@ -62,8 +62,8 @@ public class GameController {
             int gameTime = jsonObj.getInt("gameTime");
             boolean isShared = jsonObj.getBoolean("isShared");
             int questionTimeLimit = jsonObj.getInt("questionTimeLimit");
-//            List<Object> startingPositions = jsonObj.getJSONArray("startingPositions").toList();
-            return gameService.addGameInstance(title, description, questionnaireUuid, mapUuid,creatorUuid, groups, gameTime, isShared, questionTimeLimit);
+            List<Object> startingPositions = jsonObj.getJSONArray("startingPositions").toList();
+            return gameService.addGameInstance(title, description, questionnaireUuid, mapUuid,creatorUuid, groups, gameTime, isShared, questionTimeLimit, startingPositions);
         } catch (IllegalArgumentException e) {
             LOG.warning(e.getMessage());
             return Response.fail(403, e.getMessage());

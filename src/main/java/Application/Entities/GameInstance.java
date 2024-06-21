@@ -265,4 +265,7 @@ public class GameInstance {
         this.timeLastUpdated = timeLastUpdated;
     }
 
+    public void addStartingPosition(Tile tile) {
+        this.startingPositions.add(tile);
+    }
 }

@@ -30,11 +30,18 @@ public class GameRunningService {
     @Autowired
     private GameRunningService(RepositoryFactory repositoryFactory, EventService eventService){
         this.dalController = DALController.getInstance();
+        if (dalController.needToInitiate())
+            dalController.init(repositoryFactory);
         this.repositoryFactory = repositoryFactory;
         this.runningGameInstanceRepository = repositoryFactory.runningGameInstanceRepository;
         this.eventService = eventService;
     }
-    
+
+    public GameRunningService setDalController(DALController dalController) {
+        this.dalController = dalController;
+        return this;
+    }
+
     public void publishEvent(EventType eventType, Object eventBody, RunningGameInstance gameToUpdate) {
         List<EventRecipient> eventRecipients = new ArrayList<>(gameToUpdate.getMobilePlayers());
         eventRecipients.add(gameToUpdate.getGameInstance().getHost());

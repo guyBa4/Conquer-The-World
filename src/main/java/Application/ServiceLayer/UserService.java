@@ -26,6 +26,10 @@ public class UserService {
 
     private UserService() {
     }
+    public UserService setDalController(DALController dalController) {
+        this.dalController = dalController;
+        return this;
+    }
 
     public static UserService getInstance() {
         synchronized (instanceLock) {
@@ -39,6 +43,8 @@ public class UserService {
         this.repositoryFactory = repositoryFactory;
         jsonToInstance = JsonToInstance.getInstance();
         this.dalController = DALController.getInstance();
+        if (dalController.needToInitiate())
+            dalController.init(repositoryFactory);
         setRepositories(repositoryFactory);
     }
 

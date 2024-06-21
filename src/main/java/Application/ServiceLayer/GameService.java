@@ -80,7 +80,8 @@ public class GameService {
         setRepositories(repositoryFactory);
         this.gameRunningService = gameRunningService;
         this.dalController = DALController.getInstance();
-        dalController.init(repositoryFactory);
+        if (dalController.needToInitiate())
+            dalController.init(repositoryFactory);
 //        initObjects();
 
 
@@ -97,14 +98,23 @@ public class GameService {
     }
 
 
-    public Response<GameInstance> addGameInstance(String title, String description, UUID questionnaireUuid, UUID mapUuid, UUID creatorUuid, int numberOfGroups, int gameTime, boolean isShared, int questionTimeLimit) {
+    public Response<GameInstance> addGameInstance(String title, String description, UUID questionnaireUuid, UUID mapUuid, UUID creatorUuid, int numberOfGroups, int gameTime, boolean isShared, int questionTimeLimit, List<Object> startingPositions) {
         try {
             Questionnaire questionnaire = dalController.getQuestionnaire(questionnaireUuid);
             GameMap gameMap = dalController.getMap(mapUuid);
             User creator = dalController.getUser(creatorUuid);
             GameInstance gameInstance = new GameInstance(creator, questionnaire, gameMap, GameStatus.CREATED, numberOfGroups, title, description, GroupAssignmentProtocol.RANDOM,  gameTime, isShared, questionTimeLimit);
+            List<UUID> startingPositionsUuid = new LinkedList<>();
+            for (Object s : startingPositions){
+                UUID id = UUID.fromString((String) s);
+                startingPositionsUuid.add(id);
+            }
+            for (Tile tile : gameMap.getTiles()){
+                if (startingPositionsUuid.contains(tile.getId()))
+                    gameInstance.addStartingPosition(tile);
+            }
+
             gameInstanceRepository.save(gameInstance);
-//                GameInstance gameInstance = new GameInstance(creator,  questionnaire, map, GameStatus.CREATED, numberOfGroups, title, description, gameTime, isShared);
         return Response.ok(gameInstance);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -114,6 +124,7 @@ public class GameService {
             return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
+
 
     public Response<GameInstance> getGameInstance(UUID uuid){
         GameInstance gameInstance = dalController.getGameInstance(uuid);
@@ -434,6 +445,11 @@ public class GameService {
         questionList.add(question26);
 
         return questionList;
+    }
+
+    public GameService setDalController(DALController dalController) {
+        this.dalController = dalController;
+        return this;
     }
 
     private List<Tile> init_tiles() {

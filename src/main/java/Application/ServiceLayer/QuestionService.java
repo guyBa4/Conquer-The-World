@@ -24,6 +24,12 @@ public class QuestionService {
     private AnswerRepository answerRepository;
     private AssignedQuestionRepository assignedQuestionRepository;
     private GameInstanceRepository gameInstanceRepository;
+
+    public QuestionService setDalController(DALController dalController) {
+        this.dalController = dalController;
+        return this;
+    }
+
     private DALController dalController;
 
     public QuestionService() {
@@ -41,6 +47,8 @@ public class QuestionService {
         this.repositoryFactory = repositoryFactory;
         jsonToInstance = JsonToInstance.getInstance();
         this.dalController = DALController.getInstance();
+        if (dalController.needToInitiate())
+            dalController.init(repositoryFactory);
         setRepositories(repositoryFactory);
     }
 

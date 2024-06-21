@@ -83,4 +83,39 @@ public class Questionnaire {
         this.questions.add(assignedQuestion);
     }
 
+    public User getCreator() {
+        return creator;
+    }
+
+    public Questionnaire setCreator(User creator) {
+        this.creator = creator;
+        return this;
+    }
+
+    public Time getTimeCreated() {
+        return timeCreated;
+    }
+
+    public Questionnaire setTimeCreated(Time timeCreated) {
+        this.timeCreated = timeCreated;
+        return this;
+    }
+
+    public Time getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public Questionnaire setLastUpdated(Time lastUpdated) {
+        this.lastUpdated = lastUpdated;
+        return this;
+    }
+
+    public boolean isShared() {
+        return shared;
+    }
+
+    public Questionnaire setShared(boolean shared) {
+        this.shared = shared;
+        return this;
+    }
 }

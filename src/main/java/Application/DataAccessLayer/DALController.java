@@ -13,6 +13,7 @@ public class DALController {
     private static final Object instanceLock = new Object();
     private RepositoryFactory repositoryFactory;
 
+
     private DALController() {
     }
 
@@ -86,6 +87,17 @@ public class DALController {
     }
 
 
+    public RepositoryFactory getRepositoryFactory() {
+        return repositoryFactory;
+    }
+
+    public DALController setRepositoryFactory(RepositoryFactory repositoryFactory) {
+        this.repositoryFactory = repositoryFactory;
+        return this;
+    }
 
 
+    public boolean needToInitiate() {
+        return repositoryFactory == null;
+    }
 }
