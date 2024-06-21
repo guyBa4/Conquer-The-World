@@ -1,7 +1,9 @@
 package Application.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,7 +15,9 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.UUID) // or GenerationType.IDENTITY
     @Column(name = "id", nullable = false, unique = true)
     private UUID id;
+    
     private boolean multipleChoice;
+    
     @Column
     private String question;
 
@@ -22,6 +26,10 @@ public class Question {
 
     @Column
     private Integer difficulty;
+    
+    @Lob
+    @Column(name = "image", columnDefinition = "BLOB")
+    private byte[] image; // Holds image data
 
 //    @Transient
 //    private List<String> tags;
@@ -38,10 +46,12 @@ public class Question {
         this.answers = answers;
         this.difficulty = difficulty;
     }
-    public Question(boolean multipleChoice, String question, Integer difficulty) {
+    
+    public Question(boolean multipleChoice, String question, Integer difficulty, byte[] image) {
         this.multipleChoice = multipleChoice;
         this.question = question;
         this.difficulty = difficulty;
+        this.image = image;
     }
 
     public UUID getId() {
@@ -89,15 +99,7 @@ public class Question {
     public void setAnswers(List<Answer> answers) {
         this.answers = answers;
     }
-
-//    public String[] getIncorrectAnswers() {
-//        return incorrectAnswers;
-//    }
-//
-//    public void setIncorrectAnswers(String[] incorrectAnswers) {
-//        this.incorrectAnswers = incorrectAnswers;
-//    }
-//
+    
     public Integer getDifficulty() {
         return difficulty;
     }
@@ -105,8 +107,17 @@ public class Question {
     public void setDifficulty(Integer difficulty) {
         this.difficulty = difficulty;
     }
-
-//    public String[] getTags() {
+    
+    public byte[] getImage() {
+        return image;
+    }
+    
+    public Question setImage(byte[] image) {
+        this.image = image;
+        return this;
+    }
+    
+    //    public String[] getTags() {
 //        return tags;
 //    }
 //
