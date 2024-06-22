@@ -16,6 +16,7 @@ import Application.Events.EventRecipient;
 import Application.Events.EventType;
 import Application.Repositories.RepositoryFactory;
 import Application.Repositories.RunningGameInstanceRepository;
+import Application.Repositories.RunningTileRepository;
 import Application.Response;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -284,7 +285,8 @@ public class GameRunningService {
             TimerTask timerTask = new TimerTask() {
                 @Override
                 public void run() {
-                    if (tile.getActiveQuestion() != null && tile.getActiveQuestion().getId().equals(question.getId())) {
+                    RunningTile fetchedTile = dalController.getRunningTile(tile.getId());
+                    if (fetchedTile.getActiveQuestion() != null && tile.getActiveQuestion().getId().equals(question.getId())) {
                         LOG.info("Timeout reached for question " + question.getId());
                         tile.setActiveQuestion(null)
                                 .setAnsweringGroup(null)
@@ -294,8 +296,8 @@ public class GameRunningService {
                     }
                 }
             };
-//            question.setTimeout(questionTimeout);
-//            timer.schedule(timerTask, questionTimeout + (5 * 1000L)); // Added buffer time
+            question.setTimeout(questionTimeout);
+            timer.schedule(timerTask, questionTimeout + (5 * 1000L)); // Added buffer time
         }
     }
     
