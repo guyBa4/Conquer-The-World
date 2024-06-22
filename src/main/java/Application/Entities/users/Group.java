@@ -1,5 +1,8 @@
-package Application.Entities;
+package Application.Entities.users;
 
+import Application.Entities.games.RunningGameInstance;
+import Application.Entities.questions.AssignedQuestion;
+import Application.Entities.questions.QuestionsQueue;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;

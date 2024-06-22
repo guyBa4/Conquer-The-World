@@ -1,4 +1,4 @@
-package Application.Entities;
+package Application.Entities.games;
 
 import Application.Enums.TileType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

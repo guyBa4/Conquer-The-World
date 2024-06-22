@@ -1,7 +1,14 @@
 package Application.DataAccessLayer;
 
 import Application.APILayer.JsonToInstance;
-import Application.Entities.*;
+import Application.Entities.games.GameInstance;
+import Application.Entities.games.GameMap;
+import Application.Entities.games.RunningGameInstance;
+import Application.Entities.questions.AssignedQuestion;
+import Application.Entities.questions.Question;
+import Application.Entities.questions.Questionnaire;
+import Application.Entities.users.MobilePlayer;
+import Application.Entities.users.User;
 import Application.Repositories.RepositoryFactory;
 
 import java.util.Optional;

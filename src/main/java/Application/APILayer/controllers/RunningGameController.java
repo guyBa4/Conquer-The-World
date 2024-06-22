@@ -1,7 +1,10 @@
 package Application.APILayer.controllers;
 
 import Application.APILayer.TokenHandler;
-import Application.Entities.*;
+import Application.Entities.games.RunningGameInstance;
+import Application.Entities.games.RunningTile;
+import Application.Entities.questions.AssignedQuestion;
+import Application.Entities.users.MobilePlayer;
 import Application.Repositories.RepositoryFactory;
 import Application.Response;
 import Application.ServiceLayer.GameRunningService;

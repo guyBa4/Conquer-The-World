@@ -1,4 +1,4 @@
-package Application.Entities;
+package Application.Entities.questions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

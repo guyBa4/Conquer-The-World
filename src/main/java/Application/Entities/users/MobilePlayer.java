@@ -1,14 +1,13 @@
-package Application.Entities;
+package Application.Entities.users;
+import Application.Entities.games.RunningGameInstance;
 import Application.Events.EventRecipient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.UUID;
 
 @Entity

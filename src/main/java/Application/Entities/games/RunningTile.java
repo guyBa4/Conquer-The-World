@@ -1,6 +1,8 @@
-package Application.Entities;
+package Application.Entities.games;
 
-import Application.Enums.TileType;
+import Application.Entities.questions.AssignedQuestion;
+import Application.Entities.users.Group;
+import Application.Entities.users.MobilePlayer;
 import jakarta.persistence.*;
 
 import java.util.UUID;

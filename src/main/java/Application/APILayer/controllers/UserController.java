@@ -1,7 +1,7 @@
 package Application.APILayer.controllers;
 
 import Application.APILayer.TokenHandler;
-import Application.Entities.User;
+import Application.Entities.users.User;
 import Application.Repositories.RepositoryFactory;
 import Application.Response;
 import Application.ServiceLayer.UserService;
@@ -9,8 +9,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping("user")

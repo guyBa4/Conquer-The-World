@@ -1,5 +1,6 @@
-package Application.Entities;
+package Application.Entities.users;
 
+import Application.Entities.games.RunningGameInstance;
 import jakarta.persistence.*;
 
 import java.util.UUID;

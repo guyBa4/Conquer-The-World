@@ -1,6 +1,6 @@
 package Application.Repositories;
 
-import Application.Entities.Answer;
+import Application.Entities.questions.Answer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

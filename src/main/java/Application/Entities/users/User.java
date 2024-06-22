@@ -1,7 +1,6 @@
-package Application.Entities;
+package Application.Entities.users;
 import Application.Events.EventRecipient;
 import jakarta.persistence.*;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.UUID;
 

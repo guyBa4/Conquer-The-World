@@ -1,6 +1,10 @@
 package Application.APILayer;
 
-import Application.Entities.*;
+import Application.Entities.games.GameInstance;
+import Application.Entities.games.GameMap;
+import Application.Entities.games.Tile;
+import Application.Entities.questions.Question;
+import Application.Entities.users.User;
 import Application.Response;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;

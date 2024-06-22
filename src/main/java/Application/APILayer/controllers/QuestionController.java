@@ -1,7 +1,9 @@
 package Application.APILayer.controllers;
 
 import Application.APILayer.controllers.Requests.NewQuestion;
-import Application.Entities.*;
+import Application.Entities.questions.AssignedQuestion;
+import Application.Entities.questions.Question;
+import Application.Entities.questions.Questionnaire;
 import Application.Repositories.RepositoryFactory;
 import Application.Response;
 import Application.ServiceLayer.QuestionService;
@@ -13,8 +15,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 import javax.script.ScriptException;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;

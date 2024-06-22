@@ -1,7 +1,15 @@
 package Application.ServiceLayer;
 
 import Application.DataAccessLayer.DALController;
-import Application.Entities.*;
+import Application.Entities.games.GameInstance;
+import Application.Entities.games.GameStatistic;
+import Application.Entities.games.RunningGameInstance;
+import Application.Entities.games.RunningTile;
+import Application.Entities.questions.AssignedQuestion;
+import Application.Entities.questions.Questionnaire;
+import Application.Entities.users.Group;
+import Application.Entities.users.MobilePlayer;
+import Application.Entities.users.PlayerStatistic;
 import Application.Enums.GameStatus;
 import Application.Events.Event;
 import Application.Events.EventRecipient;
@@ -136,6 +144,8 @@ public class GameRunningService {
                 runningGameInstance.initStartingPositions();
                 initQuestionQueues(runningGameInstance);
                 runningGameInstance.setStatus(GameStatus.STARTED);
+                GameStatistic gameStatistic = new GameStatistic(runningGameInstance);
+                runningGameInstance.setGameStatistics(gameStatistic);
                 runningGameInstanceRepository.save(runningGameInstance);
                 LOG.info("Game with ID " + runningGameId.toString() + " started successfully");
                 return Response.ok(runningGameInstance);
@@ -302,6 +312,7 @@ public class GameRunningService {
             MobilePlayer player = runningGameInstance.getPlayer(userId);
             PlayerStatistic playerStatistic = repositoryFactory.playerStatisticRepository.findByRunningGameInstanceRunningIdAndMobilePlayerId(runningGameId, userId).get(0);
             playerStatistic.addQuestionsAnswered();
+            runningGameInstance.getGameStatistics().addQuestionsAnswered();
             if (player == null) {
                 LOG.severe("Did not find user with ID: " + userId.toString());
                 return Response.fail("Did not find user by ID");
@@ -313,6 +324,7 @@ public class GameRunningService {
                 publishEvent(EventType.TILES_UPDATE, tile, runningGameInstance);
                 publishEvent(EventType.SCORE_UPDATE, runningGameInstance.getGroupByNumber(player.getGroup().getNumber()), runningGameInstance);
                 playerStatistic.addCorrectAnswers();
+                runningGameInstance.getGameStatistics().addCorrectAnswers();
                 playerStatistic.addScore(tile.getTile().getDifficultyLevel());
             }
             runningGameInstanceRepository.save(runningGameInstance);

@@ -1,9 +1,9 @@
-package Application.Entities;
+package Application.Entities.games;
+import Application.Entities.questions.Questionnaire;
+import Application.Entities.users.User;
 import Application.Enums.GameStatus;
 import Application.Enums.GroupAssignmentProtocol;
 import Application.Response;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.json.JSONObject;
 

@@ -1,8 +1,15 @@
 package Application.ServiceLayer;
 import Application.APILayer.JsonToInstance;
 import Application.DataAccessLayer.DALController;
-import Application.Entities.*;
-import Application.Entities.GameMap;
+import Application.Entities.games.GameInstance;
+import Application.Entities.games.GameMap;
+import Application.Entities.games.RunningGameInstance;
+import Application.Entities.games.Tile;
+import Application.Entities.questions.Answer;
+import Application.Entities.questions.AssignedQuestion;
+import Application.Entities.questions.Question;
+import Application.Entities.questions.Questionnaire;
+import Application.Entities.users.User;
 import Application.Enums.GameStatus;
 import Application.Enums.GroupAssignmentProtocol;
 import Application.Repositories.*;

@@ -1,13 +1,10 @@
 package Application.APILayer.controllers;
 
 import Application.APILayer.TokenHandler;
-import Application.Entities.GameInstance;
-import Application.Entities.GameMap;
-import Application.Entities.Question;
-import Application.Entities.User;
+import Application.Entities.games.GameInstance;
+import Application.Entities.games.GameMap;
 import Application.Repositories.RepositoryFactory;
 import Application.Response;
-import Application.ServiceLayer.FlatGameInstance;
 import Application.ServiceLayer.GameRunningService;
 import Application.ServiceLayer.GameService;
 import org.json.JSONException;
@@ -15,14 +12,9 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 

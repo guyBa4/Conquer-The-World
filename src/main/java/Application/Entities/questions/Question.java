@@ -1,9 +1,7 @@
-package Application.Entities;
+package Application.Entities.questions;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 

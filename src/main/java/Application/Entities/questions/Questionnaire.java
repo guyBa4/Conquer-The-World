@@ -1,4 +1,5 @@
-package Application.Entities;
+package Application.Entities.questions;
+import Application.Entities.users.User;
 import jakarta.persistence.*;
 
 import java.sql.Time;

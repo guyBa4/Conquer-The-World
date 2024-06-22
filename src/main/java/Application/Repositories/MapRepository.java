@@ -1,7 +1,6 @@
 package Application.Repositories;
 
-import Application.Entities.GameMap;
-import Application.Response;
+import Application.Entities.games.GameMap;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package Application.Entities;
+package Application.Entities.games;
 import jakarta.persistence.*;
 
 import java.util.List;

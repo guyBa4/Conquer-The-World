@@ -1,16 +1,13 @@
 package Application.ServiceLayer;
 import Application.APILayer.JsonToInstance;
-import Application.Configurations.Configuration;
 import Application.DataAccessLayer.DALController;
-import Application.Entities.*;
-import Application.Repositories.QuestionRepository;
+import Application.Entities.users.User;
 import Application.Repositories.RepositoryFactory;
 import Application.Repositories.UserRepository;
 import Application.Response;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 

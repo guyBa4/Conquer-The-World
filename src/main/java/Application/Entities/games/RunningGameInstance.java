@@ -1,21 +1,21 @@
-package Application.Entities;
+package Application.Entities.games;
 
+import Application.Entities.questions.Answer;
+import Application.Entities.questions.AssignedQuestion;
+import Application.Entities.questions.Questionnaire;
+import Application.Entities.users.Group;
+import Application.Entities.users.MobilePlayer;
+import Application.Entities.users.PlayerStatistic;
 import Application.Enums.GameStatus;
 import Application.Enums.GroupAssignmentProtocol;
 
 import static java.util.logging.Logger.getLogger;
 
-import Application.Events.Event;
-import Application.Events.EventRecipient;
-import Application.Events.EventType;
 import Application.Repositories.AnswerRepository;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.Map;
 import java.util.logging.Logger;
 
 @Entity
@@ -47,9 +47,11 @@ public class RunningGameInstance {
     private List<RunningTile> tiles;
 
 
-
     @OneToMany(mappedBy = "runningGameInstance", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PlayerStatistic> playerStatistics;
+
+    @OneToOne(mappedBy = "runningGameInstance", cascade = CascadeType.ALL, orphanRemoval = true)
+    private GameStatistic gameStatistic;
 
 
     @Transient
@@ -321,5 +323,13 @@ public class RunningGameInstance {
                 return group;
         }
         return null;
+    }
+    public GameStatistic getGameStatistics() {
+        return gameStatistic;
+    }
+
+    public RunningGameInstance setGameStatistics(GameStatistic gameStatistic) {
+        this.gameStatistic = gameStatistic;
+        return this;
     }
 }

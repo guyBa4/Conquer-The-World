@@ -1,7 +1,6 @@
 package Application.Repositories;
 
-import Application.Entities.Questionnaire;
-import Application.Entities.RunningGameInstance;
+import Application.Entities.games.RunningGameInstance;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

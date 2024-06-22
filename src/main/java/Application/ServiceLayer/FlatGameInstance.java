@@ -1,6 +1,6 @@
 package Application.ServiceLayer;
 
-import Application.Entities.GameInstance;
+import Application.Entities.games.GameInstance;
 
 import java.util.UUID;
 

@@ -1,12 +1,9 @@
 package Application.Repositories;
 
-import Application.Entities.Answer;
-import Application.Entities.AssignedQuestion;
-import Application.Entities.MobilePlayer;
+import Application.Entities.questions.AssignedQuestion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.expression.spel.ast.Assign;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
