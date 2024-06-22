@@ -27,7 +27,6 @@ public class Question {
     @Column
     private Integer difficulty;
     
-    @Lob
     @Column(name = "image", columnDefinition = "BYTEA")
     private byte[] image; // Holds image data
 
