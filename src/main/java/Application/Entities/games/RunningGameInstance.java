@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 
+import static java.util.logging.Logger.getLogger;
+
 @Entity
 @Table(name = "running_game_instances")
 public class RunningGameInstance {
@@ -53,7 +55,6 @@ public class RunningGameInstance {
     @OneToOne(mappedBy = "runningGameInstance", cascade = CascadeType.ALL, orphanRemoval = true)
     private GameStatistic gameStatistic;
 
-
     @Transient
     private static Logger LOG = getLogger(RunningGameInstance.class.toString());
 
@@ -78,7 +79,7 @@ public class RunningGameInstance {
 
     private void initGroups() {
         this.groups = new LinkedList<>();
-        for (int i = 0; i<=this.gameInstance.getNumberOfGroups(); i++){
+        for (int i = 0; i<=this.gameInstance.getConfiguration().getNumberOfGroups(); i++){
             this.groups.add(new Group(i, this));
         }
     }
@@ -219,17 +220,7 @@ public class RunningGameInstance {
             throw new IllegalArgumentException("Failed to find answers for question " + questionId);
         }
         answers = answers.stream().filter(Answer::getCorrect).toList();
-        if (!answers.isEmpty() && answers.get(0) != null && answers.get(0).getAnswerText().equals(answer)) {
-            Group playerGroup = player.getGroup();
-            foundTile.setAnsweringPlayer(null)
-                    .setAnsweringGroup(null)
-                    .setControllingGroup(playerGroup)
-                    .setActiveQuestion(null);
-            playerGroup.addScore(foundTile.getTile().getDifficultyLevel());
-            return true;
-        }
-        foundTile.setAnsweringPlayer(null).setAnsweringGroup(null).setActiveQuestion(null);
-        return false;
+        return !answers.isEmpty() && answers.get(0) != null && answers.get(0).getAnswerText().equals(answer);
     }
 
     public MobilePlayer getPlayer(UUID userId) {
@@ -242,13 +233,13 @@ public class RunningGameInstance {
     }
 
     public void assignGroups() {
-        if (gameInstance.getGroupAssignmentProtocol().equals(GroupAssignmentProtocol.RANDOM)) {
+        if (gameInstance.getConfiguration().getGroupAssignmentProtocol().equals(GroupAssignmentProtocol.RANDOM)) {
             assignGroupsRandom();
         }
     }
 
     private void assignGroupsRandom() {
-        int numberOfGroups = gameInstance.getNumberOfGroups();
+        int numberOfGroups = gameInstance.getConfiguration().getNumberOfGroups();
         int groupToAssign = 0;
         List<Group> groupsToAssign = groups.stream().filter((group)-> group.getNumber()!=0).toList();
         for (MobilePlayer player : getMobilePlayers()) {
@@ -289,7 +280,7 @@ public class RunningGameInstance {
 
     public void initStartingPositions() {
         List<Tile> startingPositions = gameInstance.getStartingPositions();
-        if (startingPositions == null || startingPositions.isEmpty() || startingPositions.size() < gameInstance.getNumberOfGroups())
+        if (startingPositions == null || startingPositions.isEmpty() || startingPositions.size() < gameInstance.getConfiguration().getNumberOfGroups())
             throw new RuntimeException("Starting position initialization failed - starting positions either null or do not match number of groups");
         List<RunningTile> startingTiles = new ArrayList<>();
         List<RunningTile> nonstartingTiles = new ArrayList<>();

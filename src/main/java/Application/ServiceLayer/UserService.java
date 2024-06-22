@@ -13,9 +13,7 @@ import java.util.List;
 
 @Service
 public class UserService {
-    private static UserService instance = null;
     private static JsonToInstance jsonToInstance;
-    private static final Object instanceLock = new Object();
     private RepositoryFactory repositoryFactory;
     private UserRepository userRepository;
     private DALController dalController;
@@ -29,15 +27,6 @@ public class UserService {
         this.userRepository = userRepository;
         this.dalController = DALController.getInstance();
         this.eventService = eventService;
-    }
-    public UserService setDalController(DALController dalController) {
-        this.dalController = dalController;
-        return this;
-    }
-
-
-    private void setRepositories(RepositoryFactory repositoryFactory) {
-        this.userRepository = repositoryFactory.userRepository;
     }
 
     public Response<User> register(JSONObject jsonObject) {

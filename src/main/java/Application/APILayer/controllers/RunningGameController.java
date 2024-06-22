@@ -1,5 +1,6 @@
 package Application.APILayer.controllers;
 
+import Application.APILayer.Responses.ValidateAnswerResponse;
 import Application.APILayer.TokenHandler;
 import Application.Entities.games.RunningGameInstance;
 import Application.Entities.games.RunningTile;
@@ -141,7 +142,7 @@ public class RunningGameController {
     }
 
     @PostMapping(path = "/validate_answer")
-    public Response<Boolean> validateAnswer(@RequestBody String inputJson){
+    public Response<ValidateAnswerResponse> validateAnswer(@RequestBody String inputJson){
 //                                            ,@RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             JSONObject jsonObj = new JSONObject(inputJson);

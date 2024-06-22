@@ -55,7 +55,12 @@ public class GameController {
             boolean isShared = jsonObj.getBoolean("isShared");
             int questionTimeLimit = jsonObj.getInt("questionTimeLimit");
             List<Object> startingPositions = jsonObj.getJSONArray("startingPositions").toList();
-            return gameService.addGameInstance(title, description, questionnaireUuid, mapUuid,creatorUuid, groups, gameTime, isShared, questionTimeLimit, startingPositions);
+            boolean canReconquerTiles = jsonObj.optBoolean("canReconquerTiles", false);
+            boolean simultaneousConquering = jsonObj.optBoolean("simultaneousConquering", false);
+            boolean multipleQuestionsPerTile = jsonObj.optBoolean("multipleQuestionsPerTile", false);
+            return gameService.addGameInstance(title, description, questionnaireUuid, mapUuid,creatorUuid, groups,
+                    gameTime, isShared, questionTimeLimit, startingPositions, canReconquerTiles, simultaneousConquering,
+                    multipleQuestionsPerTile);
         } catch (IllegalArgumentException e) {
             LOG.warning(e.getMessage());
             return Response.fail(403, e.getMessage());

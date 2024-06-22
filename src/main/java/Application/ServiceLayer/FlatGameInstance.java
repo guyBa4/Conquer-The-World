@@ -46,12 +46,12 @@ public class FlatGameInstance {
         this.questionnaireId = gameInstance.getQuestionnaire().getId();
         this.mapId = gameInstance.getMap().getId();
         this.status = gameInstance.getStatus().toString();
-        this.numberOfGroups = gameInstance.getNumberOfGroups();
+        this.numberOfGroups = gameInstance.getConfiguration().getNumberOfGroups();
         this.name = gameInstance.getName();
         this.description = gameInstance.getDescription();
-        this.groupAssignmentProtocol = gameInstance.getGroupAssignmentProtocol().toString();
-        this.gameTime = gameInstance.getGameTime();
+        this.groupAssignmentProtocol = gameInstance.getConfiguration().getGroupAssignmentProtocol().toString();
+        this.gameTime = gameInstance.getConfiguration().getGameTime();
         this.shared = gameInstance.isShared();
-        this.questionTimeLimit = gameInstance.getQuestionTimeLimit();
+        this.questionTimeLimit = gameInstance.getConfiguration().getQuestionTimeLimit();
     }
 }

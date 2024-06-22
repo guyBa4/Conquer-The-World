@@ -16,7 +16,6 @@ public class RunningTile {
     @Column(name = "id", nullable = false, unique = true)
     private UUID id;
 
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "permanent_tile_id")
     private Tile tile;
@@ -36,6 +35,9 @@ public class RunningTile {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "answering_group_id")
     private Group answeringGroup;
+    
+    @Column(name = "numberOfCorrectAnswers")
+    private int numberOfCorrectAnswers;
 
 
     public RunningTile() {
@@ -100,4 +102,25 @@ public class RunningTile {
         return this;
     }
     
+    public int getNumberOfCorrectAnswers() {
+        return numberOfCorrectAnswers;
+    }
+    
+    public RunningTile setNumberOfCorrectAnswers(int numberOfCorrectAnswers) {
+        this.numberOfCorrectAnswers = numberOfCorrectAnswers;
+        return this;
+    }
+    
+    public int incrementNumberOfCorrectAnswers() {
+        return this.numberOfCorrectAnswers++;
+    }
+    
+    public boolean isAllQuestionsAnswered() {
+        return switch (tile.getDifficultyLevel()) {
+            case 5 -> numberOfCorrectAnswers == 3;
+            case 4, 3 -> numberOfCorrectAnswers == 2;
+            case 2, 1 -> numberOfCorrectAnswers == 1;
+            default -> true;
+        };
+    }
 }
