@@ -61,7 +61,7 @@ public class GameInstance {
     @Column(name = "shared")
     private boolean shared;
     
-    @OneToOne(mappedBy = "game_configurations")
+    @OneToOne(mappedBy = "gameInstance")
     private GameConfiguration configuration;
 
     public GameInstance(){
