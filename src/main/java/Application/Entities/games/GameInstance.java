@@ -54,45 +54,34 @@ public class GameInstance {
     @Column(name = "time_last_updated")
     private Date timeLastUpdated;
 
-    @Column(name = "number_of_groups")
-    private int numberOfGroups;
-
     @Column(name = "description")
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "group_assignment_protocol")
-    private GroupAssignmentProtocol groupAssignmentProtocol;
-
-    @Column(name = "game_time")
-    private int gameTime;
-
     @Column(name = "shared")
     private boolean shared;
-
-    @Column(name = "question_time_limit")
-    private int questionTimeLimit;
-
-
+    
+    @OneToOne(mappedBy = "game_configurations")
+    private GameConfiguration configuration;
 
     public GameInstance(){
     }
 
-    public GameInstance(User host, Questionnaire questionnaire, GameMap gameMap, GameStatus status, int numberOfGroups, String name, String description, GroupAssignmentProtocol groupAssignmentProtocol, int gameTime, boolean shared, int questionTimeLimit, List<Tile> startingPositions) {
+    public GameInstance(User host, Questionnaire questionnaire, GameMap gameMap, GameStatus status, int numberOfGroups,
+                        String name, String description, GroupAssignmentProtocol groupAssignmentProtocol, int gameTime,
+                        boolean shared, int questionTimeLimit, List<Tile> startingPositions, ) {
+        this.configuration = new GameConfiguration()
+                .setGameInstance(this)
+                .set
         this.host = host;
         this.questionnaire = questionnaire;
         this.gameMap = gameMap;
-        this.startingPositions =startingPositions;
+        this.startingPositions = startingPositions;
         this.status = status;
         this.timeCreated = new Time(new Date().getTime());
         this.timeLastUpdated = new Time(new Date().getTime());
-        this.numberOfGroups = numberOfGroups;
         this.name = name;
         this.description = description;
-        this.groupAssignmentProtocol = groupAssignmentProtocol;
-        this.gameTime = gameTime;
         this.shared = shared;
-        this.questionTimeLimit = questionTimeLimit;
     }
 
     public GameInstance(GameInstance original) {
