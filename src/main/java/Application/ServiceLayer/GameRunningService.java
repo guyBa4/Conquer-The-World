@@ -243,7 +243,6 @@ public class GameRunningService {
             else if (authorizationToken == null) {
                 LOG.warning("Received null auth token");
                 return Response.fail("Received null auth token");
-    
             }
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
             MobilePlayer player = getMobilePlayerByAuthToken(runningGameInstance, authorizationToken);
@@ -402,4 +401,17 @@ public class GameRunningService {
         return Response.ok(gameMap);
     }
 
+    public Response<GameStatistic> getGameStatistic(UUID id) {
+        try {
+            RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(id);
+            GameStatistic gameStatistic = runningGameInstance.getGameStatistics();
+            return Response.ok(gameStatistic);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.fail(403, e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
+        }
+    }
 }

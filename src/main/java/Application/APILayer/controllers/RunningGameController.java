@@ -2,6 +2,7 @@ package Application.APILayer.controllers;
 
 import Application.APILayer.Responses.ValidateAnswerResponse;
 import Application.APILayer.TokenHandler;
+import Application.Entities.games.GameStatistic;
 import Application.Entities.games.RunningGameInstance;
 import Application.Entities.games.RunningTile;
 import Application.Entities.questions.AssignedQuestion;
@@ -9,6 +10,7 @@ import Application.Entities.users.MobilePlayer;
 import Application.Repositories.RepositoryFactory;
 import Application.Response;
 import Application.ServiceLayer.GameRunningService;
+import Application.ServiceLayer.GameService;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -218,5 +220,17 @@ public class RunningGameController {
         }
     }
 
+    @GetMapping(path = "/get_game_statistic")
+    @ResponseBody
+    public Response<GameStatistic> getGameStatistic(@PathVariable(name= "running_id") String runningGameId, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
+            return gameRunningService.getGameStatistic(UUID.fromString(runningGameId));
+        } catch (IllegalArgumentException e) {
+            return Response.fail(403, e.getMessage());
+        } catch (JSONException e) {
+            return Response.fail(500, "Internal Server Error");
+        }
+    }
 
 }
