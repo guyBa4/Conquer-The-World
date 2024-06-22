@@ -296,8 +296,8 @@ public class GameRunningService {
                     }
                 }
             };
-            question.setTimeout(questionTimeout);
-            timer.schedule(timerTask, questionTimeout + (5 * 1000L)); // Added buffer time
+//            question.setTimeout(questionTimeout);
+//            timer.schedule(timerTask, questionTimeout + (5 * 1000L)); // Added buffer time
         }
     }
     
