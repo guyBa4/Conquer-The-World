@@ -43,7 +43,7 @@ public class GameController {
     @ResponseBody
     public Response<GameInstance> addGameInstance(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
-//            tokenHandler.verifyWebUserToken(authorizationHeader);
+            tokenHandler.verifyAnyToken(authorizationHeader);
             JSONObject jsonObj = new JSONObject(inputJson);
             String title = jsonObj.getString("title");
             String description = jsonObj.getString("description");
@@ -76,8 +76,9 @@ public class GameController {
 
     @GetMapping(path = "/get_all_games")
     @ResponseBody
-    public Response<List<GameInstance>> GetGamesInstances() {
+    public Response<List<GameInstance>> GetGamesInstances(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
             return gameService.getAllGameInstance();
         } catch (IllegalArgumentException e) {
             return Response.fail(403, e.getMessage());
@@ -88,8 +89,9 @@ public class GameController {
 
     @GetMapping(path = "/get_all_games_lean")
     @ResponseBody
-    public Response<List<Map<String, Object>>> getGamesInstancesLean() {
+    public Response<List<Map<String, Object>>> getGamesInstancesLean(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
             return gameService.getAllGameInstanceLean();
         } catch (IllegalArgumentException e) {
             return Response.fail(403, e.getMessage());
@@ -100,8 +102,9 @@ public class GameController {
 
     @GetMapping(path = "/get_game")
     @ResponseBody
-    public Response<GameInstance> getGamesInstance(@RequestParam UUID id) {
+    public Response<GameInstance> getGamesInstance(@RequestParam UUID id, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
             return gameService.getGameInstance(id);
         } catch (IllegalArgumentException e) {
             return Response.fail(403, e.getMessage());
@@ -114,8 +117,10 @@ public class GameController {
     @ResponseBody
     public Response<Page<GameMap>> getMaps(@RequestParam int page,
                                            @RequestParam int size,
-                                           @RequestParam(required = false) String name){
+                                           @RequestParam(required = false) String name,
+                                           @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader){
         try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
             return gameService.getMaps(page, size, name);
         } catch (IllegalArgumentException e) {
             return Response.fail(403, e.getMessage());
@@ -127,6 +132,7 @@ public class GameController {
     @DeleteMapping(path = "/delete_game")
     public Response<Boolean> deleteGame(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
             JSONObject jsonObj = new JSONObject(inputJson);
             LOG.info("Request received by delete_game endpoint:\n" + jsonObj);
             UUID id = UUID.fromString(jsonObj.getString("id"));
@@ -138,5 +144,4 @@ public class GameController {
             return Response.fail(500, "Internal Server Error");
         }
     }
-
 }

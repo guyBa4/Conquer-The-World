@@ -1,5 +1,6 @@
 package Application.APILayer.controllers;
 
+import Application.APILayer.TokenHandler;
 import Application.APILayer.controllers.Requests.NewQuestion;
 import Application.Entities.questions.AssignedQuestion;
 import Application.Entities.questions.Question;
@@ -25,19 +26,22 @@ import static java.util.logging.Logger.getLogger;
 @RequestMapping("question")
 public class QuestionController {
     QuestionService questionService;
+    TokenHandler tokenHandler;
     private static Logger LOG;
 
     @Autowired
     public QuestionController(RepositoryFactory repositoryFactory) throws ScriptException, ExecutionException, InterruptedException {
         this.questionService = QuestionService.getInstance();
         questionService.init(repositoryFactory);
+        tokenHandler = TokenHandler.getInstance();
         LOG = getLogger(this.getClass().toString());
     }
 
     @PostMapping(path = "/add_question")
     @ResponseBody
-    public Response<Question> addQuestion(@RequestBody() NewQuestion newQuestion) {
+    public Response<Question> addQuestion(@RequestBody() NewQuestion newQuestion, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
             if (newQuestion != null)
                 return questionService.addQuestion(newQuestion);
             return Response.fail(400, "Invalid request");
@@ -48,8 +52,9 @@ public class QuestionController {
 
     @PostMapping(path = "/add_questionnaire")
     @ResponseBody
-    public Response<Questionnaire> addQuestionnaire(@RequestBody String inputJson) {
+    public Response<Questionnaire> addQuestionnaire(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
             JSONObject jsonObj = new JSONObject(inputJson);
             String title = jsonObj.getString("title");
             String creatorId = jsonObj.getString("creatorId");
@@ -63,8 +68,10 @@ public class QuestionController {
 
     @GetMapping(path = "/get_questions/questionnaireId={questionnaireId}")
     @ResponseBody
-    public Response<List<AssignedQuestion>> getQuestionsByQuestionnaireId(@PathVariable (name= "questionnaireId") UUID questionnaireId) {
+    public Response<List<AssignedQuestion>> getQuestionsByQuestionnaireId(@PathVariable (name= "questionnaireId") UUID questionnaireId,
+                                                                          @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
             return questionService.getQuestionsByQuestionnaireId(questionnaireId);
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
@@ -75,10 +82,12 @@ public class QuestionController {
     public Response<Page<Question>> getQuestions(@RequestParam int page,
                                                  @RequestParam int size,
                                                  @RequestParam(required = false) Integer difficulty,
-                                                 @RequestParam(required = false) String content){
+                                                 @RequestParam(required = false) String content,
+                                                 @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader){
 //            ,                                                 @RequestParam(name = "tags", required = false) List<String> tags) {
 
         try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
             List<String> tags = new LinkedList<>();
             return questionService.filterQuestions(page, size, content, tags, difficulty);
         } catch (JSONException e) {
@@ -90,8 +99,10 @@ public class QuestionController {
     public Response<Page<Questionnaire>> getQuestionnaires(@RequestParam int page,
                                                            @RequestParam int size,
                                                            @RequestParam(required = false) String name,
-                                                           @RequestParam(name = "creator_id", required = false) UUID creatorId) {
+                                                           @RequestParam(name = "creator_id", required = false) UUID creatorId,
+                                                           @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
             List<String> tags = new ArrayList<>();
             return questionService.filterQuestionnaires(page, size, name, tags, creatorId);
         } catch (JSONException e) {
@@ -102,6 +113,7 @@ public class QuestionController {
     @DeleteMapping(path = "/delete_question")
     public Response<Boolean> deleteQuestion(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
             JSONObject jsonObj = new JSONObject(inputJson);
             LOG.info("Request received by delete_question endpoint:\n" + jsonObj);
             UUID id = UUID.fromString(jsonObj.getString("id"));
@@ -116,6 +128,7 @@ public class QuestionController {
     @DeleteMapping(path = "/delete_questionnaire")
     public Response<Boolean> deleteQuestionnaire(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
             JSONObject jsonObj = new JSONObject(inputJson);
             LOG.info("Request received by delete_questionnaire endpoint:\n" + jsonObj);
             UUID id = UUID.fromString(jsonObj.getString("id"));
