@@ -145,5 +145,4 @@ public class GameController {
             return Response.fail(500, "Internal Server Error");
         }
     }
-
 }

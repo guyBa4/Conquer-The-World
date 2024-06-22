@@ -323,4 +323,6 @@ public class RunningGameInstance {
         this.gameStatistic = gameStatistic;
         return this;
     }
+
+
 }

@@ -5,6 +5,8 @@ import Application.Entities.users.User;
 import Application.Enums.GameStatus;
 import Application.Enums.GroupAssignmentProtocol;
 import Application.Response;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.json.JSONObject;
 
@@ -29,10 +31,12 @@ public class GameInstance {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "questionnaire_id", nullable = true) // Allowing null values
+    @JsonIgnore
     private Questionnaire questionnaire;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "map_id")
+    @JsonIgnore
     private GameMap gameMap;
 
     @ManyToMany
@@ -41,6 +45,7 @@ public class GameInstance {
             joinColumns = @JoinColumn(name = "game_instance_id"),
             inverseJoinColumns = @JoinColumn(name = "tile_id")
     )
+    @JsonIgnore
     private List<Tile> startingPositions;
 
     @Enumerated(EnumType.STRING)
@@ -241,4 +246,46 @@ public class GameInstance {
         this.configuration = configuration;
         return this;
     }
+
+    @JsonProperty("questionnaire")
+    public Map<String, Object> getQuestionnaireSummary() {
+        Questionnaire questionnaire = this.getQuestionnaire();
+        if (questionnaire != null) {
+            Map<String, Object> summary = new HashMap<>();
+            summary.put("id", questionnaire.getId());
+            summary.put("name", questionnaire.getName());
+            return summary;
+        } else {
+            return null;
+        }
+    }
+    @JsonProperty("map")
+    public Map<String, Object> getGameMapSummary() {
+        GameMap gameMap = this.getGameMap();
+        if (gameMap != null) {
+            Map<String, Object> summary = new HashMap<>();
+            summary.put("id", gameMap.getId());
+            summary.put("name", gameMap.getName());
+            return summary;
+        } else {
+            return null;
+        }
+    }
+    @JsonProperty("startingPositions")
+    public List<Map<String, Object>> getStartingPositionsSummary() {
+        List<Tile> startingPositions = this.getStartingPositions();
+        if (gameMap != null) {
+            List<Map<String, Object>> summary = new LinkedList<>();
+            for (Tile tile : startingPositions){
+                Map<String, Object> leanTile = new HashMap<>();
+                leanTile.put("id", tile.getId());
+                leanTile.put("name", tile.getName());
+                summary.add(leanTile);
+            }
+            return summary;
+        } else {
+            return null;
+        }
+    }
+
 }
