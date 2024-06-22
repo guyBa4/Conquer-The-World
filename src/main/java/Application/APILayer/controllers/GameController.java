@@ -98,7 +98,6 @@ public class GameController {
         }
     }
 
-
     @GetMapping(path = "/get_game")
     @ResponseBody
     public Response<GameInstance> getGamesInstance(@RequestParam UUID id) {
