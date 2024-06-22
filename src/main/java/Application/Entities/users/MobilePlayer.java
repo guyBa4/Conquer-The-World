@@ -100,4 +100,13 @@ public class MobilePlayer implements EventRecipient {
         MobilePlayer that = (MobilePlayer) o;
         return id.equals(that.id);
     }
+
+    public List<PlayerStatistic> getPlayerStatistics() {
+        return playerStatistics;
+    }
+
+    public MobilePlayer setPlayerStatistics(List<PlayerStatistic> playerStatistics) {
+        this.playerStatistics = playerStatistics;
+        return this;
+    }
 }

@@ -7,6 +7,7 @@ import Application.Entities.games.RunningGameInstance;
 import Application.Entities.games.RunningTile;
 import Application.Entities.questions.AssignedQuestion;
 import Application.Entities.users.MobilePlayer;
+import Application.Entities.users.PlayerStatistic;
 import Application.Repositories.RepositoryFactory;
 import Application.Response;
 import Application.ServiceLayer.GameRunningService;
@@ -220,7 +221,7 @@ public class RunningGameController {
         }
     }
 
-    @GetMapping(path = "/get_game_statistic")
+    @GetMapping(path = "/get_game_statistic/{running_id}")
     @ResponseBody
     public Response<GameStatistic> getGameStatistic(@PathVariable(name= "running_id") String runningGameId, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
@@ -233,4 +234,43 @@ public class RunningGameController {
         }
     }
 
+    @GetMapping(path = "/get_all_game_statistics")
+    @ResponseBody
+    public Response<List<GameStatistic>> getAllGameStatistics(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
+            return gameRunningService.getAllGameStatistics();
+        } catch (IllegalArgumentException e) {
+            return Response.fail(403, e.getMessage());
+        } catch (JSONException e) {
+            return Response.fail(500, "Internal Server Error");
+        }
+    }
+
+
+    @GetMapping(path = "/get_player_statistic/{running_id}/{player_id}")
+    @ResponseBody
+    public Response<PlayerStatistic> getPlayerStatistic(@PathVariable(name= "player_id") String playerId,@PathVariable(name= "running_id") String runningId, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
+            return gameRunningService.getPlayerStatistic(UUID.fromString(playerId), UUID.fromString(runningId));
+        } catch (IllegalArgumentException e) {
+            return Response.fail(403, e.getMessage());
+        } catch (JSONException e) {
+            return Response.fail(500, "Internal Server Error");
+        }
+    }
+
+    @GetMapping(path = "/get_all_player_statistics/{running_id}")
+    @ResponseBody
+    public Response<List<PlayerStatistic>> getAllPlayersStatistics(@PathVariable(name= "running_id") String runningGameId, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
+            return gameRunningService.getAllPlayerStatistics(UUID.fromString(runningGameId));
+        } catch (IllegalArgumentException e) {
+            return Response.fail(403, e.getMessage());
+        } catch (JSONException e) {
+            return Response.fail(500, "Internal Server Error");
+        }
+    }
 }

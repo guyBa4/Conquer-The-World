@@ -415,4 +415,43 @@ public class GameRunningService {
             return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
+
+    public Response<List<GameStatistic>> getAllGameStatistics() {
+        try {
+            List<GameStatistic> gameStatistics = repositoryFactory.gameStatisticRepository.findAll();
+            return Response.ok(gameStatistics);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.fail(403, e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
+        }
+    }
+
+    public Response<List<PlayerStatistic>> getAllPlayerStatistics(UUID running_game_id) {
+        try {
+            List<PlayerStatistic> playerStatistics = repositoryFactory.playerStatisticRepository.findByRunningGameInstanceRunningId(running_game_id);
+            return Response.ok(playerStatistics);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.fail(403, e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
+        }
+    }
+
+    public Response<PlayerStatistic> getPlayerStatistic(UUID playerId, UUID runningId) {
+        try {
+            PlayerStatistic playerStatistic = repositoryFactory.playerStatisticRepository.findByRunningGameInstanceRunningIdAndMobilePlayerId(runningId, playerId).get(0);
+            return Response.ok(playerStatistic);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.fail(403, e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
+        }
+    }
 }

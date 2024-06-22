@@ -17,6 +17,7 @@ public class RepositoryFactory {
     public final AnswerRepository answerRepository;
     public final AssignedQuestionRepository assignedQuestionRepository;
     public final PlayerStatisticRepository playerStatisticRepository;
+    public final GameStatisticRepository gameStatisticRepository;
 
 
     @Autowired
@@ -29,7 +30,7 @@ public class RepositoryFactory {
                              MobilePlayerRepository mobilePlayerRepository,
                              AnswerRepository answerRepository,
                              AssignedQuestionRepository assignedQuestionRepository,
-                             PlayerStatisticRepository playerStatisticRepository){
+                             PlayerStatisticRepository playerStatisticRepository, GameStatisticRepository gameStatisticRepository){
         this.gameInstanceRepository = gameInstanceRepository;
         this.userRepository = userRepository;
         this.mapRepository = mapRepository;
@@ -40,6 +41,7 @@ public class RepositoryFactory {
         this.answerRepository = answerRepository;
         this.assignedQuestionRepository = assignedQuestionRepository;
         this.playerStatisticRepository = playerStatisticRepository;
+        this.gameStatisticRepository = gameStatisticRepository;
     }
 }
 

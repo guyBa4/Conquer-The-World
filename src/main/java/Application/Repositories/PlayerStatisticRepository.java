@@ -9,5 +9,6 @@ import java.util.UUID;
 @Repository
 public interface PlayerStatisticRepository extends JpaRepository<PlayerStatistic, UUID>{
     List<PlayerStatistic> findByRunningGameInstanceRunningIdAndMobilePlayerId(UUID runningGameId, UUID userId);
+    List<PlayerStatistic> findByRunningGameInstanceRunningId(UUID runningGameId);
 }
 

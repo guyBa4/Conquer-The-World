@@ -8,6 +8,7 @@ import Application.Entities.questions.AssignedQuestion;
 import Application.Entities.questions.Question;
 import Application.Entities.questions.Questionnaire;
 import Application.Entities.users.MobilePlayer;
+import Application.Entities.users.PlayerStatistic;
 import Application.Entities.users.User;
 import Application.Repositories.RepositoryFactory;
 
@@ -98,6 +99,14 @@ public class DALController {
         if (optional.isEmpty())
             throw new IllegalArgumentException("there is no Map with this UUID : " + uuid);
         GameMap object = optional.get();
+        return object;
+    }
+
+    public PlayerStatistic getPlayerStatistic(UUID uuid){
+        Optional<PlayerStatistic> optional = repositoryFactory.playerStatisticRepository.findById(uuid);
+        if (optional.isEmpty())
+            throw new IllegalArgumentException("there is no PlayerStatistic with this UUID : " + uuid);
+        PlayerStatistic object = optional.get();
         return object;
     }
 
