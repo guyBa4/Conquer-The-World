@@ -269,10 +269,10 @@ public class GameRunningService {
             
             return Response.ok(question);
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             return Response.fail(403, e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
