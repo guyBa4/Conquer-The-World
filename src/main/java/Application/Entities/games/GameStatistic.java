@@ -1,5 +1,6 @@
 package Application.Entities.games;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.sql.Time;
@@ -30,6 +31,7 @@ public class GameStatistic {
 
     @OneToOne
     @JoinColumn(name = "running_game_instance_id", nullable = false)
+    @JsonIgnore
     private RunningGameInstance runningGameInstance;
 
     public GameStatistic() {
@@ -37,7 +39,8 @@ public class GameStatistic {
 
     public GameStatistic(RunningGameInstance runningGameInstance) {
         this.runningGameInstance = runningGameInstance;
-        this.timeStarted = new Time(new Date().getTime());;
+        this.timeStarted = new Time(new Date().getTime());
+        this.timeEnded = timeStarted;
     }
 
     public UUID getId() {
