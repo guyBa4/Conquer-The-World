@@ -327,6 +327,7 @@ public class GameRunningService {
                 Group playerGroup = player.getGroup();
 
                 playerStatistic.addCorrectAnswers();
+                runningGameInstance.getGameStatistics().addQuestionsAnswered();
                 
                 if (runningGameInstance.getGameInstance().getConfiguration().getMultipleQuestionsPerTile()) {
                     tile.incrementNumberOfCorrectAnswers();
