@@ -1,5 +1,6 @@
 package Application.ServiceLayer;
 
+import Application.APILayer.Responses.ValidateAnswerResponse;
 import Application.DataAccessLayer.DALController;
 import Application.Entities.games.GameInstance;
 import Application.Entities.games.GameStatistic;
@@ -280,7 +281,7 @@ public class GameRunningService {
     
     private void setQuestionTimeout(AssignedQuestion question, RunningGameInstance runningGameInstance, UUID runningTileId) {
         GameInstance gameInstance = runningGameInstance.getGameInstance();
-        long questionTimeout = gameInstance.getQuestionTimeLimit() * 1000L; // Question timeout in milliseconds
+        long questionTimeout = gameInstance.getConfiguration().getQuestionTimeLimit() * 1000L; // Question timeout in milliseconds
         RunningTile tile = runningGameInstance.getTileById(runningTileId);
         if (questionTimeout > 0) {
             Timer timer = new Timer();
@@ -292,11 +293,12 @@ public class GameRunningService {
                         tile.setActiveQuestion(null)
                                 .setAnsweringGroup(null)
                                 .setAnsweringPlayer(null);
+                        runningGameInstanceRepository.save(runningGameInstance);
                     }
                 }
             };
             question.setTimeout(questionTimeout);
-            timer.schedule(timerTask, questionTimeout);
+            timer.schedule(timerTask, questionTimeout + (5 * 1000L)); // Added buffer time
         }
     }
     
@@ -306,7 +308,7 @@ public class GameRunningService {
         return null;
     }
     
-    public Response<Boolean> checkAnswer(UUID runningGameId, UUID tileId, UUID userId, UUID questionId, String answer) {
+    public Response<ValidateAnswerResponse> checkAnswer(UUID runningGameId, UUID tileId, UUID userId, UUID questionId, String answer) {
         try {
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
             MobilePlayer player = runningGameInstance.getPlayer(userId);
@@ -317,18 +319,35 @@ public class GameRunningService {
                 LOG.severe("Did not find user with ID: " + userId.toString());
                 return Response.fail("Did not find user by ID");
             }
-
-            boolean isCorrect = runningGameInstance.checkAnswer(tileId, player, questionId, answer, repositoryFactory.answerRepository);
-            if (isCorrect) {
-                RunningTile tile = runningGameInstance.getTileById(tileId);
-                publishEvent(EventType.TILES_UPDATE, tile, runningGameInstance);
-                publishEvent(EventType.SCORE_UPDATE, runningGameInstance.getGroupByNumber(player.getGroup().getNumber()), runningGameInstance);
+            ValidateAnswerResponse res = new ValidateAnswerResponse();
+            res.setCorrect(runningGameInstance.checkAnswer(tileId, player, questionId, answer, repositoryFactory.answerRepository));
+            RunningTile tile = runningGameInstance.getTileById(tileId);
+    
+            if (res.isCorrect()) {
+                Group playerGroup = player.getGroup();
+                
                 playerStatistic.addCorrectAnswers();
-                runningGameInstance.getGameStatistics().addCorrectAnswers();
-                playerStatistic.addScore(tile.getTile().getDifficultyLevel());
+                
+                if (runningGameInstance.getGameInstance().getConfiguration().getMultipleQuestionsPerTile()) {
+                    tile.incrementNumberOfCorrectAnswers();
+                    if (!tile.isAllQuestionsAnswered()) {
+                        Response<AssignedQuestion> questionResponse = getQuestion(tileId, player.getGroup().getNumber(), runningGameId, userId);
+                        if (questionResponse.isSuccessful()) {
+                            AssignedQuestion question = questionResponse.getValue();
+                            tile.setActiveQuestion(question);
+                            res.setNextQuestion(question);
+                            publishEvent(EventType.TILES_UPDATE, tile, runningGameInstance);
+                        }
+                    } else setTileConquered(tile, playerGroup, runningGameInstance, playerStatistic);
+                } else setTileConquered(tile, playerGroup, runningGameInstance, playerStatistic);
+            } else {
+                tile.setAnsweringPlayer(null)
+                        .setAnsweringGroup(null)
+                        .setActiveQuestion(null)
+                        .setNumberOfCorrectAnswers(0);
             }
             runningGameInstanceRepository.save(runningGameInstance);
-            return Response.ok(isCorrect);
+            return Response.ok(res);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.fail(403, e.getMessage());
@@ -338,6 +357,19 @@ public class GameRunningService {
         }
     }
 
+    private void setTileConquered(RunningTile tile, Group group, RunningGameInstance runningGameInstance, PlayerStatistic playerStatistic) {
+        tile.setAnsweringPlayer(null)
+                .setAnsweringGroup(null)
+                .setControllingGroup(group)
+                .setActiveQuestion(null)
+                .setNumberOfCorrectAnswers(0);
+        group.addScore(tile.getTile().getDifficultyLevel());
+        publishEvent(EventType.TILES_UPDATE, tile, runningGameInstance);
+        publishEvent(EventType.SCORE_UPDATE, group, runningGameInstance);
+        playerStatistic.addScore(tile.getTile().getDifficultyLevel());
+    }
+    
+    
     public Response<Boolean> endRunningGame(UUID runningGameId) {
         try {
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);

@@ -1,4 +1,5 @@
 package Application.Entities.games;
+import Application.Entities.games.GameConfiguration;
 import Application.Entities.questions.Questionnaire;
 import Application.Entities.users.User;
 import Application.Enums.GameStatus;
@@ -68,10 +69,17 @@ public class GameInstance {
 
     public GameInstance(User host, Questionnaire questionnaire, GameMap gameMap, GameStatus status, int numberOfGroups,
                         String name, String description, GroupAssignmentProtocol groupAssignmentProtocol, int gameTime,
-                        boolean shared, int questionTimeLimit, List<Tile> startingPositions, ) {
+                        boolean shared, int questionTimeLimit, List<Tile> startingPositions, boolean canReconquerTiles,
+                        boolean simultaneousConquering, boolean multipleQuestionPerTile) {
         this.configuration = new GameConfiguration()
                 .setGameInstance(this)
-                .set
+                .setQuestionTimeLimit(questionTimeLimit)
+                .setGameTime(gameTime)
+                .setGroupAssignmentProtocol(groupAssignmentProtocol)
+                .setNumberOfGroups(numberOfGroups)
+                .setCanReconquerTiles(canReconquerTiles)
+                .setMultipleQuestionsPerTile(multipleQuestionPerTile)
+                .setSimultaneousConquering(simultaneousConquering);
         this.host = host;
         this.questionnaire = questionnaire;
         this.gameMap = gameMap;
@@ -85,23 +93,33 @@ public class GameInstance {
     }
 
     public GameInstance(GameInstance original) {
-//        this.id = original.id;
+        this.configuration = original.configuration;
         this.host = original.host;
         this.questionnaire = original.questionnaire;
         this.gameMap = original.gameMap;
         this.status = original.status;
         this.timeCreated = original.timeCreated;
         this.timeLastUpdated = original.timeLastUpdated;
-        this.numberOfGroups = original.numberOfGroups;
         this.name = original.name;
         this.description = original.description;
-        this.groupAssignmentProtocol = original.groupAssignmentProtocol;
-        this.gameTime = original.gameTime;
         this.shared = original.shared;
-        this.questionTimeLimit = original.questionTimeLimit;
+        this.startingPositions = original.startingPositions;
     }
 
-    public GameInstance(User creator, Questionnaire questionnaire, GameMap gameMap, GameStatus created, int numberOfGroups, String title, String description, GroupAssignmentProtocol groupAssignmentProtocol, int gameTime, boolean shared, int questionTimeLimit) {
+    public GameInstance(User creator, Questionnaire questionnaire, GameMap gameMap, GameStatus created,
+                        int numberOfGroups, String title, String description,
+                        GroupAssignmentProtocol groupAssignmentProtocol, int gameTime, boolean shared,
+                        int questionTimeLimit, boolean canReconquerTiles,
+                        boolean simultaneousConquering, boolean multipleQuestionPerTile) {
+        this.configuration = new GameConfiguration()
+                .setGameInstance(this)
+                .setQuestionTimeLimit(questionTimeLimit)
+                .setGameTime(gameTime)
+                .setGroupAssignmentProtocol(groupAssignmentProtocol)
+                .setNumberOfGroups(numberOfGroups)
+                .setCanReconquerTiles(canReconquerTiles)
+                .setMultipleQuestionsPerTile(multipleQuestionPerTile)
+                .setSimultaneousConquering(simultaneousConquering);
         this.host = creator;
         this.questionnaire = questionnaire;
         this.gameMap = gameMap;
@@ -109,28 +127,9 @@ public class GameInstance {
         this.status = created;
         this.timeCreated = new Time(new Date().getTime());
         this.timeLastUpdated = new Time(new Date().getTime());
-        this.numberOfGroups = numberOfGroups;
         this.name = title;
         this.description = description;
-        this.groupAssignmentProtocol = groupAssignmentProtocol;
-        this.gameTime = gameTime;
         this.shared = shared;
-        this.questionTimeLimit = questionTimeLimit;
-    }
-
-
-    public static Response<GameInstance> fromJson(JSONObject jsonObject){
-        GameInstance gameInstance = new GameInstance();
-        gameInstance.host = new User().setId(UUID.fromString(jsonObject.getString("host")));
-        gameInstance.status = GameStatus.valueOf(jsonObject.getString("status"));
-        gameInstance.numberOfGroups = jsonObject.getInt("numberOfGroups");
-        gameInstance.name = jsonObject.getString("name");
-        gameInstance.description = jsonObject.getString("description");
-        gameInstance.groupAssignmentProtocol = GroupAssignmentProtocol.valueOf(jsonObject.getString("groupAssignmentProtocol"));
-        gameInstance.gameTime = jsonObject.getInt("gameTime");
-        gameInstance.shared = jsonObject.getBoolean("shared");
-        gameInstance.questionTimeLimit = jsonObject.getInt("questionTimeLimit");
-        return Response.ok(gameInstance);
     }
 
     public UUID getId() {
@@ -173,15 +172,6 @@ public class GameInstance {
         this.status = status;
     }
 
-
-    public int getNumberOfGroups() {
-        return numberOfGroups;
-    }
-
-    public void setNumberOfGroups(int numberOfGroups) {
-        this.numberOfGroups = numberOfGroups;
-    }
-
     public String getName() {
         return name;
     }
@@ -198,36 +188,12 @@ public class GameInstance {
         this.description = description;
     }
 
-    public GroupAssignmentProtocol getGroupAssignmentProtocol() {
-        return groupAssignmentProtocol;
-    }
-
-    public void setGroupAssignmentProtocol(GroupAssignmentProtocol groupAssignmentProtocol) {
-        this.groupAssignmentProtocol = groupAssignmentProtocol;
-    }
-
-    public int getGameTime() {
-        return gameTime;
-    }
-
-    public void setGameTime(int gameTime) {
-        this.gameTime = gameTime;
-    }
-
     public boolean isShared() {
         return shared;
     }
 
     public void setShared(boolean shared) {
         this.shared = shared;
-    }
-
-    public int getQuestionTimeLimit() {
-        return questionTimeLimit;
-    }
-
-    public void setQuestionTimeLimit(int questionTimeLimit) {
-        this.questionTimeLimit = questionTimeLimit;
     }
 
     public List<Tile> getStartingPositions() {
@@ -256,5 +222,23 @@ public class GameInstance {
 
     public void addStartingPosition(Tile tile) {
         this.startingPositions.add(tile);
+    }
+    
+    public GameMap getGameMap() {
+        return gameMap;
+    }
+    
+    public GameInstance setGameMap(GameMap gameMap) {
+        this.gameMap = gameMap;
+        return this;
+    }
+    
+    public GameConfiguration getConfiguration() {
+        return configuration;
+    }
+    
+    public GameInstance setConfiguration(GameConfiguration configuration) {
+        this.configuration = configuration;
+        return this;
     }
 }

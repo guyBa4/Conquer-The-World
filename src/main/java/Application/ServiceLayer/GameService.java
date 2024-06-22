@@ -105,12 +105,18 @@ public class GameService {
     }
 
 
-    public Response<GameInstance> addGameInstance(String title, String description, UUID questionnaireUuid, UUID mapUuid, UUID creatorUuid, int numberOfGroups, int gameTime, boolean isShared, int questionTimeLimit, List<Object> startingPositions) {
+    public Response<GameInstance> addGameInstance(String title, String description, UUID questionnaireUuid, UUID mapUuid,
+                                                  UUID creatorUuid, int numberOfGroups, int gameTime, boolean isShared,
+                                                  int questionTimeLimit, List<Object> startingPositions,
+                                                  boolean canReconquerTiles, boolean simultaneousConquering,
+                                                  boolean multipleQuestionPerTile) {
         try {
             Questionnaire questionnaire = dalController.getQuestionnaire(questionnaireUuid);
             GameMap gameMap = dalController.getMap(mapUuid);
             User creator = dalController.getUser(creatorUuid);
-            GameInstance gameInstance = new GameInstance(creator, questionnaire, gameMap, GameStatus.CREATED, numberOfGroups, title, description, GroupAssignmentProtocol.RANDOM,  gameTime, isShared, questionTimeLimit);
+            GameInstance gameInstance = new GameInstance(creator, questionnaire, gameMap, GameStatus.CREATED,
+                    numberOfGroups, title, description, GroupAssignmentProtocol.RANDOM,  gameTime,
+                    isShared, questionTimeLimit, canReconquerTiles, simultaneousConquering, multipleQuestionPerTile);
             List<UUID> startingPositionsUuid = new LinkedList<>();
             for (Object o : startingPositions){
                 String s = (String) o;

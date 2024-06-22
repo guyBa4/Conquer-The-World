@@ -1,6 +1,7 @@
-package Application.Entities;
+package Application.Entities.games;
 
 import Application.Enums.GroupAssignmentProtocol;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.UUID;
@@ -14,22 +15,21 @@ public class GameConfiguration {
     @Column(name = "id", nullable = false, unique = true)
     private UUID id;
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "game_instance_id", referencedColumnName = "id")
     private GameInstance gameInstance;
 
-    @Column(name = "can_reconquer_tiles")
-    private boolean canReconquerTiles;              // If true, groups can conquer each other's tiles
+    @Column(name = "can_reconquer_tiles")           // If true, groups can conquer each other's tiles
+    private boolean canReconquerTiles;
 
-    @Column(name = "multiple_questions_per_tile")
-    private boolean multipleQuestionsPerTile;       // If true then tiles with difficulty 1-2 will have to be answered
-                                                    // with one question, tiles with difficulty 3-4 will have to be
+    @Column(name = "multiple_questions_per_tile")   // If true then tiles with difficulty 1-2 will have to be answered
+    private boolean multipleQuestionsPerTile;       // with one question, tiles with difficulty 3-4 will have to be
                                                     // answered with 2 questions and tiles with difficulty 5 will have
                                                     // to be answered with 3 questions
-
-    @Column(name = "simultaneous_conquering")
-    private boolean simultaneousConquering;         // If true, players from different groups will be able to attack tiles
-                                                    // at the same time
+    
+    @Column(name = "simultaneous_conquering")       // If true, players from different groups will be able to attack tiles
+    private boolean simultaneousConquering;         // at the same time
     
     @Enumerated(EnumType.STRING)
     @Column(name = "group_assignment_protocol")
