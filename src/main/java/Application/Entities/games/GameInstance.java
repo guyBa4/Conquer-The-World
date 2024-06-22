@@ -61,7 +61,7 @@ public class GameInstance {
     @Column(name = "shared")
     private boolean shared;
     
-    @OneToOne(mappedBy = "gameInstance")
+    @OneToOne(mappedBy = "gameInstance", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     private GameConfiguration configuration;
 
     public GameInstance(){
