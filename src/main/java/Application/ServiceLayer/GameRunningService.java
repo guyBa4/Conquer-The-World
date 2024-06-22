@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.sql.Time;
 import java.time.Instant;
 import java.util.*;
 import java.util.logging.Logger;
@@ -369,13 +370,13 @@ public class GameRunningService {
         playerStatistic.addScore(tile.getTile().getDifficultyLevel());
     }
     
-    
     public Response<Boolean> endRunningGame(UUID runningGameId) {
         try {
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
             runningGameInstanceRepository.delete(runningGameInstance);
             publishEvent(EventType.END_GAME_UPDATE, null, runningGameInstance);
             runningGameInstance.setStatus(GameStatus.ENDED);
+            runningGameInstance.getGameStatistics().setTimeEnded(new Time(new Date().getTime()));
             runningGameInstanceRepository.save(runningGameInstance);
             return Response.ok(true);
         } catch (IllegalArgumentException e) {

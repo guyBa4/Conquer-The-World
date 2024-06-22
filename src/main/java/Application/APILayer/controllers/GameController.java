@@ -14,9 +14,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static java.util.logging.Logger.getLogger;
 
@@ -82,6 +85,19 @@ public class GameController {
             return Response.fail(500, "Internal Server Error");
         }
     }
+
+    @GetMapping(path = "/get_all_games_lean")
+    @ResponseBody
+    public Response<List<Map<String, Object>>> getGamesInstancesLean() {
+        try {
+            return gameService.getAllGameInstanceLean();
+        } catch (IllegalArgumentException e) {
+            return Response.fail(403, e.getMessage());
+        } catch (JSONException e) {
+            return Response.fail(500, "Internal Server Error");
+        }
+    }
+
 
     @GetMapping(path = "/get_game")
     @ResponseBody

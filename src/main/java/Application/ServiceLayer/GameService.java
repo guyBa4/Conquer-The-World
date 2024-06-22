@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 //import java.util.Map;
 
@@ -150,6 +151,19 @@ public class GameService {
     public Response<List<GameInstance>> getAllGameInstance(){
         List<GameInstance> gameInstances = gameInstanceRepository.findAll();
         return Response.ok(gameInstances);
+    }
+
+    public Response<List<Map<String, Object>>> getAllGameInstanceLean(){
+        List<GameInstance> gameInstances = gameInstanceRepository.findAll();
+        List<Map<String, Object>> gameInstancesLean = gameInstances.stream()
+                .map(game -> {
+                    Map<String, Object> gameMap = new HashMap<>();
+                    gameMap.put("id", game.getId());
+                    gameMap.put("name", game.getName());
+                    return gameMap;
+                })
+                .collect(Collectors.toList());
+        return Response.ok(gameInstancesLean);
     }
 
     private List<Question> initQuestionsObjects(){
