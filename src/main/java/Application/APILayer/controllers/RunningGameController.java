@@ -39,8 +39,9 @@ public class RunningGameController {
 
     @PostMapping(path = "/open_waiting_room")
     @ResponseBody
-    public Response<RunningGameInstance> openWaitingRoom(@RequestBody String inputJson) {
+    public Response<RunningGameInstance> openWaitingRoom(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
             JSONObject jsonObj = new JSONObject(inputJson);
             LOG.info("Request received by /open_waiting_room endpoint:\n" + jsonObj);
             UUID gameId = UUID.fromString(jsonObj.getString("gameId"));
@@ -69,8 +70,9 @@ public class RunningGameController {
 
     @PostMapping(path = "/enter_player_details")
     @ResponseBody
-    public Response<RunningGameInstance> addMobileDetails(@RequestBody String inputJson) {
+    public Response<RunningGameInstance> addMobileDetails(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
             JSONObject jsonObj = new JSONObject(inputJson);
             String name = jsonObj.getString("name");
             String mobileId = jsonObj.getString("mobileId");
@@ -85,8 +87,9 @@ public class RunningGameController {
     }
 
     @GetMapping(path = "/get_waiting_room/{game_id}")
-    public Response<RunningGameInstance> getWaitingRoomDetails(@PathVariable (name= "game_id") String gameId) {
+    public Response<RunningGameInstance> getWaitingRoomDetails(@PathVariable (name= "game_id") String gameId, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
             UUID gameUuid = UUID.fromString(gameId);
             return gameRunningService.getWaitingRoomDetails(gameUuid);
         } catch (IllegalArgumentException e) {
@@ -100,6 +103,7 @@ public class RunningGameController {
     @ResponseBody
     public Response<RunningGameInstance> startGame(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
             JSONObject jsonObj = new JSONObject(inputJson);
 //            LOG.info("Request received by /start_game endpoint:\n " + jsonObj);
             UUID gameId = UUID.fromString(jsonObj.getString("gameId"));
@@ -116,6 +120,7 @@ public class RunningGameController {
     public Response<RunningGameInstance> getRunningGame(@PathVariable (name= "gameId") String gameId,
                                                                     @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
             UUID runningGameUuid = UUID.fromString(gameId);
             UUID mobileId = UUID.fromString(authorizationHeader);
             LOG.info("Request received by /get_running_game endpoint:\n " + gameId);
@@ -132,6 +137,7 @@ public class RunningGameController {
     public Response<AssignedQuestion> getQuestion(@PathVariable(name= "group") int group, @PathVariable(name= "runningGameId") String runningGameId,
                                                   @PathVariable(name= "runningTileId") String runningTileId, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
             LOG.info(String.format("Request received by /generate_question endpoint:\n {'group': %s, 'runningGameId': %s, 'runningTileId': %s}", group, runningGameId, runningTileId));
             return gameRunningService.getQuestion(UUID.fromString(runningTileId), group, UUID.fromString(runningGameId), UUID.fromString(authorizationHeader));
         } catch (IllegalArgumentException e) {
@@ -142,9 +148,10 @@ public class RunningGameController {
     }
 
     @PostMapping(path = "/validate_answer")
-    public Response<ValidateAnswerResponse> validateAnswer(@RequestBody String inputJson){
+    public Response<ValidateAnswerResponse> validateAnswer(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader){
 //                                            ,@RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
             JSONObject jsonObj = new JSONObject(inputJson);
             LOG.info("Request received by /validate_answer endpoint:\n" + jsonObj);
             UUID runningGameId = UUID.fromString(jsonObj.getString("gameId"));
@@ -165,8 +172,10 @@ public class RunningGameController {
 
 
     @GetMapping(path = "/refresh_map/runningGameId={gameId}&userId={mobileId}")
-    public Response<List<RunningTile>> refreshMap(@PathVariable(name = "gameId") String gameId, @PathVariable(name = "mobileId") String mobileId) {
+    public Response<List<RunningTile>> refreshMap(@PathVariable(name = "gameId") String gameId, @PathVariable(name = "mobileId") String mobileId,
+                                                  @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
             UUID runningGameId = UUID.fromString(gameId);
 //            UUID mobileUuid = UUID.fromString(mobileId);
             return gameRunningService.getRunningTiles(runningGameId);
@@ -181,6 +190,7 @@ public class RunningGameController {
     @PostMapping(path = "/end_game")
     public Response<Boolean> endGame(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
             JSONObject jsonObj = new JSONObject(inputJson);
             LOG.info("Request received by /end_game endpoint:\n" + jsonObj);
             UUID runningGameId = UUID.fromString(jsonObj.getString("gameId"));

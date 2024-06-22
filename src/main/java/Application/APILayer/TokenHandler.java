@@ -1,5 +1,6 @@
 package Application.APILayer;
 
+import Application.Repositories.MobilePlayerRepository;
 import Application.Repositories.RepositoryFactory;
 import Application.Repositories.UserRepository;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ public class TokenHandler {
     private static final Object instanceLock = new Object();
     private RepositoryFactory repositoryFactory;
     private UserRepository userRepository;
-    Map<UUID, UUID> mobileUserToGame;
+    private MobilePlayerRepository mobilePlayerRepository;
 
     private TokenHandler() {
     }
@@ -29,12 +30,12 @@ public class TokenHandler {
 
     public void init(RepositoryFactory repositoryFactory) {
         this.repositoryFactory = repositoryFactory;
-        mobileUserToGame = new HashMap<>();
         setRepositories(repositoryFactory);
     }
 
     private void setRepositories(RepositoryFactory repositoryFactory) {
-        userRepository = repositoryFactory.userRepository;
+        this.userRepository = repositoryFactory.userRepository;
+        this.mobilePlayerRepository = repositoryFactory.mobilePlayerRepository;
     }
 
     public void verifyWebUserToken(String token) throws IllegalArgumentException{
@@ -43,18 +44,15 @@ public class TokenHandler {
             throw new IllegalArgumentException("UUID not exists");
         }
     }
-
-    public UUID verifyMobileUserToken(String token) throws IllegalArgumentException{
+    public void verifyAnyToken(String token) throws IllegalArgumentException{
         UUID uuid = UUID.fromString(token);
-        UUID game =mobileUserToGame.get(uuid);
-        if (game != null)
-            return game;
+        if (userRepository.existsById(uuid)) {
+            return;
+        }
+        if (mobilePlayerRepository.existsById(uuid)) {
+            return;
+        }
         throw new IllegalArgumentException("UUID not exists");
     }
 
-    public void addMobileUserToken(String mobileToken, String gameToken) throws IllegalArgumentException{
-        UUID mobileUUID = UUID.fromString(mobileToken);
-        UUID gameUUID = UUID.fromString(gameToken);
-        mobileUserToGame.putIfAbsent(mobileUUID, gameUUID);
-    }
 }
