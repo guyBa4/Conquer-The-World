@@ -17,7 +17,7 @@ public class GameConfiguration {
 
     @JsonIgnore
     @OneToOne
-    @JoinColumn(name = "game_instance_id", referencedColumnName = "id")
+    @JoinColumn(name = "game_instance_id", nullable = false)
     private GameInstance gameInstance;
 
     @Column(name = "can_reconquer_tiles")           // If true, groups can conquer each other's tiles
