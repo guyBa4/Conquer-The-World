@@ -1,5 +1,4 @@
 package Application.ServiceLayer;
-
 import Application.APILayer.Responses.ValidateAnswerResponse;
 import Application.DataAccessLayer.DALController;
 import Application.Entities.games.GameInstance;
@@ -21,13 +20,10 @@ import Application.Response;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-
 import java.sql.Time;
 import java.time.Instant;
 import java.util.*;
 import java.util.logging.Logger;
-
 import static java.util.logging.Logger.getLogger;
 
 @Service
@@ -37,6 +33,8 @@ public class GameRunningService {
     private DALController dalController;
     private EventService eventService;
     private static Logger LOG = getLogger(GameRunningService.class.toString());
+
+    public GameRunningService(){}
 
     @Autowired
     private GameRunningService(RepositoryFactory repositoryFactory, EventService eventService){
@@ -52,7 +50,6 @@ public class GameRunningService {
         this.dalController = dalController;
         return this;
     }
-
     public void publishEvent(EventType eventType, Object eventBody, RunningGameInstance gameToUpdate) {
         List<EventRecipient> eventRecipients = new ArrayList<>(gameToUpdate.getMobilePlayers());
         eventRecipients.add(gameToUpdate.getGameInstance().getHost());
@@ -329,7 +326,7 @@ public class GameRunningService {
     
             if (res.isCorrect()) {
                 Group playerGroup = player.getGroup();
-                
+
                 playerStatistic.addCorrectAnswers();
                 
                 if (runningGameInstance.getGameInstance().getConfiguration().getMultipleQuestionsPerTile()) {
