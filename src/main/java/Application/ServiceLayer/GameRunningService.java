@@ -388,4 +388,18 @@ public class GameRunningService {
             return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
+
+
+    public Response<Map<String, Object>> getRunningGameInstanceLean(UUID id){
+        RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(id);
+        Map<String, Object> gameMap = new HashMap<>();
+        gameMap.put("id", runningGameInstance.getRunningId());
+        gameMap.put("name", runningGameInstance.getName());
+        gameMap.put("mobilePlayers", runningGameInstance.getMobilePlayers());
+        gameMap.put("groups", runningGameInstance.getGroups());
+        gameMap.put("code", runningGameInstance.getCode());
+        gameMap.put("status", runningGameInstance.getStatus());
+        return Response.ok(gameMap);
+    }
+
 }

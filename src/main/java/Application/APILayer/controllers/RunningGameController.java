@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -202,5 +203,20 @@ public class RunningGameController {
             return Response.fail(500, "Internal Server Error");
         }
     }
+
+
+    @GetMapping(path = "/get_lean_running_game_instance/{running_id}")
+    @ResponseBody
+    public Response<Map<String, Object>> getRunningGameInstanceLean(@PathVariable(name= "runningGameId") String runningGameId, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
+            return gameRunningService.getRunningGameInstanceLean(UUID.fromString(runningGameId));
+        } catch (IllegalArgumentException e) {
+            return Response.fail(403, e.getMessage());
+        } catch (JSONException e) {
+            return Response.fail(500, "Internal Server Error");
+        }
+    }
+
 
 }
