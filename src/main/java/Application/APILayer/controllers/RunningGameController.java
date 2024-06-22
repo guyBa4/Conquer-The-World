@@ -207,7 +207,7 @@ public class RunningGameController {
 
     @GetMapping(path = "/get_lean_running_game_instance/{running_id}")
     @ResponseBody
-    public Response<Map<String, Object>> getRunningGameInstanceLean(@PathVariable(name= "runningGameId") String runningGameId, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public Response<Map<String, Object>> getRunningGameInstanceLean(@PathVariable(name= "running_id") String runningGameId, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             tokenHandler.verifyAnyToken(authorizationHeader);
             return gameRunningService.getRunningGameInstanceLean(UUID.fromString(runningGameId));
