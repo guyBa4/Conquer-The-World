@@ -203,16 +203,15 @@ public class RunningGameInstance {
         return groupTiles.stream().anyMatch((tile) -> target.getTile().getNeighbors().contains(tile.getTile()));
     }
 
-    public boolean checkAnswer(UUID tileId, MobilePlayer player, UUID questionId, String answer, AnswerRepository answerRepository) throws IOException {
+    public boolean checkAnswer(RunningTile tile, MobilePlayer player, UUID questionId, String answer, AnswerRepository answerRepository) throws IOException {
         List<Answer> answers = answerRepository.findByQuestionId(questionId);
-        RunningTile foundTile = getTileById(tileId);
-        if (foundTile == null) {
+        if (tile == null) {
             LOG.warning("Failed to find tile by tileId.");
             throw new IllegalArgumentException("Failed to find tile by tileId.");
         }
-        if (foundTile.getAnsweringPlayer() == null || !foundTile.getAnsweringPlayer().equals(player)) {
+        if (tile.getAnsweringPlayer() == null || !tile.getAnsweringPlayer().equals(player)) {
             LOG.warning("Player " + player.getName() + " with ID " + player.getId() +
-                    " can not answer question for running tile with ID " + tileId);
+                    " can not answer question for running tile with ID " + tile.getId());
             throw new IllegalArgumentException("Player is not the answering player and can not answer this tile's question.");
         }
         if (answers == null || answers.isEmpty()) {
