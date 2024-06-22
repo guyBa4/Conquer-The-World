@@ -18,6 +18,7 @@ import Application.Events.EventType;
 import Application.Repositories.RepositoryFactory;
 import Application.Repositories.RunningGameInstanceRepository;
 import Application.Response;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -263,13 +264,12 @@ public class GameRunningService {
             }
             AssignedQuestion question = runningGameInstance.getQuestion(runningTileId, group, player);
             if (question != null) {
-                setQuestionTimeout(question, runningGameInstance, runningTileId);
-            }
-            runningGameInstanceRepository.save(runningGameInstance);
-            if (question != null) {
                 RunningTile tileToUpdate = runningGameInstance.getTileById(runningTileId);
+                setQuestionTimeout(question, runningGameInstance, tileToUpdate);
                 publishEvent(EventType.TILES_UPDATE, tileToUpdate, runningGameInstance);
             }
+            runningGameInstanceRepository.save(runningGameInstance);
+            
             return Response.ok(question);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -280,10 +280,9 @@ public class GameRunningService {
         }
     }
     
-    private void setQuestionTimeout(AssignedQuestion question, RunningGameInstance runningGameInstance, UUID runningTileId) {
+    private void setQuestionTimeout(AssignedQuestion question, RunningGameInstance runningGameInstance, RunningTile tile) {
         GameInstance gameInstance = runningGameInstance.getGameInstance();
         long questionTimeout = gameInstance.getConfiguration().getQuestionTimeLimit() * 1000L; // Question timeout in milliseconds
-        RunningTile tile = runningGameInstance.getTileById(runningTileId);
         if (questionTimeout > 0) {
             Timer timer = new Timer();
             TimerTask timerTask = new TimerTask() {
@@ -293,7 +292,8 @@ public class GameRunningService {
                         LOG.info("Timeout reached for question " + question.getId());
                         tile.setActiveQuestion(null)
                                 .setAnsweringGroup(null)
-                                .setAnsweringPlayer(null);
+                                .setAnsweringPlayer(null)
+                                .setNumberOfCorrectAnswers(0);
                         runningGameInstanceRepository.save(runningGameInstance);
                     }
                 }
@@ -309,20 +309,23 @@ public class GameRunningService {
         return null;
     }
     
+    @Transactional
     public Response<ValidateAnswerResponse> checkAnswer(UUID runningGameId, UUID tileId, UUID userId, UUID questionId, String answer) {
         try {
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
             MobilePlayer player = runningGameInstance.getPlayer(userId);
-            PlayerStatistic playerStatistic = repositoryFactory.playerStatisticRepository.findByRunningGameInstanceRunningIdAndMobilePlayerId(runningGameId, userId).get(0);
-            playerStatistic.addQuestionsAnswered();
-            runningGameInstance.getGameStatistics().addQuestionsAnswered();
             if (player == null) {
                 LOG.severe("Did not find user with ID: " + userId.toString());
                 return Response.fail("Did not find user by ID");
             }
+    
+            PlayerStatistic playerStatistic = repositoryFactory.playerStatisticRepository.findByRunningGameInstanceRunningIdAndMobilePlayerId(runningGameId, userId).get(0);
+            playerStatistic.addQuestionsAnswered();
+            runningGameInstance.getGameStatistics().addQuestionsAnswered();
+    
             ValidateAnswerResponse res = new ValidateAnswerResponse();
-            res.setCorrect(runningGameInstance.checkAnswer(tileId, player, questionId, answer, repositoryFactory.answerRepository));
             RunningTile tile = runningGameInstance.getTileById(tileId);
+            res.setCorrect(runningGameInstance.checkAnswer(tile, player, questionId, answer, repositoryFactory.answerRepository));
     
             if (res.isCorrect()) {
                 Group playerGroup = player.getGroup();
@@ -332,7 +335,8 @@ public class GameRunningService {
                 if (runningGameInstance.getGameInstance().getConfiguration().getMultipleQuestionsPerTile()) {
                     tile.incrementNumberOfCorrectAnswers();
                     if (!tile.isAllQuestionsAnswered()) {
-                        Response<AssignedQuestion> questionResponse = getQuestion(tileId, player.getGroup().getNumber(), runningGameId, userId);
+                        Response<AssignedQuestion> questionResponse = getQuestion(tileId, player.getGroup().getNumber(),
+                                runningGameId, userId);
                         if (questionResponse.isSuccessful()) {
                             AssignedQuestion question = questionResponse.getValue();
                             tile.setActiveQuestion(question);
@@ -351,10 +355,10 @@ public class GameRunningService {
             return Response.ok(res);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            return Response.fail(403, e.getMessage());
+            return Response.fail(403, "Internal Server Error");
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
+            return Response.fail(500, "Internal Server Error");
         }
     }
 
