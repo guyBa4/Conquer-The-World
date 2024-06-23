@@ -4,6 +4,7 @@ import Application.APILayer.JsonToInstance;
 import Application.Entities.games.GameInstance;
 import Application.Entities.games.GameMap;
 import Application.Entities.games.RunningGameInstance;
+import Application.Entities.games.RunningTile;
 import Application.Entities.questions.AssignedQuestion;
 import Application.Entities.questions.Question;
 import Application.Entities.questions.Questionnaire;
@@ -110,6 +111,13 @@ public class DALController {
         return object;
     }
 
+    public RunningTile getRunningTile(UUID uuid) {
+        Optional<RunningTile> optional = repositoryFactory.runningTileRepository.findById(uuid);
+        if (optional.isEmpty())
+            throw new IllegalArgumentException("there is no RunningTile with this UUID : " + uuid);
+        RunningTile object = optional.get();
+        return object;
+    }
 
     public RepositoryFactory getRepositoryFactory() {
         return repositoryFactory;
@@ -124,4 +132,5 @@ public class DALController {
     public boolean needToInitiate() {
         return repositoryFactory == null;
     }
+
 }

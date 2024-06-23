@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
 import static java.util.logging.Logger.getLogger;
@@ -28,7 +29,7 @@ import static java.util.logging.Logger.getLogger;
 @RestController
 @RequestMapping(path = "running_game")
 public class RunningGameController {
-
+    private final ReentrantLock lock = new ReentrantLock();
     TokenHandler tokenHandler;
     GameRunningService gameRunningService;
     private static Logger LOG;
@@ -141,6 +142,7 @@ public class RunningGameController {
     public Response<AssignedQuestion> getQuestion(@PathVariable(name= "group") int group, @PathVariable(name= "runningGameId") String runningGameId,
                                                   @PathVariable(name= "runningTileId") String runningTileId, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
+            lock.lock();
             tokenHandler.verifyAnyToken(authorizationHeader);
             LOG.info(String.format("Request received by /generate_question endpoint:\n {'group': %s, 'runningGameId': %s, 'runningTileId': %s}", group, runningGameId, runningTileId));
             return gameRunningService.getQuestion(UUID.fromString(runningTileId), group, UUID.fromString(runningGameId), UUID.fromString(authorizationHeader));
@@ -148,6 +150,8 @@ public class RunningGameController {
             return Response.fail(403, e.getMessage());
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error");
+        }finally {
+            lock.unlock();
         }
     }
 
