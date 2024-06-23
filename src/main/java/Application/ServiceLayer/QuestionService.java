@@ -70,7 +70,9 @@ public class QuestionService {
 
     public Response<Question> addQuestion(NewQuestion newQuestion) {
         try {
-            byte[] image = Base64.getDecoder().decode(newQuestion.getImage().getBytes(StandardCharsets.UTF_8));
+            byte[] image = null;
+            if (newQuestion.getImage() != null)
+                image = Base64.getDecoder().decode(newQuestion.getImage().getBytes(StandardCharsets.UTF_8));
             Question questionObj = new Question(newQuestion.isMultipleChoice(), newQuestion.getQuestion(),
                     newQuestion.getDifficulty(), image);
             List<Answer> answers = buildAnswers(newQuestion.getCorrectAnswer(), newQuestion.getIncorrectAnswers(), questionObj);
@@ -90,9 +92,10 @@ public class QuestionService {
         List<Answer> answers = new LinkedList<>();
         answers.add(new Answer(correctAnswer, true, questionObj));
         for (String incorrectAnswer : incorrectAnswers){
+            if (incorrectAnswer == null || incorrectAnswer.isEmpty())
+                continue;
             answers.add(new Answer(incorrectAnswer, false, questionObj));
         }
-
         return answers;
     }
 
