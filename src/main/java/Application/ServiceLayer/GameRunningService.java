@@ -191,7 +191,7 @@ public class GameRunningService {
                 if (optionalRunningGameInstance.isEmpty()){
                     LOG.warning("Game ID does not exist");
                     return Response.fail("Game ID does not exist");
-                } else{
+                }else{
                     runningGameInstance = optionalRunningGameInstance.get();
                     LOG.warning("User ID not of host or registered player");
                     LOG.warning("userId = " + userId);
@@ -293,7 +293,7 @@ public class GameRunningService {
                                 .setAnsweringGroup(null)
                                 .setAnsweringPlayer(null)
                                 .setNumberOfCorrectAnswers(0);
-                        runningGameInstanceRepository.save(runningGameInstance);
+                        repositoryFactory.runningTileRepository.save(fetchedTile);
                     }
                 }
             };
