@@ -200,7 +200,7 @@ public class RunningGameController {
         try {
             tokenHandler.verifyAnyToken(authorizationHeader);
             JSONObject jsonObj = new JSONObject(inputJson);
-            LOG.info("Request received by /end_game endpoint:\n" + jsonObj);
+            LOG.info("\nRequest received by /end_game endpoint:\n" + jsonObj);
             UUID runningGameId = UUID.fromString(jsonObj.getString("gameId"));
 //            UUID hostId = UUID.fromString(authorizationHeader);
             return gameRunningService.endRunningGame(runningGameId);
