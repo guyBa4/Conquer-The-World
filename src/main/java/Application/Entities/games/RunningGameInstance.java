@@ -219,7 +219,7 @@ public class RunningGameInstance {
             throw new IllegalArgumentException("Failed to find answers for question " + questionId);
         }
         answers = answers.stream().filter(Answer::getCorrect).toList();
-        return !answers.isEmpty() && answers.get(0) != null && answers.get(0).getAnswerText().equals(answer);
+        return !answers.isEmpty() && answers.get(0) != null && answers.get(0).getAnswerText().trim().equalsIgnoreCase(answer.trim());
     }
 
     public MobilePlayer getPlayer(UUID userId) {

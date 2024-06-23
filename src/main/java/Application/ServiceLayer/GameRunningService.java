@@ -191,7 +191,7 @@ public class GameRunningService {
                 if (optionalRunningGameInstance.isEmpty()){
                     LOG.warning("Game ID does not exist");
                     return Response.fail("Game ID does not exist");
-                }else{
+                } else{
                     runningGameInstance = optionalRunningGameInstance.get();
                     LOG.warning("User ID not of host or registered player");
                     LOG.warning("userId = " + userId);
@@ -284,6 +284,7 @@ public class GameRunningService {
             Timer timer = new Timer();
             TimerTask timerTask = new TimerTask() {
                 @Override
+                @Transactional
                 public void run() {
                     RunningTile fetchedTile = dalController.getRunningTile(tile.getId());
                     if (fetchedTile.getActiveQuestion() != null && tile.getActiveQuestion().getId().equals(question.getId())) {
@@ -296,8 +297,8 @@ public class GameRunningService {
                     }
                 }
             };
-//            question.setTimeout(questionTimeout);
-//            timer.schedule(timerTask, questionTimeout + (5 * 1000L)); // Added buffer time
+            question.setTimeout(questionTimeout);
+            timer.schedule(timerTask, questionTimeout + (3 * 1000L)); // Added buffer time
         }
     }
     
