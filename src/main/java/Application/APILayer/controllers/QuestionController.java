@@ -52,13 +52,14 @@ public class QuestionController {
 
     @PostMapping(path = "/add_questions")
     @ResponseBody
-    public Response<Question> addQuestion(@RequestBody() List<NewQuestion> newQuestions, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public Response<Boolean> addQuestions(@RequestBody() List<NewQuestion> newQuestions, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             tokenHandler.verifyAnyToken(authorizationHeader);
             if (newQuestions != null)
                 for (NewQuestion newQuestion : newQuestions)
-                    return questionService.addQuestion(newQuestion);
-            return Response.fail(400, "Invalid request");
+                    questionService.addQuestion(newQuestion);
+                return Response.ok(true);
+//            return Response.fail(400, "Invalid request");
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }
