@@ -20,6 +20,7 @@ import Application.Repositories.RunningTileRepository;
 import Application.Response;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import java.sql.Time;
 import java.time.Instant;
@@ -33,6 +34,7 @@ public class GameRunningService {
     private RunningGameInstanceRepository runningGameInstanceRepository;
     private DALController dalController;
     private EventService eventService;
+    private Map<Pair<UUID, UUID>, TimerTask> timers;
     private static Logger LOG = getLogger(GameRunningService.class.toString());
 
     public GameRunningService(){}
@@ -45,6 +47,7 @@ public class GameRunningService {
         this.repositoryFactory = repositoryFactory;
         this.runningGameInstanceRepository = repositoryFactory.runningGameInstanceRepository;
         this.eventService = eventService;
+        this.timers = new HashMap<>();
     }
 
     public GameRunningService setDalController(DALController dalController) {
@@ -294,9 +297,11 @@ public class GameRunningService {
                                 .setAnsweringPlayer(null)
                                 .setNumberOfCorrectAnswers(0);
                         repositoryFactory.runningTileRepository.save(fetchedTile);
+                        timers.remove(Pair.of(question.getId(), tile.getAnsweringPlayer().getId()));
                     }
                 }
             };
+            timers.put(Pair.of(question.getId(), tile.getAnsweringPlayer().getId()), timerTask);
             question.setTimeout(questionTimeout);
             timer.schedule(timerTask, questionTimeout + (3 * 1000L)); // Added buffer time
         }
@@ -311,6 +316,10 @@ public class GameRunningService {
     @Transactional
     public Response<ValidateAnswerResponse> checkAnswer(UUID runningGameId, UUID tileId, UUID userId, UUID questionId, String answer) {
         try {
+            TimerTask task = timers.getOrDefault(Pair.of(questionId, userId), null);
+            if (task != null)
+                task.cancel();
+            
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
             MobilePlayer player = runningGameInstance.getPlayer(userId);
             if (player == null) {
