@@ -330,7 +330,7 @@ public class GameRunningService {
                 Group playerGroup = player.getGroup();
 
                 playerStatistic.addCorrectAnswers();
-                runningGameInstance.getGameStatistics().addQuestionsAnswered();
+                runningGameInstance.getGameStatistics().addCorrectAnswers();
                 
                 if (runningGameInstance.getGameInstance().getConfiguration().getMultipleQuestionsPerTile()) {
                     tile.incrementNumberOfCorrectAnswers();
@@ -377,7 +377,6 @@ public class GameRunningService {
     public Response<Boolean> endRunningGame(UUID runningGameId) {
         try {
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
-            runningGameInstanceRepository.delete(runningGameInstance);
             publishEvent(EventType.END_GAME_UPDATE, null, runningGameInstance);
             runningGameInstance.setStatus(GameStatus.ENDED);
             runningGameInstance.getGameStatistics().setTimeEnded(new Time(new Date().getTime()));
