@@ -1,4 +1,5 @@
 package Application.ServiceLayer;
+import Application.APILayer.Responses.RunningTileResponse;
 import Application.APILayer.Responses.ValidateAnswerResponse;
 import Application.DataAccessLayer.DALController;
 import Application.Entities.games.GameInstance;
@@ -351,7 +352,7 @@ public class GameRunningService {
                             AssignedQuestion question = questionResponse.getValue();
                             tile.setActiveQuestion(question);
                             res.setNextQuestion(question);
-                            publishEvent(EventType.TILES_UPDATE, tile, runningGameInstance);
+                            publishEvent(EventType.TILES_UPDATE, RunningTileResponse.fromRunningTile(tile), runningGameInstance);
                         }
                     } else setTileConquered(tile, playerGroup, runningGameInstance, playerStatistic);
                 } else setTileConquered(tile, playerGroup, runningGameInstance, playerStatistic);
