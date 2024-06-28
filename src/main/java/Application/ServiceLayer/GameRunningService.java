@@ -290,14 +290,15 @@ public class GameRunningService {
                 @Transactional
                 public void run() {
                     RunningTile fetchedTile = dalController.getRunningTile(tile.getId());
-                    if (fetchedTile.getActiveQuestion() != null && tile.getActiveQuestion().getId().equals(question.getId())) {
+                    if (fetchedTile.getActiveQuestion() != null && fetchedTile.getActiveQuestion().getId().equals(question.getId())
+                        && fetchedTile.getAnsweringPlayer() != null) {
                         LOG.info("Timeout reached for question " + question.getId());
-                        tile.setActiveQuestion(null)
+                        fetchedTile.setActiveQuestion(null)
                                 .setAnsweringGroup(null)
                                 .setAnsweringPlayer(null)
                                 .setNumberOfCorrectAnswers(0);
                         repositoryFactory.runningTileRepository.save(fetchedTile);
-                        timers.remove(Pair.of(question.getId(), tile.getAnsweringPlayer().getId()));
+                        timers.remove(Pair.of(fetchedTile.getActiveQuestion(), fetchedTile.getAnsweringPlayer().getId()));
                     }
                 }
             };
