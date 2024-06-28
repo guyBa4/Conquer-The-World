@@ -13,7 +13,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequestMapping(path = "event")
 public class EventController {
     
-    private EventService eventService;
+    private final EventService eventService;
     private static final Logger LOG = LoggerFactory.getLogger(EventController.class);
     @Autowired
     public EventController(EventService eventService) {

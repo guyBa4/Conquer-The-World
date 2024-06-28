@@ -17,7 +17,6 @@ import Application.Events.EventRecipient;
 import Application.Events.EventType;
 import Application.Repositories.RepositoryFactory;
 import Application.Repositories.RunningGameInstanceRepository;
-import Application.Repositories.RunningTileRepository;
 import Application.Response;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -267,7 +266,7 @@ public class GameRunningService {
             if (question != null) {
                 RunningTile tileToUpdate = runningGameInstance.getTileById(runningTileId);
                 setQuestionTimeout(question, runningGameInstance, tileToUpdate);
-                publishEvent(EventType.TILES_UPDATE, tileToUpdate, runningGameInstance);
+                publishEvent(EventType.TILES_UPDATE, RunningTileResponse.from(tileToUpdate), runningGameInstance);
             }
             runningGameInstanceRepository.save(runningGameInstance);
             
@@ -294,12 +293,14 @@ public class GameRunningService {
                     if (fetchedTile.getActiveQuestion() != null && fetchedTile.getActiveQuestion().getId().equals(question.getId())
                         && fetchedTile.getAnsweringPlayer() != null) {
                         LOG.info("Timeout reached for question " + question.getId());
+                        AssignedQuestion question = fetchedTile.getActiveQuestion();
+                        MobilePlayer answeringPlayer = fetchedTile.getAnsweringPlayer();
                         fetchedTile.setActiveQuestion(null)
                                 .setAnsweringGroup(null)
                                 .setAnsweringPlayer(null)
                                 .setNumberOfCorrectAnswers(0);
                         repositoryFactory.runningTileRepository.save(fetchedTile);
-                        timers.remove(Pair.of(fetchedTile.getActiveQuestion(), fetchedTile.getAnsweringPlayer().getId()));
+                        timers.remove(Pair.of(question.getId(), answeringPlayer.getId()));
                     }
                 }
             };
@@ -352,7 +353,7 @@ public class GameRunningService {
                             AssignedQuestion question = questionResponse.getValue();
                             tile.setActiveQuestion(question);
                             res.setNextQuestion(question);
-                            publishEvent(EventType.TILES_UPDATE, RunningTileResponse.fromRunningTile(tile), runningGameInstance);
+                            publishEvent(EventType.TILES_UPDATE, RunningTileResponse.from(tile), runningGameInstance);
                         }
                     } else setTileConquered(tile, playerGroup, runningGameInstance, playerStatistic);
                 } else setTileConquered(tile, playerGroup, runningGameInstance, playerStatistic);
@@ -380,7 +381,7 @@ public class GameRunningService {
                 .setActiveQuestion(null)
                 .setNumberOfCorrectAnswers(0);
         group.addScore(tile.getTile().getDifficultyLevel());
-        publishEvent(EventType.TILES_UPDATE, tile, runningGameInstance);
+        publishEvent(EventType.TILES_UPDATE, RunningTileResponse.from(tile), runningGameInstance);
         publishEvent(EventType.SCORE_UPDATE, group, runningGameInstance);
         playerStatistic.addScore(tile.getTile().getDifficultyLevel());
     }

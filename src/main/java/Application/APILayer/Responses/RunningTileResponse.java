@@ -13,7 +13,7 @@ public class RunningTileResponse {
     private AssignedQuestion activeQuestion;
     private int numberOfCorrectAnswers;
     
-    public static RunningTileResponse fromRunningTile(RunningTile tile) {
+    public static RunningTileResponse from(RunningTile tile) {
         return new RunningTileResponse()
                 .setId(tile.getId())
                 .setAnsweringGroupId(tile.getAnsweringGroup().getId())
