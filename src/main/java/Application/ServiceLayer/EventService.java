@@ -11,8 +11,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.util.*;
 
-import static java.util.logging.Logger.getLogger;
-
 @Scope("singleton")
 @Service
 public class EventService {
@@ -36,12 +34,14 @@ public class EventService {
             @Override
             public void run() {
                 if (!awaitingEvents.isEmpty()) {
-                    awaitingEvents.stream().peek((event) ->
-                            event.getRecipients().stream().peek((recipient) -> {
+                    awaitingEvents.forEach((event) ->
+                            event.getRecipients().forEach((recipient) -> {
                                 try {
                                     SseEmitter emitter = emitters.get(recipient.getId());
-                                    if (emitter != null)
-                                        emitter.send(event);
+                                    if (emitter != null) {
+                                        LOG.info("Sent event");
+                                        emitter.send(SseEmitter.event().name("message").data(event));
+                                    }
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                     LOG.warn("Failed to send event to recipient");
@@ -73,7 +73,7 @@ public class EventService {
         SseEmitter emitter = emitters.get(userId);
         if (emitter == null)
             LOG.debug("Emitter not found");
-            emitter = addEmitter(userId);
+        emitter = addEmitter(userId);
         return emitter;
     }
 }
