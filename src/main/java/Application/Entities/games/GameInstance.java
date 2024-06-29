@@ -279,18 +279,7 @@ public class GameInstance {
         return this;
     }
 
-    @JsonProperty("questionnaire")
-    public Map<String, Object> getQuestionnaireSummary() {
-        Questionnaire questionnaire = this.getQuestionnaire();
-        if (questionnaire != null) {
-            Map<String, Object> summary = new HashMap<>();
-            summary.put("id", questionnaire.getId());
-            summary.put("name", questionnaire.getName());
-            return summary;
-        } else {
-            return null;
-        }
-    }
+
     @JsonProperty("map")
     public Map<String, Object> getGameMapSummary() {
         GameMap gameMap = this.getGameMap();

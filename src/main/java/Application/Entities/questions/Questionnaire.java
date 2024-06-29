@@ -1,5 +1,7 @@
 package Application.Entities.questions;
 import Application.Entities.users.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.sql.Time;
@@ -23,6 +25,7 @@ public class Questionnaire {
 
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "questionnaire_id")
+    @JsonIgnore
     private List<AssignedQuestion> questions;
 
     @Column(name = "time_created")
@@ -34,7 +37,7 @@ public class Questionnaire {
     @Column(name = "shared")
     private boolean shared;
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "questionnaire_tags", joinColumns = @JoinColumn(name = "questionnaire_id"))
     @Column(name = "tag")
     private Set<String> tags;
@@ -144,4 +147,57 @@ public class Questionnaire {
     public void addTags(String tag) {
         this.tags.add(tag);
     }
+
+    @JsonProperty("questions")
+    public List<String> getQuestionsSummary() {
+        List<String> questionsStr= new LinkedList<>();
+        for (AssignedQuestion assignedQuestion : this.getQuestions()){
+            questionsStr.add(assignedQuestion.getQuestion().getQuestion());
+        }
+        return questionsStr;
+    }
+
+//    class Node {
+//        public int key;
+//        public int val;
+//        public Node next;
+//        public Node prev;
+//
+//        public Node(int key, int val) {
+//            this.key = key;
+//            this.val = val;
+//            next = null;
+//            prev = null;
+//        }
+//    }
+//
+//    class LRUCache {
+//        public int capacity;
+//        Map<Integer, Node> map;
+//        Node head, tail;
+//        public LRUCache(int capacity) {
+//            this.capacity = capacity;
+//            this.map = new HashMap<>();
+//            head = new Node(-1, -1);
+//            tail = new Node(-1, -1);
+//        }
+//
+//        public int get(int key) {
+//
+//        }
+//
+//        public void put(int key, int value) {
+//            map.put(key, new Node(key, value));
+//            head = map.get(key)
+//
+//
+//        }
+//    }
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache obj = new LRUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */
 }
