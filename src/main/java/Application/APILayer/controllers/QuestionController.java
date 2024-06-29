@@ -99,12 +99,12 @@ public class QuestionController {
                                                  @RequestParam int size,
                                                  @RequestParam(required = false) Integer difficulty,
                                                  @RequestParam(required = false) String content,
+                                                 @RequestParam(name = "tags", required = false) List<String> tags,
                                                  @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader){
 //            ,                                                 @RequestParam(name = "tags", required = false) List<String> tags) {
 
         try {
             tokenHandler.verifyAnyToken(authorizationHeader);
-            List<String> tags = new LinkedList<>();
             return questionService.filterQuestions(page, size, content, tags, difficulty);
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
@@ -155,5 +155,4 @@ public class QuestionController {
             return Response.fail(500, "Internal Server Error");
         }
     }
-
 }
