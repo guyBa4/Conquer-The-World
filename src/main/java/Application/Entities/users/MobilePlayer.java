@@ -36,6 +36,7 @@ public class MobilePlayer implements EventRecipient {
     @Column(name = "ready")
     private boolean ready;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "mobilePlayer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PlayerStatistic> playerStatistics;
 

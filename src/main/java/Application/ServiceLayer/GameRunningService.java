@@ -1,4 +1,5 @@
 package Application.ServiceLayer;
+import Application.APILayer.Responses.RunningTileResponse;
 import Application.APILayer.Responses.ValidateAnswerResponse;
 import Application.DataAccessLayer.DALController;
 import Application.Entities.games.GameInstance;
@@ -14,11 +15,12 @@ import Application.Enums.GameStatus;
 import Application.Events.Event;
 import Application.Events.EventRecipient;
 import Application.Events.EventType;
-import Application.DataAccessLayer.Repositories.RepositoryFactory;
-import Application.DataAccessLayer.Repositories.RunningGameInstanceRepository;
+import Application.Repositories.RepositoryFactory;
+import Application.Repositories.RunningGameInstanceRepository;
 import Application.Response;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import java.sql.Time;
 import java.time.Instant;
@@ -32,6 +34,7 @@ public class GameRunningService {
     private RunningGameInstanceRepository runningGameInstanceRepository;
     private DALController dalController;
     private EventService eventService;
+    private Map<Pair<UUID, UUID>, TimerTask> timers;
     private static Logger LOG = getLogger(GameRunningService.class.toString());
 
     public GameRunningService(){}
@@ -44,6 +47,7 @@ public class GameRunningService {
         this.repositoryFactory = repositoryFactory;
         this.runningGameInstanceRepository = repositoryFactory.runningGameInstanceRepository;
         this.eventService = eventService;
+        this.timers = new HashMap<>();
     }
 
     public GameRunningService setDalController(DALController dalController) {
@@ -262,7 +266,7 @@ public class GameRunningService {
             if (question != null) {
                 RunningTile tileToUpdate = runningGameInstance.getTileById(runningTileId);
                 setQuestionTimeout(question, runningGameInstance, tileToUpdate);
-                publishEvent(EventType.TILES_UPDATE, tileToUpdate, runningGameInstance);
+                publishEvent(EventType.TILES_UPDATE, RunningTileResponse.from(tileToUpdate), runningGameInstance);
             }
             runningGameInstanceRepository.save(runningGameInstance);
             
@@ -286,16 +290,21 @@ public class GameRunningService {
                 @Transactional
                 public void run() {
                     RunningTile fetchedTile = dalController.getRunningTile(tile.getId());
-                    if (fetchedTile.getActiveQuestion() != null && tile.getActiveQuestion().getId().equals(question.getId())) {
+                    if (fetchedTile.getActiveQuestion() != null && fetchedTile.getActiveQuestion().getId().equals(question.getId())
+                        && fetchedTile.getAnsweringPlayer() != null) {
                         LOG.info("Timeout reached for question " + question.getId());
-                        tile.setActiveQuestion(null)
+                        AssignedQuestion question = fetchedTile.getActiveQuestion();
+                        MobilePlayer answeringPlayer = fetchedTile.getAnsweringPlayer();
+                        fetchedTile.setActiveQuestion(null)
                                 .setAnsweringGroup(null)
                                 .setAnsweringPlayer(null)
                                 .setNumberOfCorrectAnswers(0);
                         repositoryFactory.runningTileRepository.save(fetchedTile);
+                        timers.remove(Pair.of(question.getId(), answeringPlayer.getId()));
                     }
                 }
             };
+            timers.put(Pair.of(question.getId(), tile.getAnsweringPlayer().getId()), timerTask);
             question.setTimeout(questionTimeout);
             timer.schedule(timerTask, questionTimeout + (3 * 1000L)); // Added buffer time
         }
@@ -310,6 +319,10 @@ public class GameRunningService {
     @Transactional
     public Response<ValidateAnswerResponse> checkAnswer(UUID runningGameId, UUID tileId, UUID userId, UUID questionId, String answer) {
         try {
+            TimerTask task = timers.getOrDefault(Pair.of(questionId, userId), null);
+            if (task != null)
+                task.cancel();
+            
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
             MobilePlayer player = runningGameInstance.getPlayer(userId);
             if (player == null) {
@@ -340,7 +353,7 @@ public class GameRunningService {
                             AssignedQuestion question = questionResponse.getValue();
                             tile.setActiveQuestion(question);
                             res.setNextQuestion(question);
-                            publishEvent(EventType.TILES_UPDATE, tile, runningGameInstance);
+                            publishEvent(EventType.TILES_UPDATE, RunningTileResponse.from(tile), runningGameInstance);
                         }
                     } else setTileConquered(tile, playerGroup, runningGameInstance, playerStatistic);
                 } else setTileConquered(tile, playerGroup, runningGameInstance, playerStatistic);
@@ -368,7 +381,7 @@ public class GameRunningService {
                 .setActiveQuestion(null)
                 .setNumberOfCorrectAnswers(0);
         group.addScore(tile.getTile().getDifficultyLevel());
-        publishEvent(EventType.TILES_UPDATE, tile, runningGameInstance);
+        publishEvent(EventType.TILES_UPDATE, RunningTileResponse.from(tile), runningGameInstance);
         publishEvent(EventType.SCORE_UPDATE, group, runningGameInstance);
         playerStatistic.addScore(tile.getTile().getDifficultyLevel());
     }
@@ -455,12 +468,4 @@ public class GameRunningService {
             return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
-
-
-/**
- * Your LRUCache object will be instantiated and called as such:
- * LRUCache obj = new LRUCache(capacity);
- * int param_1 = obj.get(key);
- * obj.put(key,value);
- */
 }
