@@ -74,8 +74,9 @@ public class QuestionController {
             String title = jsonObj.getString("title");
             String creatorId = jsonObj.getString("creatorId");
             JSONObject questionsIdsObject = jsonObj.getJSONObject("questionsIds");
+            List<Object> tags = jsonObj.getJSONArray("tags").toList();
             Map<String, Object> questionsIdsToDifficulty = questionsIdsObject.toMap();
-            return questionService.addQuestionnaire(title, creatorId, questionsIdsToDifficulty);
+            return questionService.addQuestionnaire(title, creatorId, questionsIdsToDifficulty, tags);
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }

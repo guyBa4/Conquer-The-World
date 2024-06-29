@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
@@ -113,12 +114,13 @@ public class QuestionService {
         }
     }
 
-    public Response<Questionnaire> addQuestionnaire(String title, String creatorId, Map questionsIdsToDifficulty) {
+    public Response<Questionnaire> addQuestionnaire(String title, String creatorId, Map questionsIdsToDifficulty, List<Object> tagsObj) {
         try {
+            Set<String> tags = tagsObj.stream().map(Object::toString).collect(Collectors.toSet());
             List<AssignedQuestion> assignedQuestions = assignQuestionListBuilder(questionsIdsToDifficulty);
             UUID creatorUuid = UUID.fromString(creatorId);
             User creator = dalController.getUser(creatorUuid);
-            Questionnaire questionnaire = new Questionnaire(title, assignedQuestions, creator);
+            Questionnaire questionnaire = new Questionnaire(title, assignedQuestions, creator, tags);
             questionnaireRepository.save(questionnaire);
             return Response.ok(questionnaire);
         } catch (IllegalArgumentException e) {

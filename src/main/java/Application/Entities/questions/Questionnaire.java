@@ -34,6 +34,10 @@ public class Questionnaire {
     @Column(name = "shared")
     private boolean shared;
 
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "questionnaire_tags", joinColumns = @JoinColumn(name = "questionnaire_id"))
+    @Column(name = "tag")
+    private Set<String> tags;
 
     public Questionnaire(){
         questions = new LinkedList<>();
@@ -51,6 +55,15 @@ public class Questionnaire {
         this.timeCreated = new Time(new Date().getTime());
         this.lastUpdated = new Time(new Date().getTime());
         this.creator = creator;
+    }
+
+    public Questionnaire(String name, List<AssignedQuestion> questionList, User creator, Set<String> stringSet) {
+        this.name = name;
+        this.questions = questionList;
+        this.timeCreated = new Time(new Date().getTime());
+        this.lastUpdated = new Time(new Date().getTime());
+        this.creator = creator;
+        this.tags = stringSet;
     }
 
     public UUID getId() {
@@ -118,5 +131,17 @@ public class Questionnaire {
     public Questionnaire setShared(boolean shared) {
         this.shared = shared;
         return this;
+    }
+
+    public Set<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<String> tags) {
+        this.tags = tags;
+    }
+
+    public void addTags(String tag) {
+        this.tags.add(tag);
     }
 }

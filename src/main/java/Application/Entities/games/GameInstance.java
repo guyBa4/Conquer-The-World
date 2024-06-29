@@ -69,6 +69,11 @@ public class GameInstance {
     @OneToOne(mappedBy = "gameInstance", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     private GameConfiguration configuration;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "game_tags", joinColumns = @JoinColumn(name = "game_id"))
+    @Column(name = "tag")
+    private Set<String> tags;
+
     public GameInstance(){
     }
 
@@ -135,6 +140,33 @@ public class GameInstance {
         this.name = title;
         this.description = description;
         this.shared = shared;
+    }
+
+    public GameInstance(User creator, Questionnaire questionnaire, GameMap gameMap, GameStatus created,
+                        int numberOfGroups, String title, String description,
+                        GroupAssignmentProtocol groupAssignmentProtocol, int gameTime, boolean shared,
+                        int questionTimeLimit, boolean canReconquerTiles,
+                        boolean simultaneousConquering, boolean multipleQuestionPerTile, Set<String> tags) {
+        this.configuration = new GameConfiguration()
+                .setGameInstance(this)
+                .setQuestionTimeLimit(questionTimeLimit)
+                .setGameTime(gameTime)
+                .setGroupAssignmentProtocol(groupAssignmentProtocol)
+                .setNumberOfGroups(numberOfGroups)
+                .setCanReconquerTiles(canReconquerTiles)
+                .setMultipleQuestionsPerTile(multipleQuestionPerTile)
+                .setSimultaneousConquering(simultaneousConquering);
+        this.host = creator;
+        this.questionnaire = questionnaire;
+        this.gameMap = gameMap;
+        this.startingPositions =new LinkedList<>();
+        this.status = created;
+        this.timeCreated = new Time(new Date().getTime());
+        this.timeLastUpdated = new Time(new Date().getTime());
+        this.name = title;
+        this.description = description;
+        this.shared = shared;
+        this.tags = tags;
     }
 
     public UUID getId() {
@@ -286,6 +318,17 @@ public class GameInstance {
         } else {
             return null;
         }
+    }
+    public Set<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<String> tags) {
+        this.tags = tags;
+    }
+
+    public void addTags(String tag) {
+        this.tags.add(tag);
     }
 
 }
