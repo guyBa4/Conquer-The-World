@@ -292,6 +292,19 @@ public class GameInstance {
             return null;
         }
     }
+
+    @JsonProperty("questionnaire")
+    public Map<String, Object> getQuestionnaireSummary() {
+        Questionnaire questionnaire = this.getQuestionnaire();
+        if (questionnaire != null) {
+            Map<String, Object> summary = new HashMap<>();
+            summary.put("id", questionnaire.getId());
+            summary.put("name", questionnaire.getName());
+            return summary;
+        } else {
+            return null;
+        }
+    }
     @JsonProperty("startingPositions")
     public List<Map<String, Object>> getStartingPositionsSummary() {
         List<Tile> startingPositions = this.getStartingPositions();
@@ -308,6 +321,7 @@ public class GameInstance {
             return null;
         }
     }
+
     public Set<String> getTags() {
         return tags;
     }

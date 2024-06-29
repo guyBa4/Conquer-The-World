@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Repository
 public interface QuestionRepository  extends JpaRepository<Question, UUID> {
-    @Query("SELECT q FROM Question q JOIN q.tags t WHERE " +
+    @Query("SELECT DISTINCT q FROM Question q LEFT JOIN q.tags t WHERE " +
             "(:content IS NULL OR q.question LIKE %:content%) AND " +
             "(:difficulty IS NULL OR q.difficulty = :difficulty) AND " +
             "(:tags IS NULL OR t IN :tags)")
@@ -21,4 +21,5 @@ public interface QuestionRepository  extends JpaRepository<Question, UUID> {
                                  @Param("difficulty") Integer difficulty,
                                  @Param("tags") List<String> tags,
                                  Pageable pageable);
+
 }
