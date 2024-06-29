@@ -1,4 +1,4 @@
-package Application.Repositories;
+package Application.DataAccessLayer.Repositories;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;

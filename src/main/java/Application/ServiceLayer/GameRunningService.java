@@ -14,9 +14,8 @@ import Application.Enums.GameStatus;
 import Application.Events.Event;
 import Application.Events.EventRecipient;
 import Application.Events.EventType;
-import Application.Repositories.RepositoryFactory;
-import Application.Repositories.RunningGameInstanceRepository;
-import Application.Repositories.RunningTileRepository;
+import Application.DataAccessLayer.Repositories.RepositoryFactory;
+import Application.DataAccessLayer.Repositories.RunningGameInstanceRepository;
 import Application.Response;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -456,4 +455,12 @@ public class GameRunningService {
             return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
+
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache obj = new LRUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */
 }

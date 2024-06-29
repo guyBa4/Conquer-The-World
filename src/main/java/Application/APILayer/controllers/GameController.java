@@ -3,7 +3,7 @@ package Application.APILayer.controllers;
 import Application.APILayer.TokenHandler;
 import Application.Entities.games.GameInstance;
 import Application.Entities.games.GameMap;
-import Application.Repositories.RepositoryFactory;
+import Application.DataAccessLayer.Repositories.RepositoryFactory;
 import Application.Response;
 import Application.ServiceLayer.GameRunningService;
 import Application.ServiceLayer.GameService;
@@ -14,12 +14,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import static java.util.logging.Logger.getLogger;
 

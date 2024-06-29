@@ -11,7 +11,7 @@ import Application.Entities.questions.Questionnaire;
 import Application.Entities.users.MobilePlayer;
 import Application.Entities.users.PlayerStatistic;
 import Application.Entities.users.User;
-import Application.Repositories.RepositoryFactory;
+import Application.DataAccessLayer.Repositories.RepositoryFactory;
 
 import java.util.Optional;
 import java.util.UUID;

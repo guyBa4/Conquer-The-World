@@ -1,12 +1,10 @@
 package Application.APILayer;
 
-import Application.Repositories.MobilePlayerRepository;
-import Application.Repositories.RepositoryFactory;
-import Application.Repositories.UserRepository;
+import Application.DataAccessLayer.Repositories.MobilePlayerRepository;
+import Application.DataAccessLayer.Repositories.RepositoryFactory;
+import Application.DataAccessLayer.Repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 @Service

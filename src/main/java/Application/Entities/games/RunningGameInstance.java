@@ -11,7 +11,7 @@ import Application.Enums.GroupAssignmentProtocol;
 
 import static java.util.logging.Logger.getLogger;
 
-import Application.Repositories.AnswerRepository;
+import Application.DataAccessLayer.Repositories.AnswerRepository;
 import jakarta.persistence.*;
 
 import java.io.IOException;

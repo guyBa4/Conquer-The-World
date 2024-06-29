@@ -8,7 +8,7 @@ import Application.Entities.questions.AssignedQuestion;
 import Application.Entities.questions.Question;
 import Application.Entities.questions.Questionnaire;
 import Application.Entities.users.User;
-import Application.Repositories.*;
+import Application.DataAccessLayer.Repositories.*;
 import Application.Response;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -74,7 +74,7 @@ public class QuestionService {
             if (newQuestion.getImage() != null)
                 image = Base64.getDecoder().decode(newQuestion.getImage().getBytes(StandardCharsets.UTF_8));
             Question questionObj = new Question(newQuestion.isMultipleChoice(), newQuestion.getQuestion(),
-                    newQuestion.getDifficulty(), image);
+                    newQuestion.getDifficulty(), image, newQuestion.getTags());
             List<Answer> answers = buildAnswers(newQuestion.getCorrectAnswer(), newQuestion.getIncorrectAnswers(), questionObj);
             questionObj.setAnswers(answers);
             questionRepository.save(questionObj);

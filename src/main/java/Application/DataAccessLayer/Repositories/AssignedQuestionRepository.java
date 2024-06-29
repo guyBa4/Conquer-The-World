@@ -1,4 +1,4 @@
-package Application.Repositories;
+package Application.DataAccessLayer.Repositories;
 
 import Application.Entities.questions.AssignedQuestion;
 import org.springframework.data.jpa.repository.JpaRepository;

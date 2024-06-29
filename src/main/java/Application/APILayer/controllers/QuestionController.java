@@ -5,7 +5,7 @@ import Application.APILayer.controllers.Requests.NewQuestion;
 import Application.Entities.questions.AssignedQuestion;
 import Application.Entities.questions.Question;
 import Application.Entities.questions.Questionnaire;
-import Application.Repositories.RepositoryFactory;
+import Application.DataAccessLayer.Repositories.RepositoryFactory;
 import Application.Response;
 import Application.ServiceLayer.QuestionService;
 import org.json.JSONException;

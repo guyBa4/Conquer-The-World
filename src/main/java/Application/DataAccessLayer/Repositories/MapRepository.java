@@ -1,4 +1,4 @@
-package Application.Repositories;
+package Application.DataAccessLayer.Repositories;
 
 import Application.Entities.games.GameMap;
 import org.springframework.data.domain.Page;

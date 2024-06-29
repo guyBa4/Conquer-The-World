@@ -12,7 +12,7 @@ import Application.Entities.questions.Questionnaire;
 import Application.Entities.users.User;
 import Application.Enums.GameStatus;
 import Application.Enums.GroupAssignmentProtocol;
-import Application.Repositories.*;
+import Application.DataAccessLayer.Repositories.*;
 import Application.Response;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;

@@ -1,4 +1,4 @@
-package Application.Repositories;
+package Application.DataAccessLayer.Repositories;
 
 import Application.Entities.questions.Questionnaire;
 import org.springframework.data.domain.Page;

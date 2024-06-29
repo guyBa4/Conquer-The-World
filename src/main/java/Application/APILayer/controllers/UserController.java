@@ -2,7 +2,7 @@ package Application.APILayer.controllers;
 
 import Application.APILayer.TokenHandler;
 import Application.Entities.users.User;
-import Application.Repositories.RepositoryFactory;
+import Application.DataAccessLayer.Repositories.RepositoryFactory;
 import Application.Response;
 import Application.ServiceLayer.UserService;
 import org.json.JSONException;

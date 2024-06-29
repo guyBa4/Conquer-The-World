@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @org.springframework.context.annotation.Configuration
-@EnableJpaRepositories("Application.Repositories")
+@EnableJpaRepositories("Application.DataAccessLayer.Repositories")
 @ComponentScan(basePackages = {"Application.APILayer", "Application.ServiceLayer", "Application.DataAccessLayer"})
 @EntityScan("Application.Entities")
 public class Configuration implements WebMvcConfigurer {

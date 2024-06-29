@@ -4,9 +4,9 @@
 //import Application.Entities.*;
 //import Application.Enums.GameStatus;
 //import Application.Events.*;
-//import Application.Repositories.RepositoryFactory;
-//import Application.Repositories.RunningGameInstanceRepository;
-//import Application.Repositories.*;
+//import Application.DataAccessLayer.Repositories.RepositoryFactory;
+//import Application.DataAccessLayer.Repositories.RunningGameInstanceRepository;
+//import Application.DataAccessLayer.Repositories.*;
 //import Application.Response;
 //import Application.ServiceLayer.EventService;
 //import Application.ServiceLayer.GameRunningService;

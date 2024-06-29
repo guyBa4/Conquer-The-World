@@ -2,7 +2,9 @@ package Application.Entities.questions;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -28,9 +30,10 @@ public class Question {
     @Column(name = "image", columnDefinition = "BYTEA")
     private byte[] image; // Holds image data
 
-//    @Transient
-//    private List<String> tags;
-
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "question_tags", joinColumns = @JoinColumn(name = "question_id"))
+    @Column(name = "tag")
+    private Set<String> tags;
 
     public Question(){
 
@@ -49,6 +52,14 @@ public class Question {
         this.question = question;
         this.difficulty = difficulty;
         this.image = image;
+    }
+
+    public Question(boolean multipleChoice, String question, int difficulty, byte[] image, List<String> tags) {
+        this.multipleChoice = multipleChoice;
+        this.question = question;
+        this.difficulty = difficulty;
+        this.image = image;
+        this.tags = new HashSet<>(tags);
     }
 
     public UUID getId() {
@@ -113,12 +124,16 @@ public class Question {
         this.image = image;
         return this;
     }
-    
-    //    public String[] getTags() {
-//        return tags;
-//    }
-//
-//    public void setTags(String[] tags) {
-//        this.tags = tags;
-//    }
+
+    public Set<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<String> tags) {
+        this.tags = tags;
+    }
+
+    public void addTags(String tag) {
+        this.tags.add(tag);
+    }
 }
