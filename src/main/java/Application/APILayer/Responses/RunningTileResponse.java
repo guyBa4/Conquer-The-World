@@ -16,10 +16,10 @@ public class RunningTileResponse {
     public static RunningTileResponse from(RunningTile tile) {
         return new RunningTileResponse()
                 .setId(tile.getId())
-                .setAnsweringGroupId(tile.getAnsweringGroup().getId())
-                .setAnsweringPlayerId(tile.getAnsweringPlayer().getId())
+                .setAnsweringGroupId(tile.getAnsweringGroup() != null ? tile.getAnsweringGroup().getId() : null)
+                .setAnsweringPlayerId(tile.getAnsweringPlayer() != null ? tile.getAnsweringPlayer().getId() : null)
                 .setActiveQuestion(tile.getActiveQuestion())
-                .setControllingGroupId(tile.getControllingGroup().getId())
+                .setControllingGroupId(tile.getControllingGroup() != null ? tile.getControllingGroup().getId() : null)
                 .setNumberOfCorrectAnswers(tile.getNumberOfCorrectAnswers());
     }
     
