@@ -1,13 +1,16 @@
 package Application.APILayer.controllers;
 
+import Application.Events.Event;
+import Application.Response;
 import Application.ServiceLayer.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "event")
@@ -15,26 +18,22 @@ public class EventController {
     
     private final EventService eventService;
     private static final Logger LOG = LoggerFactory.getLogger(EventController.class);
+    
     @Autowired
     public EventController(EventService eventService) {
         this.eventService = eventService;
     }
     
-    @GetMapping(path = "/get_emitter/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(path = "/get_events/{runningId}/index/{index}")
     @ResponseBody
-    public SseEmitter getEmitter(@PathVariable(name = "id") String userId) {
-        LOG.info("Get emitter called");
-        if (userId == null || userId.isBlank()) {
-            LOG.warn("Missing user ID");
-            return null;
+    public Response<List<Event>> getEvents(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader,
+                                           @PathVariable(name = "runningId") String runningId, @PathVariable(name = "index") int eventIndex) {
+        if (runningId == null || eventIndex < 0) {
+            LOG.warn("Received bad variables in getEvents, runningId {} eventIndex {}", runningId, eventIndex);
+            return Response.fail("Invalid request");
         }
-        SseEmitter emitter = eventService.getOrCreateEmitter(userId);
-        if (emitter == null) {
-            LOG.warn("No event emitters found for ID " + userId);
-            return null;
-        }
-        LOG.info("Emitter" + emitter);
-        return emitter;
+        List<Event> eventList = eventService.getEventsFromIndex(UUID.fromString(runningId), eventIndex);
+        return Response.ok(eventList);
     }
     
 }

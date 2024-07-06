@@ -1,19 +1,13 @@
 package Application.Events;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class Event {
     private EventType eventType;
     private String message;
     private Object body;
     private Date timestamp;
-    
-    @JsonIgnore
-    private List<EventRecipient> recipients;
+    private int eventIndex;
     
     public EventType getEventType() {
         return eventType;
@@ -51,18 +45,12 @@ public class Event {
         return this;
     }
     
-    public List<EventRecipient> getRecipients() {
-        return recipients;
+    public int getEventIndex() {
+        return eventIndex;
     }
     
-    public Event setRecipients(List<EventRecipient> recipients) {
-        this.recipients = recipients;
-        return this;
-    }
-    
-    public Event setRecipients(List<EventRecipient> players, EventRecipient host) {
-        this.recipients = new ArrayList<>(players);
-        this.recipients.add(host);
+    public Event setEventIndex(int eventIndex) {
+        this.eventIndex = eventIndex;
         return this;
     }
 }
