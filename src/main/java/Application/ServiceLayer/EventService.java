@@ -36,9 +36,12 @@ public class EventService {
             throw new IllegalArgumentException("No running game instance with ID " + runningId);
         }
         List<Event> runningGameEventList = events.get(runningId);
-        if (runningGameEventList.size() <= eventIndex) {
+        if (runningGameEventList.size() < eventIndex) {
             LOG.warn("Invalid event index {} for running game with ID {}", eventIndex, runningId);
             throw new IllegalArgumentException("Invalid event index " + eventIndex + " for running game with ID " + runningId.toString());
+        }
+        if (runningGameEventList.size() == eventIndex) {
+            return new ArrayList<>();
         }
         return runningGameEventList.subList(eventIndex, runningGameEventList.size());
     }
