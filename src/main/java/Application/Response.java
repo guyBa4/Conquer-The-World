@@ -1,7 +1,6 @@
 package Application;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 public class Response<T> {
 

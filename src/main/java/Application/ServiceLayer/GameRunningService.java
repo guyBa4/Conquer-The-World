@@ -1,4 +1,5 @@
 package Application.ServiceLayer;
+
 import Application.APILayer.Responses.RunningTileResponse;
 import Application.APILayer.Responses.ValidateAnswerResponse;
 import Application.DataAccessLayer.DALController;
@@ -13,7 +14,6 @@ import Application.Entities.users.MobilePlayer;
 import Application.Entities.users.PlayerStatistic;
 import Application.Enums.GameStatus;
 import Application.Events.Event;
-import Application.Events.EventRecipient;
 import Application.Events.EventType;
 import Application.DataAccessLayer.Repositories.RepositoryFactory;
 import Application.DataAccessLayer.Repositories.RunningGameInstanceRepository;
@@ -22,10 +22,12 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
+
 import java.sql.Time;
 import java.time.Instant;
 import java.util.*;
 import java.util.logging.Logger;
+
 import static java.util.logging.Logger.getLogger;
 
 @Service
@@ -55,14 +57,11 @@ public class GameRunningService {
         return this;
     }
     public void publishEvent(EventType eventType, Object eventBody, RunningGameInstance gameToUpdate) {
-        List<EventRecipient> eventRecipients = new ArrayList<>(gameToUpdate.getMobilePlayers());
-        eventRecipients.add(gameToUpdate.getGameInstance().getHost());
         Event event = new Event()
                 .setEventType(eventType)
                 .setBody(eventBody)
-                .setRecipients(eventRecipients)
                 .setTimestamp(Date.from(Instant.now()));
-        eventService.addEvent(event);
+        eventService.addEvent(gameToUpdate.getRunningId(), event);
     }
 
     public Response<RunningGameInstance> OpenWaitingRoom(UUID gameId, UUID hostId){ // in this function RunningGameInstance is created
@@ -71,7 +70,7 @@ public class GameRunningService {
             RunningGameInstance runningGameInstance = new RunningGameInstance(gameInstance);
             runningGameInstance.setStatus(GameStatus.WAITING_ROOM);
             runningGameInstanceRepository.save(runningGameInstance);
-            eventService.addEmitter(hostId);
+            eventService.addNewEventList(gameId);
             return Response.ok(runningGameInstance);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();

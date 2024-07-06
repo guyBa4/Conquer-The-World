@@ -1,14 +1,11 @@
 package Application.ServiceLayer;
 
-import Application.Configurations.Configuration;
 import Application.Events.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.io.IOException;
 import java.util.*;
 
 @Scope("singleton")
@@ -16,64 +13,38 @@ import java.util.*;
 public class EventService {
     
     private final static Logger LOG = LoggerFactory.getLogger(EventService.class);
-    
-    private final List<Event> awaitingEvents;
-    private final Map<UUID, SseEmitter> emitters;
-    
-    public void addEvent(Event event) {
-        if (event.getRecipients() == null || event.getRecipients().isEmpty())
-            LOG.warn("Failed to add event");
-        else awaitingEvents.add(event);
-    }
+    private final Map<UUID, List<Event>> events;
     
     public EventService() {
-        this.emitters = new HashMap<>();
-        this.awaitingEvents = new ArrayList<>();
-        Timer timer = new Timer();
-        TimerTask timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                if (!awaitingEvents.isEmpty()) {
-                    awaitingEvents.forEach((event) ->
-                            event.getRecipients().forEach((recipient) -> {
-                                try {
-                                    SseEmitter emitter = emitters.get(recipient.getId());
-                                    if (emitter != null) {
-                                        LOG.info("Sent event");
-                                        emitter.send(SseEmitter.event().name("message").data(event));
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                    LOG.warn("Failed to send event to recipient");
-                                }
-                            }));
-                    awaitingEvents.clear();
-                }
-            }
-        };
-        timer.scheduleAtFixedRate(timerTask, 0L, 1000L);
+        events = new HashMap<>();
     }
     
-    public SseEmitter addEmitter(UUID recipientId) {
-        if (recipientId != null) {
-            SseEmitter emitter = new SseEmitter(Configuration.defaultSseEmitterTimeout);
-            this.emitters.put(recipientId, emitter);
-            return emitter;
+    public void addEvent(UUID runningId, Event event) {
+        if (!events.containsKey(runningId)) {
+            events.put(runningId, new ArrayList<>());
         }
-        return null;
+        synchronized (events.get(runningId)) {
+            int eventIndex = events.get(runningId).size();
+            event.setEventIndex(eventIndex);
+            events.get(runningId).add(event);
+        }
     }
     
-    public SseEmitter getEmitter(String emitterRefId) {
-        UUID userId = UUID.fromString(emitterRefId);
-        return emitters.get(userId);
+    public List<Event> getEventsFromIndex(UUID runningId, int eventIndex) {
+        if (!events.containsKey(runningId)) {
+            LOG.warn("No running game instance with ID {}", runningId.toString());
+            throw new IllegalArgumentException("No running game instance with ID " + runningId);
+        }
+        List<Event> runningGameEventList = events.get(runningId);
+        if (runningGameEventList.size() <= eventIndex) {
+            LOG.warn("Invalid event index {} for running game with ID {}", eventIndex, runningId);
+            throw new IllegalArgumentException("Invalid event index " + eventIndex + " for running game with ID " + runningId.toString());
+        }
+        return runningGameEventList.subList(eventIndex, runningGameEventList.size());
     }
     
-    public SseEmitter getOrCreateEmitter(String emitterRefId) {
-        UUID userId = UUID.fromString(emitterRefId);
-        SseEmitter emitter = emitters.get(userId);
-        if (emitter == null)
-            LOG.debug("Emitter not found");
-        emitter = addEmitter(userId);
-        return emitter;
+    public void addNewEventList(UUID gameId) {
+        if (!events.containsKey(gameId))
+            events.put(gameId, new ArrayList<>());
     }
 }
