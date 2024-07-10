@@ -1,5 +1,6 @@
 package Application.APILayer.controllers;
 
+import Application.APILayer.Responses.MapResponse;
 import Application.APILayer.Responses.ValidateAnswerResponse;
 import Application.APILayer.TokenHandler;
 import Application.Entities.games.GameStatistic;
@@ -10,6 +11,7 @@ import Application.Entities.users.MobilePlayer;
 import Application.Entities.users.PlayerStatistic;
 import Application.DataAccessLayer.Repositories.RepositoryFactory;
 import Application.Response;
+import Application.ServiceLayer.EventService;
 import Application.ServiceLayer.GameRunningService;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,12 +33,14 @@ public class RunningGameController {
     private final ReentrantLock lock = new ReentrantLock();
     TokenHandler tokenHandler;
     GameRunningService gameRunningService;
+    EventService eventService;
     private static Logger LOG;
     
     @Autowired
-    public RunningGameController(RepositoryFactory repositoryFactory, GameRunningService gameRunningService)
+    public RunningGameController(RepositoryFactory repositoryFactory, GameRunningService gameRunningService, EventService eventService)
     {
         this.gameRunningService = gameRunningService;
+        this.eventService = eventService;
         tokenHandler = TokenHandler.getInstance();
         LOG = getLogger(this.getClass().toString());
     }
@@ -179,16 +183,17 @@ public class RunningGameController {
 
 
     @GetMapping(path = "/refresh_map/runningGameId={gameId}&userId={mobileId}")
-    public Response<List<RunningTile>> refreshMap(@PathVariable(name = "gameId") String gameId, @PathVariable(name = "mobileId") String mobileId,
-                                                  @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public Response<MapResponse> refreshMap(@PathVariable(name = "gameId") String gameId, @PathVariable(name = "mobileId") String mobileId,
+                                            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             tokenHandler.verifyAnyToken(authorizationHeader);
             UUID runningGameId = UUID.fromString(gameId);
-//            UUID mobileUuid = UUID.fromString(mobileId);
-            return gameRunningService.getRunningTiles(runningGameId);
+            Response<List<RunningTile>> tilesResponse = gameRunningService.getRunningTiles(runningGameId);
+            int eventIndex = eventService.getUpdatedEventIndex(UUID.fromString(gameId));
+            return Response.ok(new MapResponse().setTiles(tilesResponse.getValue()).setEventIndex(eventIndex));
         } catch (IllegalArgumentException e) {
             return Response.fail(403, e.getMessage());
-        } catch (JSONException e) {
+        } catch (Exception e) {
             return Response.fail(500, "Internal Server Error");
         }
     }

@@ -27,6 +27,7 @@ public class EventService {
             int eventIndex = events.get(runningId).size();
             event.setEventIndex(eventIndex);
             events.get(runningId).add(event);
+            LOG.debug("Added event of type {} to running game {}", event.getEventType(), runningId);
         }
     }
     
@@ -49,5 +50,11 @@ public class EventService {
     public void addNewEventList(UUID gameId) {
         if (!events.containsKey(gameId))
             events.put(gameId, new ArrayList<>());
+    }
+    
+    public int getUpdatedEventIndex(UUID gameId) {
+        if (events.containsKey(gameId))
+            return events.get(gameId).size();
+        return 0;
     }
 }
