@@ -54,7 +54,9 @@ public class EventService {
     
     public int getUpdatedEventIndex(UUID gameId) {
         if (events.containsKey(gameId))
-            return events.get(gameId).size();
+            synchronized (events.get(gameId)) {
+                return events.get(gameId).size();
+            }
         return 0;
     }
 }
