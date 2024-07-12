@@ -36,7 +36,6 @@ public class Question {
     private Set<String> tags;
 
     public Question(){
-
     }
 
 

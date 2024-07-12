@@ -9,6 +9,7 @@ import Application.Entities.questions.AssignedQuestion;
 import Application.Entities.questions.Question;
 import Application.Entities.questions.Questionnaire;
 import Application.Entities.users.MobilePlayer;
+import Application.Entities.users.MobileUser;
 import Application.Entities.users.PlayerStatistic;
 import Application.Entities.users.User;
 import Application.DataAccessLayer.Repositories.RepositoryFactory;
@@ -60,6 +61,14 @@ public class DALController {
         if (optional.isEmpty())
             throw new IllegalArgumentException("there is no user with this UUID : " + uuid);
         User object = optional.get();
+        return object;
+    }
+
+    public MobileUser getMobileUser(UUID uuid){
+        Optional<MobileUser> optional = repositoryFactory.mobileUserRepository.findById(uuid);
+        if (optional.isEmpty())
+            throw new IllegalArgumentException("there is no MobileUser with this UUID : " + uuid);
+        MobileUser object = optional.get();
         return object;
     }
 
