@@ -150,6 +150,7 @@ public class GameRunningService {
                 GameStatistic gameStatistic = new GameStatistic(runningGameInstance);
                 runningGameInstance.setGameStatistics(gameStatistic);
                 runningGameInstanceRepository.save(runningGameInstance);
+                eventService.addNewEventList(runningGameId);
                 LOG.info("Game with ID " + runningGameId.toString() + " started successfully");
                 return Response.ok(runningGameInstance);
             }
