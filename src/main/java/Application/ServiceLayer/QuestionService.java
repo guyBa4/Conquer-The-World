@@ -3,10 +3,7 @@ import Application.APILayer.JsonToInstance;
 import Application.APILayer.controllers.Requests.NewQuestion;
 import Application.DataAccessLayer.DALController;
 import Application.Entities.games.GameInstance;
-import Application.Entities.questions.Answer;
-import Application.Entities.questions.AssignedQuestion;
-import Application.Entities.questions.Question;
-import Application.Entities.questions.Questionnaire;
+import Application.Entities.questions.*;
 import Application.Entities.users.User;
 import Application.DataAccessLayer.Repositories.*;
 import Application.Response;
@@ -75,7 +72,7 @@ public class QuestionService {
             if (newQuestion.getImage() != null)
                 image = Base64.getDecoder().decode(newQuestion.getImage().getBytes(StandardCharsets.UTF_8));
             Question questionObj = new Question(newQuestion.isMultipleChoice(), newQuestion.getQuestion(),
-                    newQuestion.getDifficulty(), image, newQuestion.getTags());
+                    newQuestion.getDifficulty(), image, newQuestion.getTags(), newQuestion.isShared());
             List<Answer> answers = buildAnswers(newQuestion.getCorrectAnswer(), newQuestion.getIncorrectAnswers(), questionObj);
             questionObj.setAnswers(answers);
             questionRepository.save(questionObj);
@@ -149,7 +146,6 @@ public class QuestionService {
     public Response<Page<Question>> filterQuestions(int page, int size, String content, List<String> tags, Integer difficulty) {
         Page<Question> questionPage = questionRepository.findByFilters(content, difficulty, tags, PageRequest.of(page, size));
         return Response.ok(questionPage);
-
     }
     
     
@@ -173,8 +169,11 @@ public class QuestionService {
     {
         try {
             List<AssignedQuestion> assignedQuestions = assignedQuestionRepository.findByQuestionId(id);
-            this.assignedQuestionRepository.deleteAll(assignedQuestions);
-            this.questionRepository.deleteById(id);
+            for (AssignedQuestion assignedQuestion : assignedQuestions) {
+                assignedQuestion.setQuestion(null);
+            }
+            assignedQuestionRepository.saveAll(assignedQuestions);
+            questionRepository.deleteById(id);
             return Response.ok(true);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();

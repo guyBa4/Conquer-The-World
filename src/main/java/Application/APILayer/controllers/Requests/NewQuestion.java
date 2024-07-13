@@ -10,7 +10,18 @@ public class NewQuestion {
     private List<String> tags;
     private int difficulty;
     private String image;
-    
+
+    public boolean isShared() {
+        return shared;
+    }
+
+    public NewQuestion setShared(boolean shared) {
+        this.shared = shared;
+        return this;
+    }
+
+    private boolean shared;
+
     public String getQuestion() {
         return question;
     }

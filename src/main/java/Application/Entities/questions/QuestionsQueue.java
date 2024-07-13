@@ -13,7 +13,7 @@ public class QuestionsQueue {
     @Column(name = "id", nullable = false, unique = true)
     private UUID id;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(
             name = "assigned_questions_to_assigned_questions_queues",
             joinColumns = @JoinColumn(name = "assigned_question_id"),

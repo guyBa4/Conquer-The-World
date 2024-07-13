@@ -2,10 +2,7 @@ package Application.Entities.questions;
 
 import jakarta.persistence.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "questions")
@@ -35,6 +32,9 @@ public class Question {
     @Column(name = "tag")
     private Set<String> tags;
 
+    @Column(name = "shared")
+    private boolean shared;
+
     public Question(){
     }
 
@@ -44,22 +44,43 @@ public class Question {
         this.question = question;
         this.answers = answers;
         this.difficulty = difficulty;
+        this.shared = true;
     }
     
-    public Question(boolean multipleChoice, String question, Integer difficulty, byte[] image) {
+    public Question(boolean multipleChoice, String question, Integer difficulty, byte[] image, boolean shared) {
         this.multipleChoice = multipleChoice;
         this.question = question;
         this.difficulty = difficulty;
         this.image = image;
+        this.shared = shared;
     }
 
-    public Question(boolean multipleChoice, String question, int difficulty, byte[] image, List<String> tags) {
+    public Question(boolean multipleChoice, String question, int difficulty, byte[] image, List<String> tags, boolean shared) {
         this.multipleChoice = multipleChoice;
         this.question = question;
         this.difficulty = difficulty;
         this.image = image;
         this.tags = new HashSet<>(tags);
+        this.shared = shared;
     }
+    // Copy constructor
+    public Question(Question questionToCopy) {
+        this.multipleChoice = questionToCopy.multipleChoice;
+        this.question = questionToCopy.question;
+        this.answers = questionToCopy.answers != null ? new ArrayList<>(questionToCopy.answers.size()) : null;
+        if (questionToCopy.answers != null) {
+            for (Answer answer : questionToCopy.answers) {
+                Answer copiedAnswer = new Answer(answer);
+                copiedAnswer.setQuestion(this); // set the question reference to the new copy
+                this.answers.add(copiedAnswer);
+            }
+        }
+        this.difficulty = questionToCopy.difficulty;
+        this.image = questionToCopy.image != null ? questionToCopy.image.clone() : null;
+        this.tags = questionToCopy.tags != null ? new HashSet<>(questionToCopy.tags) : null;
+        this.shared = false;
+    }
+
 
     public UUID getId() {
         return id;

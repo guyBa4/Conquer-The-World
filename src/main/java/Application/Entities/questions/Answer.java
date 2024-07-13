@@ -37,8 +37,13 @@ public class Answer {
         this.correct = correct;
         this.question = question;
     }
-
-
+    // Copy constructor
+    public Answer(Answer answerToCopy) {
+        this.answerText = answerToCopy.answerText;
+        this.correct = answerToCopy.correct;
+        // Question reference is not deep copied to avoid circular references
+        this.question = answerToCopy.question;
+    }
 
     public UUID getId() {
         return id;

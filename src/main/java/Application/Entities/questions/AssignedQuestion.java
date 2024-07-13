@@ -13,7 +13,7 @@ public class AssignedQuestion {
     @Column(name = "id")
     private UUID id;
     
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "question_id")
     private Question question;
 
@@ -29,14 +29,14 @@ public class AssignedQuestion {
     private long timeout;
 
     public AssignedQuestion(Question question, int difficultyLevel) {
-        this.question = question;
+        this.question = new Question(question);
         this.difficultyLevel = difficultyLevel;
     }
     public AssignedQuestion() {
     }
 
     public AssignedQuestion(Question question) {
-        this.question = question;
+        this.question = new Question(question);
         this.difficultyLevel = question.getDifficulty();
     }
 
