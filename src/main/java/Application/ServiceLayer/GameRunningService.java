@@ -193,16 +193,11 @@ public class GameRunningService {
                 if (optionalRunningGameInstance.isEmpty()){
                     LOG.warning("Game ID does not exist");
                     return Response.fail("Game ID does not exist");
-                }else{
+                } else {
                     runningGameInstance = optionalRunningGameInstance.get();
-                    LOG.warning("User ID not of host or registered player");
-                    LOG.warning("userId = " + userId);
-                    for (MobilePlayer mobilePlayer : runningGameInstance.getMobilePlayers()){
-                        LOG.warning(mobilePlayer.toString());
-                    }
+                    return Response.ok(runningGameInstance);
                 }
-                return Response.fail("Unauthorized request");
-            }else{
+            } else {
                 runningGameInstance = runningGameInstanceList.get(0);
                 return Response.ok(runningGameInstance);
             }
