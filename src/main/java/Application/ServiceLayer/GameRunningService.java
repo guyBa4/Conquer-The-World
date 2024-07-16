@@ -357,6 +357,7 @@ public class GameRunningService {
                         .setAnsweringGroup(null)
                         .setActiveQuestion(null)
                         .setNumberOfCorrectAnswers(0);
+                publishEvent(EventType.TILES_UPDATE, RunningTileResponse.from(tile), runningGameInstance);
             }
             runningGameInstanceRepository.save(runningGameInstance);
             return Response.ok(res);
