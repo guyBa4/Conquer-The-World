@@ -18,7 +18,7 @@ public class Question {
     @Column
     private String question;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Answer> answers;
 
     @Column
@@ -27,7 +27,7 @@ public class Question {
     @Column(name = "image", columnDefinition = "BYTEA")
     private byte[] image; // Holds image data
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection
     @CollectionTable(name = "question_tags", joinColumns = @JoinColumn(name = "question_id"))
     @Column(name = "tag")
     private Set<String> tags;

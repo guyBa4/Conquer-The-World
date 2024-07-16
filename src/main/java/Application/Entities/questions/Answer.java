@@ -20,7 +20,7 @@ public class Answer {
     @Column(name = "correct")
     private boolean correct;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "question_id", nullable = false)
     @JsonIgnore
     private Question question;
