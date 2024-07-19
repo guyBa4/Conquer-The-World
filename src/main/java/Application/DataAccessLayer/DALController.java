@@ -10,7 +10,7 @@ import Application.Entities.questions.Question;
 import Application.Entities.questions.Questionnaire;
 import Application.Entities.users.MobilePlayer;
 import Application.Entities.users.MobileUser;
-import Application.Entities.users.PlayerStatistic;
+import Application.Entities.users.PlayerStatistics;
 import Application.Entities.users.User;
 import Application.DataAccessLayer.Repositories.RepositoryFactory;
 
@@ -112,11 +112,11 @@ public class DALController {
         return object;
     }
 
-    public PlayerStatistic getPlayerStatistic(UUID uuid){
-        Optional<PlayerStatistic> optional = repositoryFactory.playerStatisticRepository.findById(uuid);
+    public PlayerStatistics getPlayerStatistic(UUID uuid){
+        Optional<PlayerStatistics> optional = repositoryFactory.playerStatisticRepository.findById(uuid);
         if (optional.isEmpty())
             throw new IllegalArgumentException("there is no PlayerStatistic with this UUID : " + uuid);
-        PlayerStatistic object = optional.get();
+        PlayerStatistics object = optional.get();
         return object;
     }
 

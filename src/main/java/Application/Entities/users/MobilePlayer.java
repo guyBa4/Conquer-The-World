@@ -37,18 +37,18 @@ public class MobilePlayer implements EventRecipient {
     private boolean ready;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "mobilePlayer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PlayerStatistic> playerStatistics;
+    @OneToOne(mappedBy = "mobilePlayer")
+    private PlayerStatistics playerStatistics;
 
     public MobilePlayer(){
         this.ready = false;
-        this.playerStatistics = new LinkedList<>();
+        this.playerStatistics = new PlayerStatistics();
     }
     public MobilePlayer(String name, RunningGameInstance runningGameInstance) {
         this.name = name;
         this.ready = false;
         this.runningGameInstance = runningGameInstance;
-        this.playerStatistics = new LinkedList<>();
+        this.playerStatistics = new PlayerStatistics();
     }
 
     public String getName() {
@@ -90,9 +90,6 @@ public class MobilePlayer implements EventRecipient {
     public void setRunningGameInstance(RunningGameInstance runningGameInstance) {
         this.runningGameInstance = runningGameInstance;
     }
-    public void addPlayerStatistic(PlayerStatistic playerStatistic){
-        this.playerStatistics.add(playerStatistic);
-    }
     
     @Override
     public boolean equals(Object o) {
@@ -102,11 +99,11 @@ public class MobilePlayer implements EventRecipient {
         return id.equals(that.id);
     }
 
-    public List<PlayerStatistic> getPlayerStatistics() {
+    public PlayerStatistics getPlayerStatistics() {
         return playerStatistics;
     }
 
-    public MobilePlayer setPlayerStatistics(List<PlayerStatistic> playerStatistics) {
+    public MobilePlayer setPlayerStatistics(PlayerStatistics playerStatistics) {
         this.playerStatistics = playerStatistics;
         return this;
     }

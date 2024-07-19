@@ -8,7 +8,7 @@ import Application.Entities.games.RunningGameInstance;
 import Application.Entities.games.RunningTile;
 import Application.Entities.questions.AssignedQuestion;
 import Application.Entities.users.MobilePlayer;
-import Application.Entities.users.PlayerStatistic;
+import Application.Entities.users.PlayerStatistics;
 import Application.DataAccessLayer.Repositories.RepositoryFactory;
 import Application.Response;
 import Application.ServiceLayer.EventService;
@@ -258,7 +258,7 @@ public class RunningGameController {
 
     @GetMapping(path = "/get_player_statistic/{running_id}/{player_id}")
     @ResponseBody
-    public Response<PlayerStatistic> getPlayerStatistic(@PathVariable(name= "player_id") String playerId,@PathVariable(name= "running_id") String runningId, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public Response<PlayerStatistics> getPlayerStatistic(@PathVariable(name= "player_id") String playerId, @PathVariable(name= "running_id") String runningId, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             tokenHandler.verifyAnyToken(authorizationHeader);
             return gameRunningService.getPlayerStatistic(UUID.fromString(playerId), UUID.fromString(runningId));
@@ -271,7 +271,7 @@ public class RunningGameController {
 
     @GetMapping(path = "/get_all_player_statistics/{running_id}")
     @ResponseBody
-    public Response<List<PlayerStatistic>> getAllPlayersStatistics(@PathVariable(name= "running_id") String runningGameId, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public Response<List<PlayerStatistics>> getAllPlayersStatistics(@PathVariable(name= "running_id") String runningGameId, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             tokenHandler.verifyAnyToken(authorizationHeader);
             return gameRunningService.getAllPlayerStatistics(UUID.fromString(runningGameId));

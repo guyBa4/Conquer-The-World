@@ -3,6 +3,7 @@ package Application.ServiceLayer;
 import Application.APILayer.Responses.RunningTileResponse;
 import Application.APILayer.Responses.ValidateAnswerResponse;
 import Application.DataAccessLayer.DALController;
+import Application.DataAccessLayer.Repositories.MobilePlayerRepository;
 import Application.Entities.games.GameInstance;
 import Application.Entities.games.GameStatistic;
 import Application.Entities.games.RunningGameInstance;
@@ -11,7 +12,7 @@ import Application.Entities.questions.AssignedQuestion;
 import Application.Entities.questions.Questionnaire;
 import Application.Entities.users.Group;
 import Application.Entities.users.MobilePlayer;
-import Application.Entities.users.PlayerStatistic;
+import Application.Entities.users.PlayerStatistics;
 import Application.Enums.GameStatus;
 import Application.Events.Event;
 import Application.Events.EventType;
@@ -34,6 +35,7 @@ import static java.util.logging.Logger.getLogger;
 public class GameRunningService {
     private RepositoryFactory repositoryFactory;
     private RunningGameInstanceRepository runningGameInstanceRepository;
+    private MobilePlayerRepository mobilePlayerRepository;
     private DALController dalController;
     private EventService eventService;
     private Map<Pair<UUID, UUID>, TimerTask> timers;
@@ -42,11 +44,12 @@ public class GameRunningService {
     public GameRunningService(){}
 
     @Autowired
-    private GameRunningService(RepositoryFactory repositoryFactory, EventService eventService){
+    private GameRunningService(RepositoryFactory repositoryFactory, EventService eventService, MobilePlayerRepository mobilePlayerRepository){
         this.dalController = DALController.getInstance();
         if (dalController.needToInitiate())
             dalController.init(repositoryFactory);
         this.repositoryFactory = repositoryFactory;
+        this.mobilePlayerRepository = mobilePlayerRepository;
         this.runningGameInstanceRepository = repositoryFactory.runningGameInstanceRepository;
         this.eventService = eventService;
         this.timers = new HashMap<>();
@@ -325,8 +328,8 @@ public class GameRunningService {
                 return Response.fail("Did not find user by ID");
             }
     
-            PlayerStatistic playerStatistic = repositoryFactory.playerStatisticRepository.findByRunningGameInstanceRunningIdAndMobilePlayerId(runningGameId, userId).get(0);
-            playerStatistic.addQuestionsAnswered();
+            PlayerStatistics playerStatistics = repositoryFactory.playerStatisticRepository.findByRunningGameInstanceRunningIdAndMobilePlayerId(runningGameId, userId).get(0);
+            playerStatistics.addQuestionsAnswered();
             runningGameInstance.getGameStatistics().addQuestionsAnswered();
     
             ValidateAnswerResponse res = new ValidateAnswerResponse();
@@ -336,7 +339,7 @@ public class GameRunningService {
             if (res.isCorrect()) {
                 Group playerGroup = player.getGroup();
 
-                playerStatistic.addCorrectAnswers();
+                playerStatistics.addCorrectAnswers();
                 runningGameInstance.getGameStatistics().addCorrectAnswers();
                 
                 if (runningGameInstance.getGameInstance().getConfiguration().getMultipleQuestionsPerTile()) {
@@ -350,8 +353,8 @@ public class GameRunningService {
                             res.setNextQuestion(question);
                             publishEvent(EventType.TILES_UPDATE, RunningTileResponse.from(tile), runningGameInstance);
                         }
-                    } else setTileConquered(tile, playerGroup, runningGameInstance, playerStatistic);
-                } else setTileConquered(tile, playerGroup, runningGameInstance, playerStatistic);
+                    } else setTileConquered(tile, playerGroup, runningGameInstance, playerStatistics);
+                } else setTileConquered(tile, playerGroup, runningGameInstance, playerStatistics);
             } else {
                 tile.setAnsweringPlayer(null)
                         .setAnsweringGroup(null)
@@ -370,7 +373,7 @@ public class GameRunningService {
         }
     }
 
-    private void setTileConquered(RunningTile tile, Group group, RunningGameInstance runningGameInstance, PlayerStatistic playerStatistic) {
+    private void setTileConquered(RunningTile tile, Group group, RunningGameInstance runningGameInstance, PlayerStatistics playerStatistics) {
         tile.setAnsweringPlayer(null)
                 .setAnsweringGroup(null)
                 .setControllingGroup(group)
@@ -379,7 +382,7 @@ public class GameRunningService {
         group.addScore(tile.getTile().getDifficultyLevel());
         publishEvent(EventType.TILES_UPDATE, RunningTileResponse.from(tile), runningGameInstance);
         publishEvent(EventType.SCORE_UPDATE, group, runningGameInstance);
-        playerStatistic.addScore(tile.getTile().getDifficultyLevel());
+        playerStatistics.addScore(tile.getTile().getDifficultyLevel());
     }
     
     public Response<Boolean> endRunningGame(UUID runningGameId) {
@@ -439,9 +442,9 @@ public class GameRunningService {
         }
     }
 
-    public Response<List<PlayerStatistic>> getAllPlayerStatistics(UUID running_game_id) {
+    public Response<List<PlayerStatistics>> getAllPlayerStatistics(UUID running_game_id) {
         try {
-            List<PlayerStatistic> playerStatistics = repositoryFactory.playerStatisticRepository.findByRunningGameInstanceRunningId(running_game_id);
+            List<PlayerStatistics> playerStatistics = repositoryFactory.playerStatisticRepository.findByRunningGameInstanceRunningId(running_game_id);
             return Response.ok(playerStatistics);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -452,10 +455,10 @@ public class GameRunningService {
         }
     }
 
-    public Response<PlayerStatistic> getPlayerStatistic(UUID playerId, UUID runningId) {
+    public Response<PlayerStatistics> getPlayerStatistic(UUID playerId, UUID runningId) {
         try {
-            PlayerStatistic playerStatistic = repositoryFactory.playerStatisticRepository.findByRunningGameInstanceRunningIdAndMobilePlayerId(runningId, playerId).get(0);
-            return Response.ok(playerStatistic);
+            PlayerStatistics playerStatistics = repositoryFactory.playerStatisticRepository.findByRunningGameInstanceRunningIdAndMobilePlayerId(runningId, playerId).get(0);
+            return Response.ok(playerStatistics);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.fail(403, e.getMessage());
@@ -473,6 +476,8 @@ public class GameRunningService {
                     RunningGameInstance runningGameInstance = runningGameResponse.getValue();
                     MobilePlayer player = runningGameInstance.getPlayer(playerId);
                     if (player != null) {
+                        player.getPlayerStatistics().setCheated(true);
+                        mobilePlayerRepository.save(player);
                         publishEvent(EventType.CHEATING_PLAYER_UPDATE, player, runningGameInstance);
                         return Response.ok(true);
                     } else {

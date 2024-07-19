@@ -5,7 +5,7 @@ import Application.Entities.questions.AssignedQuestion;
 import Application.Entities.questions.Questionnaire;
 import Application.Entities.users.Group;
 import Application.Entities.users.MobilePlayer;
-import Application.Entities.users.PlayerStatistic;
+import Application.Entities.users.PlayerStatistics;
 import Application.Enums.GameStatus;
 import Application.Enums.GroupAssignmentProtocol;
 
@@ -50,7 +50,7 @@ public class RunningGameInstance {
 
 
     @OneToMany(mappedBy = "runningGameInstance", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PlayerStatistic> playerStatistics;
+    private List<PlayerStatistics> playerStatistics;
 
     @OneToOne(mappedBy = "runningGameInstance", cascade = CascadeType.ALL, orphanRemoval = true)
     private GameStatistic gameStatistic;
@@ -125,16 +125,16 @@ public class RunningGameInstance {
         this.tiles = tiles;
     }
 
-    public List<PlayerStatistic> getPlayerStatistics() {
+    public List<PlayerStatistics> getPlayerStatistics() {
         return playerStatistics;
     }
 
-    public RunningGameInstance setPlayerStatistics(List<PlayerStatistic> playerStatistics) {
+    public RunningGameInstance setPlayerStatistics(List<PlayerStatistics> playerStatistics) {
         this.playerStatistics = playerStatistics;
         return this;
     }
-    public void addPlayerStatistic(PlayerStatistic playerStatistic){
-        this.playerStatistics.add(playerStatistic);
+    public void addPlayerStatistic(PlayerStatistics playerStatistics){
+        this.playerStatistics.add(playerStatistics);
     }
     public RunningTile getTileById(UUID runningTileId) {
         List<RunningTile> candidates = tiles.stream().filter((tile) -> tile.getId().equals(runningTileId)).toList();
@@ -145,9 +145,9 @@ public class RunningGameInstance {
 
     public void addMobilePlayer(MobilePlayer mobilePlayer){
         mobilePlayers.add(mobilePlayer);
-        PlayerStatistic playerStatistic = new PlayerStatistic(mobilePlayer, this);
-        mobilePlayer.addPlayerStatistic(playerStatistic);
-        this.playerStatistics.add(playerStatistic);
+        PlayerStatistics playerStatistics = new PlayerStatistics(mobilePlayer, this);
+        mobilePlayer.setPlayerStatistics(playerStatistics);
+        this.playerStatistics.add(playerStatistics);
         if (status.equals(GameStatus.STARTED)) {
             Group group = getSmallestGroup();
             mobilePlayer.setGroup(group);
