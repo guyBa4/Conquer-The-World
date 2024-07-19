@@ -281,4 +281,20 @@ public class RunningGameController {
             return Response.fail(500, "Internal Server Error");
         }
     }
+    
+    @PostMapping(path = "/report_cheater")
+    @ResponseBody
+    public Response<Boolean> reportCheater(@RequestBody String inputJson, @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        try {
+            JSONObject jsonObj = new JSONObject(inputJson);
+            LOG.info("\nRequest received by /report_cheater endpoint:\n" + jsonObj);
+            UUID runningGameId = UUID.fromString(jsonObj.getString("gameId"));
+            tokenHandler.verifyAnyToken(authorizationHeader);
+            return gameRunningService.reportCheater(UUID.fromString(authorizationHeader), runningGameId);
+        } catch (IllegalArgumentException e) {
+            return Response.fail(403, e.getMessage());
+        } catch (JSONException e) {
+            return Response.fail(500, "Internal Server Error");
+        }
+    }
 }

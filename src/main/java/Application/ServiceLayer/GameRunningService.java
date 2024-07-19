@@ -464,4 +464,32 @@ public class GameRunningService {
             return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
         }
     }
+    
+    public Response<Boolean> reportCheater(UUID playerId, UUID runningGameId) {
+        try {
+            if (runningGameId != null && playerId != null) {
+                Response<RunningGameInstance> runningGameResponse = getRunningGame(runningGameId, playerId);
+                if (runningGameResponse.isSuccessful()) {
+                    RunningGameInstance runningGameInstance = runningGameResponse.getValue();
+                    MobilePlayer player = runningGameInstance.getPlayer(playerId);
+                    if (player != null) {
+                        publishEvent(EventType.CHEATING_PLAYER_UPDATE, player, runningGameInstance);
+                        return Response.ok(true);
+                    } else {
+                        return Response.fail(400, "Mobile player not found");
+                    }
+                } else {
+                    return Response.fail(400, "Running Game not found");
+                }
+            } else {
+                return Response.fail(400, "Invalid request");
+            }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return Response.fail(403, e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.fail(500, "Internal Server Error : \n" + e.getMessage());
+        }
+    }
 }
