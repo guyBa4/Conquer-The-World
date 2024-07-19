@@ -161,6 +161,11 @@ public class GameService {
                     Map<String, Object> gameMap = new HashMap<>();
                     gameMap.put("id", game.getId());
                     gameMap.put("name", game.getName());
+                    gameMap.put("description", game.getDescription());
+                    gameMap.put("questionnaireName", game.getQuestionnaire().getName());
+                    gameMap.put("mapName", game.getMap().getName());
+                    gameMap.put("numberOfGroups", game.getConfiguration().getNumberOfGroups());
+                    gameMap.put("gameStatus", game.getStatus().name());
                     return gameMap;
                 })
                 .collect(Collectors.toList());
