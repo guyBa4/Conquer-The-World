@@ -13,16 +13,14 @@ import java.util.*;
 
 @Repository
 public interface QuestionRepository  extends JpaRepository<Question, UUID> {
-    @Query(nativeQuery = true,
-            value = "SELECT * FROM questions q " +
-                    "LEFT JOIN question_tags t ON t.question_id = q.id " +
-                    "WHERE (q.shared = true OR CAST(q.creator_id AS TEXT) = :user_id ) AND " +
-                    "(:content IS NULL OR LOWER(q.question) LIKE LOWER(CONCAT('%', :content , '%'))) AND " +
-                    "(:difficulty IS NULL OR q.difficulty = :difficulty ) AND " +
-                    "(:tags IS NULL OR t.tag IN :tags );")
+    @Query("SELECT DISTINCT q FROM Question q LEFT JOIN q.tags t WHERE " +
+            "(q.shared = true OR q.creatorId = :user_id) AND " +
+            "(LOWER(q.question) LIKE LOWER(CONCAT('%', :content, '%')) OR :content IS NULL) AND " +
+            "(q.difficulty = :difficulty OR :difficulty IS NULL) AND " +
+            "(t IN :tags OR :tags IS NULL)")
     Page<Question> findByFilters(@Param("content") String content,
                                  @Param("difficulty") Integer difficulty,
                                  @Param("tags") List<String> tags,
-                                 @Param("user_id") String userId,
+                                 @Param("user_id") UUID userId,
                                  Pageable pageable);
 }

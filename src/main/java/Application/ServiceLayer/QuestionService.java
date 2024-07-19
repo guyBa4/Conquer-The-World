@@ -144,7 +144,7 @@ public class QuestionService {
     }
 
     public Response<Page<Question>> filterQuestions(int page, int size, String content, List<String> tags, Integer difficulty, String userId) {
-        Page<Question> questionPage = questionRepository.findByFilters(content, difficulty, tags, userId, PageRequest.of(page, size));
+        Page<Question> questionPage = questionRepository.findByFilters(content, difficulty, tags, UUID.fromString(userId), PageRequest.of(page, size));
         return Response.ok(questionPage);
     }
     
