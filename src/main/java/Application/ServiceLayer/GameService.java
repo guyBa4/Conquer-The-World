@@ -154,8 +154,8 @@ public class GameService {
         return Response.ok(gameInstances);
     }
 
-    public Response<List<Map<String, Object>>> getAllGameInstanceLean(){
-        List<GameInstance> gameInstances = gameInstanceRepository.findAll();
+    public Response<List<Map<String, Object>>> getAllGameInstanceLean(String userId){
+        List<GameInstance> gameInstances = gameInstanceRepository.findAllFiltered(userId);
         List<Map<String, Object>> gameInstancesLean = gameInstances.stream()
                 .map(game -> {
                     Map<String, Object> gameMap = new HashMap<>();

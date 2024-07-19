@@ -101,11 +101,9 @@ public class QuestionController {
                                                  @RequestParam(required = false) String content,
                                                  @RequestParam(name = "tags", required = false) List<String> tags,
                                                  @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader){
-//            ,                                                 @RequestParam(name = "tags", required = false) List<String> tags) {
-
         try {
             tokenHandler.verifyAnyToken(authorizationHeader);
-            return questionService.filterQuestions(page, size, content, tags, difficulty);
+            return questionService.filterQuestions(page, size, content, tags, difficulty, authorizationHeader);
         } catch (JSONException e) {
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
         }

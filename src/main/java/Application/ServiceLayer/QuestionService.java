@@ -143,13 +143,13 @@ public class QuestionService {
         return assignedQuestions;
     }
 
-    public Response<Page<Question>> filterQuestions(int page, int size, String content, List<String> tags, Integer difficulty) {
-        Page<Question> questionPage = questionRepository.findByFilters(content, difficulty, tags, PageRequest.of(page, size));
+    public Response<Page<Question>> filterQuestions(int page, int size, String content, List<String> tags, Integer difficulty, String userId) {
+        Page<Question> questionPage = questionRepository.findByFilters(content, difficulty, tags, userId, PageRequest.of(page, size));
         return Response.ok(questionPage);
     }
     
     
-    public Response<Page<Questionnaire>> filterQuestionnaires(int page, int size, String name, List<String> tags, UUID creatorId) {
+    public Response<Page<Questionnaire>> filterQuestionnaires(int page, int size, String name, List<String> tags,UUID creatorId) {
         Page<Questionnaire> questionnairesPage;
         if (name != null && creatorId != null)
             questionnairesPage = questionnaireRepository.findByNameLikeAndUserId(name, creatorId, PageRequest.of(page, size));
@@ -159,7 +159,6 @@ public class QuestionService {
             questionnairesPage = questionnaireRepository.findByUserId(creatorId, PageRequest.of(page, size));
         else
             questionnairesPage = questionnaireRepository.findBy(PageRequest.of(page, size));
-        System.out.println(questionnairesPage);
         return Response.ok(questionnairesPage);
     }
 

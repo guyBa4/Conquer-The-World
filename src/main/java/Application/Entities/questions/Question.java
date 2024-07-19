@@ -13,6 +13,7 @@ public class Question {
     @Column(name = "id", nullable = false, unique = true)
     private UUID id;
     
+    @Column(name = "multiple_choice")
     private boolean multipleChoice;
     
     @Column
@@ -34,6 +35,9 @@ public class Question {
 
     @Column(name = "shared")
     private boolean shared;
+    
+    @Column(name = "creator_id", nullable = false)
+    private UUID creatorId;
 
     public Question(){
     }
@@ -79,6 +83,7 @@ public class Question {
         this.image = questionToCopy.image != null ? questionToCopy.image.clone() : null;
         this.tags = questionToCopy.tags != null ? new HashSet<>(questionToCopy.tags) : null;
         this.shared = false;
+        this.creatorId = questionToCopy.creatorId;
     }
 
 
@@ -155,5 +160,23 @@ public class Question {
 
     public void addTags(String tag) {
         this.tags.add(tag);
+    }
+    
+    public boolean getShared() {
+        return shared;
+    }
+    
+    public Question setShared(boolean shared) {
+        this.shared = shared;
+        return this;
+    }
+    
+    public UUID getCreatorId() {
+        return creatorId;
+    }
+    
+    public Question setCreatorId(UUID creatorId) {
+        this.creatorId = creatorId;
+        return this;
     }
 }

@@ -91,7 +91,7 @@ public class GameController {
     public Response<List<Map<String, Object>>> getGamesInstancesLean(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
             tokenHandler.verifyAnyToken(authorizationHeader);
-            return gameService.getAllGameInstanceLean();
+            return gameService.getAllGameInstanceLean(authorizationHeader);
         } catch (IllegalArgumentException e) {
             return Response.fail(403, e.getMessage());
         } catch (JSONException e) {

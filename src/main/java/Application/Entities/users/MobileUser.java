@@ -24,7 +24,7 @@ public class MobileUser {
     private String password;
 
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @JoinColumn(name = "mobile_player_id")
+    @JoinColumn(name = "mobile_user_id")
     @JsonIgnore
     private List<MobilePlayer> mobilePlayers;
     public MobileUser() {
