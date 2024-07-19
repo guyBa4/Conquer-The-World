@@ -29,6 +29,7 @@ public class UserService {
         this.userRepository = userRepository;
         this.dalController = DALController.getInstance();
         this.eventService = eventService;
+        jsonToInstance = JsonToInstance.getInstance();
     }
 
     public Response<User> register(JSONObject jsonObject) {
