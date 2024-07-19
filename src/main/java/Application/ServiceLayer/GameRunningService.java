@@ -385,10 +385,10 @@ public class GameRunningService {
     public Response<Boolean> endRunningGame(UUID runningGameId) {
         try {
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
-            publishEvent(EventType.END_GAME_UPDATE, null, runningGameInstance);
             runningGameInstance.setStatus(GameStatus.ENDED);
             runningGameInstance.getGameStatistics().setTimeEnded(new Time(new Date().getTime()));
             runningGameInstanceRepository.save(runningGameInstance);
+            publishEvent(EventType.END_GAME_UPDATE, null, runningGameInstance);
             return Response.ok(true);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
