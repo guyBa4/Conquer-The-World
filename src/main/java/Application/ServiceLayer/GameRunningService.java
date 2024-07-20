@@ -389,7 +389,7 @@ public class GameRunningService {
         try {
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
             runningGameInstance.setStatus(GameStatus.ENDED);
-            runningGameInstance.getGameStatistics().setTimeEnded(new Time(new Date().getTime()));
+            runningGameInstance.getGameStatistics().setTimeEnded(new Date());
             runningGameInstanceRepository.save(runningGameInstance);
             publishEvent(EventType.END_GAME_UPDATE, null, runningGameInstance);
             return Response.ok(true);
