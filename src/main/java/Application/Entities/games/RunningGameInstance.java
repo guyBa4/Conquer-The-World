@@ -205,7 +205,7 @@ public class RunningGameInstance {
                 return true;
             }
             else if (tile.getTileType().equals(TileType.SEA)) {
-                return tile.getNeighbors().stream().anyMatch((seaTileNeighbour) -> checkTilesAreNeighbors(seaTileNeighbour, target));
+                return checkTilesAreNeighbors(tile, target);
             }
             else return false;
         });
