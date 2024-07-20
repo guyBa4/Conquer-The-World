@@ -212,8 +212,18 @@ public class RunningGameInstance {
     }
 
     private boolean checkTileIsGroupNeighbor(RunningTile target, int group) {
-        List<RunningTile> groupTiles = tiles.stream().filter((tile) -> tile.getControllingGroup().getNumber() == group).toList();
-        return groupTiles.stream().anyMatch((tile) -> (target.getTile().getNeighbors().contains(tile.getTile()) || (tile.getTile().getTileType().equals(TileType.SEA) && checkTileIsGroupNeighbor(target, group))));
+        Set<Tile> groupNeighbors = new HashSet<>();
+        tiles.forEach((tile) -> {
+            if (tile.getControllingGroup().getNumber() == group) {
+                tile.getTile().getNeighbors().forEach((neighbor) -> {
+                    groupNeighbors.add(neighbor);
+                    if (neighbor.getTileType().name().equals(TileType.SEA.name())) {
+                        groupNeighbors.addAll(neighbor.getNeighbors());
+                    }
+                });
+            }
+        });
+        return groupNeighbors.contains(target.getTile());
     }
 
     public boolean checkAnswer(RunningTile tile, MobilePlayer player, UUID questionId, String answer, AnswerRepository answerRepository) throws IOException {
