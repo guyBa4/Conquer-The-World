@@ -4,6 +4,7 @@ import Application.APILayer.Responses.RunningTileResponse;
 import Application.APILayer.Responses.ValidateAnswerResponse;
 import Application.DataAccessLayer.DALController;
 import Application.DataAccessLayer.Repositories.MobilePlayerRepository;
+import Application.DataAccessLayer.Repositories.MobileUserRepository;
 import Application.Entities.games.GameInstance;
 import Application.Entities.games.GameStatistic;
 import Application.Entities.games.RunningGameInstance;
@@ -12,6 +13,7 @@ import Application.Entities.questions.AssignedQuestion;
 import Application.Entities.questions.Questionnaire;
 import Application.Entities.users.Group;
 import Application.Entities.users.MobilePlayer;
+import Application.Entities.users.MobileUser;
 import Application.Entities.users.PlayerStatistics;
 import Application.Enums.GameStatus;
 import Application.Events.Event;
@@ -36,6 +38,7 @@ public class GameRunningService {
     private RepositoryFactory repositoryFactory;
     private RunningGameInstanceRepository runningGameInstanceRepository;
     private MobilePlayerRepository mobilePlayerRepository;
+    private MobileUserRepository mobileUserRepository;
     private DALController dalController;
     private EventService eventService;
     private Map<Pair<UUID, UUID>, TimerTask> timers;
@@ -44,12 +47,14 @@ public class GameRunningService {
     public GameRunningService(){}
 
     @Autowired
-    private GameRunningService(RepositoryFactory repositoryFactory, EventService eventService, MobilePlayerRepository mobilePlayerRepository){
+    private GameRunningService(RepositoryFactory repositoryFactory, EventService eventService, MobilePlayerRepository mobilePlayerRepository,
+                               MobileUserRepository mobileUserRepository){
         this.dalController = DALController.getInstance();
         if (dalController.needToInitiate())
             dalController.init(repositoryFactory);
         this.repositoryFactory = repositoryFactory;
         this.mobilePlayerRepository = mobilePlayerRepository;
+        this.mobileUserRepository = mobileUserRepository;
         this.runningGameInstanceRepository = repositoryFactory.runningGameInstanceRepository;
         this.eventService = eventService;
         this.timers = new HashMap<>();
@@ -84,7 +89,7 @@ public class GameRunningService {
         }
     }
 
-    public Response<MobilePlayer> enterGameWithCode(String gameCode) {
+    public Response<MobilePlayer> enterGameWithCode(String gameCode, String mobileUserId) {
         try {
             List<RunningGameInstance> runningGameInstanceList = runningGameInstanceRepository.findByCode(gameCode);
             RunningGameInstance runningGameInstance;
@@ -92,6 +97,14 @@ public class GameRunningService {
                 return Response.fail("game code not valid");
             runningGameInstance = runningGameInstanceList.get(0);
             MobilePlayer mobilePlayer = new MobilePlayer();
+            if (mobileUserId != null) {
+                Optional<MobileUser> mobileUserOpt = mobileUserRepository.findById(UUID.fromString(mobileUserId));
+                MobileUser mobileUser = mobileUserOpt.orElse(null);
+                if (mobileUser == null) {
+                    throw new IllegalArgumentException("Invalid mobile user id");
+                }
+                mobilePlayer.setMobileUser(mobileUser);
+            }
             runningGameInstance.addMobilePlayer(mobilePlayer);
             runningGameInstanceRepository.save(runningGameInstance);
             LOG.info("mobile enter code : " + mobilePlayer.getId());
@@ -217,7 +230,9 @@ public class GameRunningService {
     public Response<List<RunningTile>> getRunningTiles(UUID runningGameId) {
         try {
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
-                return Response.ok(runningGameInstance.getTiles());
+            if (runningGameInstance == null || !runningGameInstance.getStatus().name().equals(GameStatus.STARTED.name()))
+                throw new IllegalArgumentException("Can not get question from a non-started game.");
+            return Response.ok(runningGameInstance.getTiles());
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             return Response.fail(403, e.getMessage());
@@ -247,6 +262,8 @@ public class GameRunningService {
                 return Response.fail("Received null auth token");
             }
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
+            if (runningGameInstance == null || !runningGameInstance.getStatus().name().equals(GameStatus.STARTED.name()))
+                throw new IllegalArgumentException("Can not get question from a non-started game.");
             MobilePlayer player = getMobilePlayerByAuthToken(runningGameInstance, authorizationToken);
             Group playerGroup = player.getGroup();
             if (playerGroup == null) {
@@ -317,11 +334,9 @@ public class GameRunningService {
     @Transactional
     public Response<ValidateAnswerResponse> checkAnswer(UUID runningGameId, UUID tileId, UUID userId, UUID questionId, String answer) {
         try {
-            TimerTask task = timers.getOrDefault(Pair.of(questionId, userId), null);
-            if (task != null)
-                task.cancel();
-            
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
+            if (!runningGameInstance.getStatus().name().equals(GameStatus.STARTED.name()))
+                throw new IllegalArgumentException("Can not answer a question from a non-started game.");
             MobilePlayer player = runningGameInstance.getPlayer(userId);
             if (player == null) {
                 LOG.severe("Did not find user with ID: " + userId.toString());
@@ -363,6 +378,9 @@ public class GameRunningService {
                 publishEvent(EventType.TILES_UPDATE, RunningTileResponse.from(tile), runningGameInstance);
             }
             runningGameInstanceRepository.save(runningGameInstance);
+            TimerTask task = timers.getOrDefault(Pair.of(questionId, userId), null);
+            if (task != null)
+                task.cancel();
             return Response.ok(res);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -388,8 +406,11 @@ public class GameRunningService {
     public Response<Boolean> endRunningGame(UUID runningGameId) {
         try {
             RunningGameInstance runningGameInstance = dalController.getRunningGameInstance(runningGameId);
+            if (!runningGameInstance.getStatus().name().equals(GameStatus.STARTED.name())) {
+                throw new IllegalArgumentException("Cannot end a non-started game");
+            }
             runningGameInstance.setStatus(GameStatus.ENDED);
-            runningGameInstance.getGameStatistics().setTimeEnded(new Time(new Date().getTime()));
+            runningGameInstance.getGameStatistics().setTimeEnded(new Date());
             runningGameInstanceRepository.save(runningGameInstance);
             publishEvent(EventType.END_GAME_UPDATE, null, runningGameInstance);
             return Response.ok(true);
@@ -472,7 +493,7 @@ public class GameRunningService {
         try {
             if (runningGameId != null && playerId != null) {
                 Response<RunningGameInstance> runningGameResponse = getRunningGame(runningGameId, playerId);
-                if (runningGameResponse.isSuccessful()) {
+                if (runningGameResponse.isSuccessful() && runningGameResponse.getValue().getStatus().equals(GameStatus.STARTED)) {
                     RunningGameInstance runningGameInstance = runningGameResponse.getValue();
                     MobilePlayer player = runningGameInstance.getPlayer(playerId);
                     if (player != null) {
@@ -484,7 +505,7 @@ public class GameRunningService {
                         return Response.fail(400, "Mobile player not found");
                     }
                 } else {
-                    return Response.fail(400, "Running Game not found");
+                    return Response.fail(400, "Invalid running game");
                 }
             } else {
                 return Response.fail(400, "Invalid request");

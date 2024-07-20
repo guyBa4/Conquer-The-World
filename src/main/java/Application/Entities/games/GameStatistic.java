@@ -20,7 +20,7 @@ public class GameStatistic {
     private Date timeStarted;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "time_created")
+    @Column(name = "time_ended")
     private Date timeEnded;
 
     @Column(name = "questions_answered")

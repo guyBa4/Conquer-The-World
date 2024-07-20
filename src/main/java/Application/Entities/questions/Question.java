@@ -19,7 +19,7 @@ public class Question {
     @Column
     private String question;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Answer> answers;
 
     @Column
@@ -28,7 +28,7 @@ public class Question {
     @Column(name = "image", columnDefinition = "BYTEA")
     private byte[] image; // Holds image data
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "question_tags", joinColumns = @JoinColumn(name = "question_id"))
     @Column(name = "tag")
     private Set<String> tags;

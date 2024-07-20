@@ -69,7 +69,8 @@ public class RunningGameController {
             JSONObject jsonObj = new JSONObject(inputJson);
             LOG.info("Request received by /enter_game_code endpoint:\n" + jsonObj);
             String gameCode = jsonObj.getString("gameCode");
-            return gameRunningService.enterGameWithCode(gameCode);
+            String mobileUserId = jsonObj.has("mobileUserId") && !jsonObj.isNull("mobileUserId") ? jsonObj.getString("mobileUserId") : null;
+            return gameRunningService.enterGameWithCode(gameCode, mobileUserId);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
             return Response.fail(500, "Internal Server Error"); // Internal Server Error
