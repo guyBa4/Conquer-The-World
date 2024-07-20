@@ -16,7 +16,6 @@ public class Configuration implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
 
-        registry.addMapping("/**").allowedMethods("*");
         registry.addMapping("/**")
                 .allowedOrigins("http://http://3.144.45.152:3000")  // Replace with your React app's URL
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
