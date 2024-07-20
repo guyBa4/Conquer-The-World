@@ -69,7 +69,7 @@ public class RunningGameController {
             JSONObject jsonObj = new JSONObject(inputJson);
             LOG.info("Request received by /enter_game_code endpoint:\n" + jsonObj);
             String gameCode = jsonObj.getString("gameCode");
-            String mobileUserId = jsonObj.getString("mobileUserId");
+            String mobileUserId = jsonObj.has("mobileUserId") && !jsonObj.isNull("mobileUserId") ? jsonObj.getString("mobileUserId") : null;
             return gameRunningService.enterGameWithCode(gameCode, mobileUserId);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception or handle it appropriately
