@@ -18,7 +18,7 @@ public class Configuration implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
 
         registry.addMapping("/**")
-                .allowedOrigins("*")  // Allow requests from any origin
+                .allowedOrigins("http://3.144.45.152:3000")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*");
     }
