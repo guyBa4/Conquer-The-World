@@ -39,7 +39,12 @@ public class MobilePlayer implements EventRecipient {
     @JsonIgnore
     @OneToOne(mappedBy = "mobilePlayer")
     private PlayerStatistics playerStatistics;
-
+    
+    @ManyToOne
+    @JoinColumn(name = "mobile_user_id")
+    @JsonIgnoreProperties({"mobilePlayers"})
+    private MobileUser mobileUser;
+    
     public MobilePlayer(){
         this.ready = false;
         this.playerStatistics = new PlayerStatistics();
@@ -105,6 +110,15 @@ public class MobilePlayer implements EventRecipient {
 
     public MobilePlayer setPlayerStatistics(PlayerStatistics playerStatistics) {
         this.playerStatistics = playerStatistics;
+        return this;
+    }
+    
+    public MobileUser getMobileUser() {
+        return mobileUser;
+    }
+    
+    public MobilePlayer setMobileUser(MobileUser mobileUser) {
+        this.mobileUser = mobileUser;
         return this;
     }
 }
