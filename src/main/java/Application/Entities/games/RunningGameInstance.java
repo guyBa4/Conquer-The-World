@@ -12,6 +12,7 @@ import Application.Enums.GroupAssignmentProtocol;
 import static java.util.logging.Logger.getLogger;
 
 import Application.DataAccessLayer.Repositories.AnswerRepository;
+import Application.Enums.TileType;
 import jakarta.persistence.*;
 
 import java.io.IOException;
@@ -173,7 +174,7 @@ public class RunningGameInstance {
         Group group = getGroupByNumber(groupNumber);
         RunningTile runningTile = getTileById(runningTileId);
         if (runningTile != null) {
-            boolean isNeighbour = checkTileIsNeighbor(runningTile, groupNumber);
+            boolean isNeighbour = checkTileIsGroupNeighbor(runningTile, groupNumber);
             if (isNeighbour) {
                 if(runningTile.getAnsweringGroup() == null) {
                     int difficulty = runningTile.getTile().getDifficultyLevel();
@@ -197,10 +198,22 @@ public class RunningGameInstance {
             throw new IllegalArgumentException("Could not find passed running tile.");
         }
     }
+    
+    private boolean checkTilesAreNeighbors(Tile source, Tile target) {
+        return source.getNeighbors().stream().anyMatch((tile) -> {
+            if (tile.getId().equals(target.getId())) {
+                return true;
+            }
+            else if (tile.getTileType().equals(TileType.SEA)) {
+                return tile.getNeighbors().stream().anyMatch((seaTileNeighbour) -> checkTilesAreNeighbors(seaTileNeighbour, target));
+            }
+            else return false;
+        });
+    }
 
-    private boolean checkTileIsNeighbor(RunningTile target, int group) {
+    private boolean checkTileIsGroupNeighbor(RunningTile target, int group) {
         List<RunningTile> groupTiles = tiles.stream().filter((tile) -> tile.getControllingGroup().getNumber() == group).toList();
-        return groupTiles.stream().anyMatch((tile) -> target.getTile().getNeighbors().contains(tile.getTile()));
+        return groupTiles.stream().anyMatch((tile) -> (target.getTile().getNeighbors().contains(tile.getTile()) || (tile.getTile().getTileType().equals(TileType.SEA) && checkTileIsGroupNeighbor(target, group))));
     }
 
     public boolean checkAnswer(RunningTile tile, MobilePlayer player, UUID questionId, String answer, AnswerRepository answerRepository) throws IOException {
