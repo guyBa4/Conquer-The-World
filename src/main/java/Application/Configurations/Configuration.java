@@ -11,6 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableJpaRepositories("Application.DataAccessLayer.Repositories")
 @ComponentScan(basePackages = {"Application.APILayer", "Application.ServiceLayer", "Application.DataAccessLayer"})
 @EntityScan("Application.Entities")
+@CrossOrigin
 public class Configuration implements WebMvcConfigurer {
 
     @Override
