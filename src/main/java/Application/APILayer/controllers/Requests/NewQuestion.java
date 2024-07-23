@@ -4,12 +4,23 @@ import java.util.List;
 
 public class NewQuestion {
     private String question;
-    private boolean isMultipleChoice;
+    private boolean multipleChoice;
     private String correctAnswer;
     private List<String> incorrectAnswers;
     private List<String> tags;
     private int difficulty;
     private String image;
+
+    public String getCreatorId() {
+        return creatorId;
+    }
+
+    public NewQuestion setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
+        return this;
+    }
+
+    private String creatorId;
 
     public boolean isShared() {
         return shared;
@@ -32,11 +43,11 @@ public class NewQuestion {
     }
     
     public boolean isMultipleChoice() {
-        return isMultipleChoice;
+        return multipleChoice;
     }
     
     public NewQuestion setMultipleChoice(boolean multipleChoice) {
-        isMultipleChoice = multipleChoice;
+        multipleChoice = multipleChoice;
         return this;
     }
     

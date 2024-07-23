@@ -72,7 +72,7 @@ public class QuestionService {
             if (newQuestion.getImage() != null)
                 image = Base64.getDecoder().decode(newQuestion.getImage().getBytes(StandardCharsets.UTF_8));
             Question questionObj = new Question(newQuestion.isMultipleChoice(), newQuestion.getQuestion(),
-                    newQuestion.getDifficulty(), image, newQuestion.getTags(), newQuestion.isShared());
+                    newQuestion.getDifficulty(), image, newQuestion.getTags(), newQuestion.isShared(), newQuestion.getCreatorId());
             List<Answer> answers = buildAnswers(newQuestion.getCorrectAnswer(), newQuestion.getIncorrectAnswers(), questionObj);
             questionObj.setAnswers(answers);
             questionRepository.save(questionObj);

@@ -59,7 +59,7 @@ public class Question {
         this.shared = shared;
     }
 
-    public Question(boolean multipleChoice, String question, int difficulty, byte[] image, List<String> tags, boolean shared) {
+    public Question(boolean multipleChoice, String question, int difficulty, byte[] image, List<String> tags, boolean shared, String creatorId) {
         this.multipleChoice = multipleChoice;
         this.question = question;
         this.difficulty = difficulty;
