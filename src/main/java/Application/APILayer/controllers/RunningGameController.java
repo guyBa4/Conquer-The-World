@@ -29,6 +29,7 @@ import static java.util.logging.Logger.getLogger;
 
 @RestController
 @RequestMapping(path = "running_game")
+@CrossOrigin(origins = "*")
 public class RunningGameController {
     private final ReentrantLock lock = new ReentrantLock();
     TokenHandler tokenHandler;

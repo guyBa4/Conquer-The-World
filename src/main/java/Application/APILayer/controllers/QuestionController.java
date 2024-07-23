@@ -24,6 +24,7 @@ import static java.util.logging.Logger.getLogger;
 
 @RestController
 @RequestMapping("question")
+@CrossOrigin(origins = "*")
 public class QuestionController {
     QuestionService questionService;
     TokenHandler tokenHandler;

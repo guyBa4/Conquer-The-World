@@ -18,7 +18,7 @@ public class Configuration implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
 
         registry.addMapping("/**")
-                .allowedOrigins("http://3.144.45.152:80", "http://3.144.45.152:3000")
+                .allowedOrigins("http://3.144.45.152:80", "http://3.144.45.152:3000", "http://conquertheworldfiaj.shop")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*");
     }

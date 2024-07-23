@@ -23,6 +23,7 @@ import static java.util.logging.Logger.getLogger;
 
 @RestController
 @RequestMapping(path = "game")
+@CrossOrigin(origins = "*")
 public class GameController {
     GameService gameService;
     TokenHandler tokenHandler;
