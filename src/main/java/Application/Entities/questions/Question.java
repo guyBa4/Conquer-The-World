@@ -66,6 +66,7 @@ public class Question {
         this.image = image;
         this.tags = new HashSet<>(tags);
         this.shared = shared;
+        this.creatorId  = UUID.fromString(creatorId);
     }
     // Copy constructor
     public Question(Question questionToCopy) {
