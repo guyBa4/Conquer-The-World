@@ -99,6 +99,21 @@ public class GameController {
             return Response.fail(500, "Internal Server Error");
         }
     }
+    
+    @GetMapping(path = "/get_all_running_games_lean")
+    @ResponseBody
+    public Response<List<Map<String, Object>>> getRunningGamesInstancesLean(@RequestParam int page,
+                                                                            @RequestParam int size,
+                                                                            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        try {
+            tokenHandler.verifyAnyToken(authorizationHeader);
+            return gameService.getAllRunningGameInstanceLean(authorizationHeader, page, size);
+        } catch (IllegalArgumentException e) {
+            return Response.fail(403, e.getMessage());
+        } catch (JSONException e) {
+            return Response.fail(500, "Internal Server Error");
+        }
+    }
 
     @GetMapping(path = "/get_game")
     @ResponseBody

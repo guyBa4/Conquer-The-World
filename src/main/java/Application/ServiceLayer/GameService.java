@@ -535,4 +535,21 @@ public class GameService {
             return Response.fail(500, "Internal Server Error : \n" + e.toString());
         }
     }
+    
+    public Response<List<Map<String, Object>>> getAllRunningGameInstanceLean(String userId, int page, int size) {
+        Page<RunningGameInstance> runningGameInstances = runningGameInstanceRepository.findAllFiltered(userId, PageRequest.of(page, size));
+        List<Map<String, Object>> runningGameInstancesLean = runningGameInstances.stream()
+                .map(game -> {
+                    Map<String, Object> gameMap = new HashMap<>();
+                    gameMap.put("id", game.getRunningId());
+                    gameMap.put("name", game.getGameInstance().getName());
+                    gameMap.put("questionnaireName", game.getQuestionnaire().getName());
+                    gameMap.put("mapName", game.getGameInstance().getMap().getName());
+                    gameMap.put("gameStatus", game.getStatus().name());
+                    gameMap.put("timePlayed", game.getGameStatistics() != null ? game.getGameStatistics().getTimeStarted() : null);
+                    return gameMap;
+                })
+                .collect(Collectors.toList());
+        return Response.ok(runningGameInstancesLean);
+    }
 }
