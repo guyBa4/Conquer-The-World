@@ -33,7 +33,11 @@ public class RepositoryFactory {
                              MobilePlayerRepository mobilePlayerRepository,
                              AnswerRepository answerRepository,
                              AssignedQuestionRepository assignedQuestionRepository,
-                             PlayerStatisticRepository playerStatisticRepository, GameStatisticRepository gameStatisticRepository, RunningTileRepository runningTileRepository, MobileUserRepository mobileUserRepository, QuestionsQueueRepository questionsQueueRepository){
+                             PlayerStatisticRepository playerStatisticRepository,
+                             GameStatisticRepository gameStatisticRepository,
+                             RunningTileRepository runningTileRepository,
+                             MobileUserRepository mobileUserRepository,
+                             QuestionsQueueRepository questionsQueueRepository){
         this.gameInstanceRepository = gameInstanceRepository;
         this.userRepository = userRepository;
         this.mapRepository = mapRepository;

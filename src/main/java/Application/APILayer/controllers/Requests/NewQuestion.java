@@ -11,6 +11,11 @@ public class NewQuestion {
     private int difficulty;
     private String image;
 
+    public <T> NewQuestion(String sample_question, boolean b, String correct_answer, List<T> asList, List<T> asList1, int i, Object o) {
+    }
+    public NewQuestion() {
+    }
+
     public String getCreatorId() {
         return creatorId;
     }
